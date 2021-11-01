@@ -27,9 +27,17 @@ namespace Backend
             }
             catch (WrongCredentialsException e)
             {
-                Console.WriteLine(e);
-                throw;
+                log.LogWarning(e, $"Wrong credentials exception for {credentials.Email}");
+                return new UnauthorizedResult();
             }
+        }
+
+        [FunctionName("TokenRefresh")]
+        public static async Task<IActionResult> RefreshTokenAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refresh")]
+            TokenRefreshRequest refreshRequest, ILogger log)
+        {
+            return new OkObjectResult(Authentication.RefreshToken(refreshRequest));
         }
     }
 }
