@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using Backend.Domain;
 using Backend.dto;
 using Backend.exceptions;
-using Backend.Models;
+using Backend.repositories;
+using Backend.tools;
 using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames;
 
 namespace Backend.services
 {
-    public static class Authentication
+    public static class AuthenticationService
     {
         private const string Issuer = "railbuddy.jarivanmelckebeke.be";
-
         private const string SubClaimName = "sub";
         private const string EmailClaimName = "email";
 
@@ -31,6 +31,7 @@ namespace Backend.services
         {
             return new SigningCredentials(GetSecurityKey(), SecurityAlgorithms.HmacSha256);
         }
+
 
 
         private static string GenerateSingleJwtToken(string profileId, string email, bool isRefresh = false)
@@ -61,22 +62,14 @@ namespace Backend.services
             };
         }
 
-        public static TokenResponse LoginUser(Credentials credentials)
+        public static async Task<TokenResponse> LoginUserAsync(Credentials credentials)
         {
-            // todo: login
-            if (true)
-            {
-                var profile = new UserProfile
-                {
-                    Username = "foo", Email = "foo@bar.be", ProfileId = new Guid()
-                };
+            UserProfile profile =
+                await UserRepository.GetLoginProfileAsync(credentials.Email, Crypto.ComputeSha256(credentials.Password));
 
-                return GenerateJwtTokens(profile.ProfileId.ToString(), profile.Email);
-            }
-            else
-            {
-                throw new WrongCredentialsException();
-            }
+            if (profile == null) throw new WrongCredentialsException();
+
+            return GenerateJwtTokens(profile.ProfileId.ToString(), profile.Email);
         }
 
         public static TokenResponse RefreshToken(TokenRefreshRequest refreshRequest)
@@ -94,7 +87,7 @@ namespace Backend.services
 
             ClaimsPrincipal claimsPrincipal =
                 tokenHandler.ValidateToken(refreshRequest.RefreshToken, validationParameters, out SecurityToken _);
-            
+
             // if the token was invalid, an exception was thrown, so just refresh the token (generate new access and refresh token)
 
             List<Claim> claims = new List<Claim>(claimsPrincipal.Claims);
