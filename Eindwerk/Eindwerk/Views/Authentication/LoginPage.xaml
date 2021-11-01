@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Eindwerk.Views.LoginPage"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+    <ContentPage.Content>
+        <StackLayout Margin="25">
+            <Label Text="Login" HorizontalOptions="Center" FontAttributes="Bold" FontSize="Large" Margin="15" />
+            <Label Text="email" FontSize="Medium" Margin="0,10,0,0" />
+            <Entry Placeholder="email" Keyboard="Email" IsSpellCheckEnabled="False" Margin="0,0,0,5" />
+            <Label Text="Password" FontSize="Medium" Margin="0,10,0,0" />
+            <Entry Placeholder="Password" IsPassword="True" Margin="0,0,0,5" />
+
+            <Button Text="Login" BackgroundColor="{DynamicResource PrimaryColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}" />
+
+            <Button Text="Create an Account" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand"
+                    BackgroundColor="{DynamicResource SecondaryColor}" TextColor="{DynamicResource SecondaryTextColor}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
