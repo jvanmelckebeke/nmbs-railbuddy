@@ -17,7 +17,7 @@ namespace Eindwerk.Services
         /**
          * <value>The base uri for calling the api</value>
          */
-        protected const string BASEURI = "http://localhost:7071/api";
+        protected const string BASEURI = "https://railbuddy.azurewebsites.net/api";
 
         protected ApiService(string accessToken)
         {

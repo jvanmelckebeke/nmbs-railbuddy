@@ -22,20 +22,5 @@ namespace Backend.dto
          */
         [JsonProperty(PropertyName = "targetCity")]
         public string TargetCity { get; set; }
-
-        /**
-         * <value>Generated Gravatar url</value>
-         */
-        [JsonProperty(PropertyName = "avatarUrl")]
-        public string AvatarUrl
-        {
-            get
-            {
-                var emailLowercase = Email.ToLower().Trim();
-                var emailHash = Crypto.ComputeMd5(emailLowercase);
-
-                return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar";
-            }
-        }
     }
 }
