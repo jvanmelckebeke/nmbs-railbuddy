@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Backend.Domain;
 using Backend.dto;
 using Backend.exceptions;
@@ -8,11 +9,47 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend
 {
     public static class UserController
     {
+        /**
+         * <summary>Helper function which does a couple of things:
+         * <list type="number">
+         * <item><description>Checks if the <c>Authorization</c> header is present and valid with a JWT token</description></item>
+         * <item><description>if the <c>Authorization</c> header is invalid, then returns an appropriate <c>HTTP 401</c> response</description></item>
+         * <item><description>if the <c>Authorization</c> header is valid, executes the function passed in <paramref name="handleRequest"/>
+         * and converts it to an <c>ObjectResult</c> with statuscode in <paramref name="successStatusCode"/></description></item>
+         * </list></summary>
+         *
+         * <typeparam name="TReturn">the return type of the <paramref name="handleRequest"/> function, also the non-JSON return type of the http function</typeparam>
+         *
+         * <param name="handleRequest">service function to execute if authorization is ok, also the function that handles the request</param>
+         * <param name="req">the raw http request</param>
+         * <param name="successStatusCode">Which HTTP status code should be returned if the request is a success</param>
+         * <param name="acceptRefreshToken">whether a refresh token can be accepted in the authorization header</param>
+         */
+        private static async Task<IActionResult> AuthorizedHelper<TReturn>(Func<Task<TReturn>> handleRequest,
+            HttpRequest req, int successStatusCode = 200, bool acceptRefreshToken = false)
+        {
+            string accessToken = req.Headers["Authorization"];
+            try
+            {
+                if (!AuthenticationService.ValidateJwt(accessToken, acceptRefreshToken))
+                    return new ObjectResult(new {Message = "expected Access Token but Refresh Token was given"})
+                        {StatusCode = 401};
+
+                TReturn result = await handleRequest();
+                return new ObjectResult(result) {StatusCode = successStatusCode};
+            }
+            catch (SecurityTokenExpiredException exp)
+            {
+                return new ObjectResult(new {Message = "Access Token expired"}) {StatusCode = 401};
+            }
+        }
+
         [FunctionName("UserLogin")]
         public static async Task<IActionResult> LoginUserAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/login")]
@@ -24,13 +61,13 @@ namespace Backend
             }
             catch (WrongCredentialsException e)
             {
-                log.LogWarning(e, $"Wrong credentials exception for {credentials.Email}");
+                log.LogWarning(e, $"Wrong credentials for {credentials.Email}");
                 return new ObjectResult(new {Message = "Wrong credentials", Authenticated = false}) {StatusCode = 401};
             }
         }
 
         [FunctionName("TokenRefresh")]
-        public static async Task<IActionResult> RefreshTokenAsync(
+        public static IActionResult RefreshTokenAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refresh")]
             TokenRefreshRequest refreshRequest, ILogger log)
         {
@@ -61,7 +98,7 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}")]
             HttpRequest req, string profileid, ILogger log)
         {
-            return new OkObjectResult(await UserService.GetProfileByProfileId(profileid));
+            return await AuthorizedHelper(() => UserService.GetProfileByProfileId(profileid), req);
         }
     }
 }

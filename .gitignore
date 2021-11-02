@@ -2,7 +2,6 @@
 
 venv/
 
-**/*.Android/
 **/*.iOS/
 **/local.settings.json
 

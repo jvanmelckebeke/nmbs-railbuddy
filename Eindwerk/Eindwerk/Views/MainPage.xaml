@@ -3,11 +3,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Eindwerk"
-             x:Class="Eindwerk.MainPage">
+             x:Class="Eindwerk.Views.MainPage">
     <StackLayout>
         <!-- Place new controls here -->
-        <Label HorizontalOptions="Center" Margin="10" Text="Welcome to Xamarin.Forms!" />
-        <Button Text="Login Page" Clicked="Button_Login" />
+        <Frame CornerRadius="100" HorizontalOptions="Center" Padding="0" IsClippedToBounds="True" HeightRequest="100"
+               WidthRequest="100">
+            <Image x:Name="ImgAvatar" VerticalOptions="Center" HorizontalOptions="Center" />
+        </Frame>
+        <Label x:Name="LblUser" HorizontalOptions="Center" Margin="10" Text="Hi, user!!" />
     </StackLayout>
 
 </ContentPage>
