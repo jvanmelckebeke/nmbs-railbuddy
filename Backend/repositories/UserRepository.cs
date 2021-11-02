@@ -11,7 +11,7 @@ namespace Backend.repositories
     {
         private static CloudTable GetUserTable()
         {
-            var connectionString = Environment.GetEnvironmentVariable("Database:ConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
             return cloudTableClient.GetTableReference("users");

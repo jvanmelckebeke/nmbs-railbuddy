@@ -17,7 +17,7 @@ namespace Backend.services
         private static SymmetricSecurityKey GetSecurityKey()
         {
             // this is: use the value in the environment variable, if there is none present, use 'Very$ecureK3y'
-            var jwtKey = Environment.GetEnvironmentVariable("Jwt:Key") ?? "Very$ecureK3y";
+            var jwtKey = Environment.GetEnvironmentVariable("JwtKey") ?? "Very$ecureK3y";
 
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         }
