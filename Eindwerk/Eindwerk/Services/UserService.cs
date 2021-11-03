@@ -1,18 +1,31 @@
 ﻿using System.Threading.Tasks;
 using Eindwerk.Models;
+using Eindwerk.Tools;
 
 namespace Eindwerk.Services
 {
-    public class UserService : ApiService
+    public class UserService : SecuredService
     {
+        private UserRepository _userRepository;
+
+        private string _ownProfileId;
+
 
         public UserService(string accessToken) : base(accessToken)
         {
         }
 
-        public Task<UserProfile> GetUserProfile(string profileId)
+        public async Task<UserProfile> GetUserProfileAsync(string profileId = null)
         {
-            return DoGetRequest<UserProfile>($"{BASEURI}/user/{profileId}");
+            profileId = profileId ?? _ownProfileId;
+
+            return await _userRepository.GetUserProfileAsync(profileId);
+        }
+
+        protected override void SetupAfterTokenSet()
+        {
+            _userRepository = new UserRepository(AccessToken);
+            _ownProfileId = JwtTokenTools.ExtractTokenSubject(AccessToken);
         }
     }
 }

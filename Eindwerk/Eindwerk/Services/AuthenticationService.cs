@@ -1,51 +1,101 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Eindwerk.Exceptions;
 using Eindwerk.Models;
 using Eindwerk.Models.Forms;
+using Eindwerk.Repository;
 using Eindwerk.Tools;
 using Xamarin.Essentials;
 
 namespace Eindwerk.Services
 {
-    public class AuthenticationService : ApiService
+    public class AuthenticationService
     {
-        public AuthenticationService(string accessToken) : base(accessToken)
+        private readonly AuthenticationRepository _authenticationRepository;
+
+        private Tokens _tokens;
+
+        public AuthenticationService(Tokens tokens)
         {
+            _tokens = tokens;
+            _authenticationRepository = new AuthenticationRepository(tokens.AccessToken);
         }
 
-        public AuthenticationService() : base(null)
+        public AuthenticationService()
         {
+            _authenticationRepository = new AuthenticationRepository();
         }
 
         public string GetOwnProfileId()
         {
-            return JwtTokenTools.ExtractTokenSubject(AccessToken);
+            return JwtTokenTools.ExtractTokenSubject(_tokens.AccessToken);
         }
 
-        private async Task<Tokens> RequestTokens(string url, object payload)
+        public async Task<Tokens> LoginAsync(Credentials credentials)
         {
-            var tokens = await DoPostRequest<Tokens>(url, payload);
+            Tokens tokens = await _authenticationRepository.LoginRequest(credentials);
 
-            if (tokens == null) return null;
+            if (tokens == null) throw new WrongCredentialsException();
 
-            Preferences.Set("refreshToken", tokens.RefreshToken);
-            AccessToken = tokens.AccessToken;
+            SetTokens(tokens);
             return tokens;
         }
 
-
-        public async Task<Tokens> LoginRequest(Credentials credentials)
+        public void Logout()
         {
-            var url = $"{BASEURI}/auth/login";
-            return await RequestTokens(url, credentials);
+            RemoveRefreshToken();
+            _tokens = null;
         }
 
-        public async Task<Tokens> RefreshTokens(string refreshToken)
+        /**
+         * <summary>tries to refresh and return access token, returns null on failure</summary>
+         */
+        public async Task<Tokens> TryRefreshTokensAsync()
         {
-            var url = $"{BASEURI}/auth/refresh";
+            var refreshToken = GetRefreshToken();
 
-            var payload = new {RefreshToken = refreshToken};
-            return await RequestTokens(url, payload);
+            if (refreshToken == null) return null;
+
+            Tokens tokens = await _authenticationRepository.RefreshTokens(refreshToken);
+
+            if (tokens == null) return null;
+
+            SetTokens(tokens);
+            return tokens;
+        }
+
+        /**
+         * <summary>creates a new Service using the access token this authentication service knows</summary>
+         *
+         * <typeparam name="TService">the service class to create</typeparam>
+         */
+        public TService CreateWithTokens<TService>() where TService : SecuredService
+        {
+            Debug.WriteLine($"tokens: {_tokens}" );
+            return (TService) Activator.CreateInstance(typeof(TService), _tokens.AccessToken);
+        }
+
+        private void SetTokens(Tokens tokens)
+        {
+            _tokens = tokens;
+            SetRefreshToken(tokens.RefreshToken);
+        }
+
+
+        private static void SetRefreshToken(string value)
+        {
+            Preferences.Set("refreshToken", value);
+        }
+
+        private static string GetRefreshToken(string defaultValue = null)
+        {
+            return Preferences.Get("refreshToken", defaultValue);
+        }
+
+        private static void RemoveRefreshToken()
+        {
+            Preferences.Remove("refreshToken");
         }
     }
 }

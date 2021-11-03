@@ -5,23 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Eindwerk.Services
+namespace Eindwerk.Repository
 {
-    public class ApiService
+    public class ApiRepository
     {
-        /**
-         * <value>the JWT Access Token to use in requests</value>
-         */
-        protected string AccessToken;
-
         /**
          * <value>The base uri for calling the api</value>
          */
-        protected const string BASEURI = "https://railbuddy.azurewebsites.net/api";
+        protected string BASEURI;
 
-        protected ApiService(string accessToken)
+        protected ApiRepository(string baseuri)
         {
-            AccessToken = accessToken;
+            BASEURI = baseuri;
         }
 
         /**
@@ -161,12 +156,10 @@ namespace Eindwerk.Services
             }
         }
 
-        private HttpClient GetClient()
+        protected virtual HttpClient GetClient()
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
-            if (AccessToken != null)
-                client.DefaultRequestHeaders.Add("Authorization", AccessToken);
             return client;
         }
     }

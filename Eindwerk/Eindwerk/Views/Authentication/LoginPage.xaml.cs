@@ -34,7 +34,7 @@ namespace Eindwerk.Views.Authentication
 
             if (credentials.ValidateInputs())
             {
-                Tokens tokens = await _authenticationService.LoginRequest(credentials);
+                Tokens tokens = await _authenticationService.LoginAsync(credentials);
 
                 if (tokens != null)
                 {
@@ -71,7 +71,9 @@ namespace Eindwerk.Views.Authentication
 
             Debug.WriteLine("a refresh token was present");
 
-            Tokens tokens = await _authenticationService.RefreshTokens(refreshToken);
+            Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
+
+            Debug.WriteLine($"tokens: {tokens}");
             if (tokens != null)
             {
                 GoToMainPage(tokens);

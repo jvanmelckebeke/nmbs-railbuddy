@@ -19,11 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Assets" />
-      <Folder Include="Repository" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Update="Views\MainPage.xaml.cs">
         <DependentUpon>MainPage.xaml</DependentUpon>
         <SubType>Code</SubType>
@@ -32,5 +27,10 @@
         <DependentUpon>LoginPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Icons\logout.png" />
+      <EmbeddedResource Include="Assets\Icons\logout.png" />
     </ItemGroup>
 </Project>

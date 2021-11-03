@@ -20,7 +20,6 @@ namespace Eindwerk.Models
         /**
          * <value>Generated Gravatar url</value>
          */
-        [JsonProperty(PropertyName = "avatarUrl")]
         public string AvatarUrl
         {
             get

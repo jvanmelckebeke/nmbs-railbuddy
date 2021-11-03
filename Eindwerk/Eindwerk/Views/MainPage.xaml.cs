@@ -1,59 +1,52 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Services;
-using Eindwerk.Views.Authentication;
-using Newtonsoft.Json;
+using Eindwerk.Tools;
 using Xamarin.Forms;
-using Xamarin.Essentials;
 
 namespace Eindwerk.Views
 {
     public partial class MainPage : ContentPage
     {
-        private Tokens _tokens;
         private AuthenticationService _authenticationService;
         private UserService _userService;
         private UserProfile _userProfile;
 
         public MainPage()
         {
+            _authenticationService = new AuthenticationService();
             InitializeComponent();
-            
-            string refreshToken = Preferences.Get("refreshToken", null);
-
-            if (refreshToken == null)
-            {
-                Debug.WriteLine("there was no refresh token");
-                Navigation.PopToRootAsync();
-                return;
-            }
-
-            RefreshPageWithRefreshToken(refreshToken);
+            SetupTokens();
+            SetupListeners();
         }
 
         public MainPage(Tokens tokens)
         {
+            _authenticationService = new AuthenticationService(tokens);
             InitializeComponent();
-            _tokens = tokens;
-            _authenticationService = new AuthenticationService(tokens.AccessToken);
+            SetupProfile();
+            SetupListeners();
+        }
+
+        private async void SetupTokens()
+        {
+            Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
+
+            if (tokens == null)
+            {
+                Debug.WriteLine("there was no refresh token");
+                await Navigation.PopToRootAsync();
+                return;
+            }
+
             SetupProfile();
         }
 
-        private async Task RefreshPageWithRefreshToken(string refreshToken)
+        private async void SetupProfile()
         {
-            _authenticationService = new AuthenticationService();
-            _tokens = await _authenticationService.RefreshTokens(refreshToken);
-            _authenticationService = new AuthenticationService(_tokens.AccessToken);
-
-            await SetupProfile();
-        }
-
-        private async Task SetupProfile()
-        {
-            _userService = new UserService(_tokens.AccessToken);
-            _userProfile = await _userService.GetUserProfile(_authenticationService.GetOwnProfileId());
+            _userService = _authenticationService.CreateWithTokens<UserService>();
+            _userProfile = await _userService.GetUserProfileAsync(_authenticationService.GetOwnProfileId());
             ShowProfile();
         }
 
@@ -61,6 +54,28 @@ namespace Eindwerk.Views
         {
             LblUser.Text = $"Hi, {_userProfile.Username}!";
             ImgAvatar.Source = ImageSource.FromUri(new Uri(_userProfile.AvatarUrl));
+        }
+
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            ImgLogoutIcon.Source = AssetHelper.GetIcon("logout.png");
+        }
+
+        private void SetupListeners()
+        {
+            Debug.WriteLine("setup listener mainpage");
+            TapGestureRecognizer clickGestureRecognizer = new TapGestureRecognizer();
+            clickGestureRecognizer.Tapped += LogoutTapped;
+            FrLogout.GestureRecognizers.Add(clickGestureRecognizer);
+        }
+
+        private void LogoutTapped(object sender, EventArgs e)
+        {
+            _authenticationService.Logout();
+            Navigation.PopToRootAsync();
         }
     }
 }
