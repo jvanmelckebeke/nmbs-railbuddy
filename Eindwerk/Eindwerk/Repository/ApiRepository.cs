@@ -3,15 +3,17 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Eindwerk.Exceptions;
+using Eindwerk.Models;
 using Newtonsoft.Json;
 
 namespace Eindwerk.Repository
 {
     public class ApiRepository
     {
-        /**
-         * <value>The base uri for calling the api</value>
-         */
+        /// <summary>
+        /// the base uri to call for the api
+        /// </summary>
         protected string BASEURI;
 
         protected ApiRepository(string baseuri)
@@ -19,21 +21,21 @@ namespace Eindwerk.Repository
             BASEURI = baseuri;
         }
 
-        /**
-         * <summary>Performs any request that needs provided JSON <paramref name="payload"/> and returns as <typeparamref name="TReturn"/></summary>
-         *
-         * <param name="doRequest">a function that runs the actual request given the <c>HttpContent</c> to send</param>
-         * <param name="payload">the payload to send</param>
-         * <param name="debugCall">whether additional debug information should be included or not</param>
-         *
-         * <typeparam name="TReturn">the return type</typeparam>
-         *
-         * <returns>the request response as <typeparamref name="TReturn"/></returns>
-         */
+        /// <summary>
+        /// Performs any request that needs provided JSON <paramref name="payload"/> and returns as <typeparamref name="TReturn"/>
+        /// </summary>
+        ///
+        /// <param name="doRequest">a function that runs the actual request given the <c>HttpContent</c> to send</param>
+        /// <param name="payload">the payload to send</param>
+        /// <param name="debugCall">whether additional debug information should be included or not</param>
+        ///
+        /// <typeparam name="TReturn">the return type</typeparam>
+        ///
+        /// <returns>the request response as <typeparamref name="TReturn"/></returns>
         private static async Task<TReturn> DoAnyPayloadRequest<TReturn>(
             Func<HttpContent, Task<HttpResponseMessage>> doRequest,
             string payload,
-            bool debugCall)
+            bool debugCall) where TReturn : IDtoModel
         {
             try
             {
@@ -47,26 +49,13 @@ namespace Eindwerk.Repository
 
                 HttpResponseMessage response = await doRequest(httpContent);
 
-                if (debugCall)
-                {
-                    Debug.WriteLine("response:");
-                    Debug.WriteLine(response);
-                }
-
-                if (response == null)
-                {
-                    return default;
-                }
-
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (debugCall)
-                {
-                    Debug.WriteLine("response content: ");
-                    Debug.WriteLine(json);
-                }
-
-                return json == null ? default : JsonConvert.DeserializeObject<TReturn>(json);
+                return await FinalizeRequestAsync<TReturn>(response, debugCall);
+            }
+            catch (NoNetworkException e)
+            {
+                Debug.WriteLine($"[ERROR] NetworkException");
+                Debug.WriteLine(e);
+                throw new NoNetworkException();
             }
             catch (Exception e)
             {
@@ -75,37 +64,31 @@ namespace Eindwerk.Repository
             }
         }
 
-        /**
-         * <summary>Performs a GET request to the specified <paramref name="url"/> and returns the result as <typeparamref name="TReturn"/></summary>
-         *
-         * <param name="url">the url to request</param>
-         * <param name="debugCall">if the request should be debugged (a little more logging info)</param>
-         *
-         * <typeparam name="TReturn">The return type of this function</typeparam>
-         *
-         * <returns>the result of the GET request as <typeparamref name="TReturn"/></returns>
-         */
-        protected async Task<TReturn> DoGetRequest<TReturn>(string url, bool debugCall = true)
+        /// <summary>
+        /// Performs a GET request to the specified <paramref name="url"/> and returns the result as <typeparamref name="TReturn"/>
+        /// </summary>
+        ///
+        /// <param name="url">the url to request</param>
+        /// <param name="debugCall">if the request should be debugged (a little more logging info)</param>
+        ///
+        /// <typeparam name="TReturn">The return type of this function</typeparam>
+        ///
+        /// <returns>the result of the GET request as <typeparamref name="TReturn"/></returns>
+        protected async Task<TReturn> DoGetRequest<TReturn>(string url, bool debugCall = true) where TReturn : IDtoModel
         {
             using (HttpClient client = GetClient())
             {
                 try
                 {
-                    var json = await client.GetStringAsync(url);
+                    HttpResponseMessage response = await client.GetAsync(url);
 
-                    if (debugCall)
-                    {
-                        Debug.WriteLine("API Call response content: ");
-                        Debug.WriteLine(json);
-                    }
-
-                    if (json == null)
-                    {
-                        Console.WriteLine("[WARNING] RESPONSE WAS NULL");
-                        return default;
-                    }
-
-                    return JsonConvert.DeserializeObject<TReturn>(json);
+                    return await FinalizeRequestAsync<TReturn>(response, debugCall);
+                }
+                catch (HttpRequestException e)
+                {
+                    Debug.WriteLine($"[ERROR] NetworkException for url {url}");
+                    Debug.WriteLine(e);
+                    throw new NoNetworkException();
                 }
                 catch (Exception e)
                 {
@@ -115,18 +98,19 @@ namespace Eindwerk.Repository
             }
         }
 
-        /**
-         * <summary>performs POST request with specified <paramref name="payload"/> and returns result as <typeparamref name="TReturn"/></summary>
-         *
-         * <param name="url">the url to request</param>
-         * <param name="payload">the payload to send</param>
-         * <param name="debugCall">if the request should be debugged (a little more logging info)</param>
-         *
-         * <typeparam name="TReturn">The return type of this function</typeparam>
-         *
-         * <returns>the result of the POST request as <typeparamref name="TReturn"/></returns>
-         */
+        /// <summary>
+        /// performs POST request with specified <paramref name="payload"/> and returns result as <typeparamref name="TReturn"/>
+        /// </summary>
+        ///
+        /// <param name="url">the url to request</param>
+        /// <param name="payload">the payload to send</param>
+        /// <param name="debugCall">if the request should be debugged (a little more logging info)</param>
+        ///
+        /// <typeparam name="TReturn">The return type of this function</typeparam>
+        ///
+        /// <returns>the result of the POST request as <typeparamref name="TReturn"/></returns>
         protected async Task<TReturn> DoPostRequest<TReturn>(string url, object payload, bool debugCall = true)
+            where TReturn : IDtoModel
         {
             using (HttpClient client = GetClient())
             {
@@ -136,18 +120,19 @@ namespace Eindwerk.Repository
             }
         }
 
-        /**
-         * <summary>performs PUT request with specified <paramref name="payload"/> and returns result as <typeparamref name="TReturn"/></summary>
-         *
-         * <param name="url">the url to request</param>
-         * <param name="payload">the payload to send</param>
-         * <param name="debugCall">if the request should be debugged (a little more logging info)</param>
-         *
-         * <typeparam name="TReturn">The return type of this function</typeparam>
-         *
-         * <returns>the result of the PUT request as <typeparamref name="TReturn"/></returns>
-         */
+        /// <summary>
+        /// performs PUT request with specified <paramref name="payload"/> and returns result as <typeparamref name="TReturn"/>
+        /// </summary>
+        ///
+        /// <param name="url">the url to request</param>
+        /// <param name="payload">the payload to send</param>
+        /// <param name="debugCall">if the request should be debugged (a little more logging info)</param>
+        ///
+        /// <typeparam name="TReturn">The return type of this function</typeparam>
+        ///
+        /// <returns>the result of the PUT request as <typeparamref name="TReturn"/></returns>
         protected async Task<TReturn> DoPutRequest<TReturn>(string url, object payload, bool debugCall = true)
+            where TReturn : IDtoModel
         {
             using (HttpClient client = GetClient())
             {
@@ -156,9 +141,54 @@ namespace Eindwerk.Repository
             }
         }
 
+        /// <summary>
+        /// handles the return value of a given http <paramref name="response"/>, including debug logging
+        /// </summary>
+        /// <param name="response">the http response of the request</param>
+        /// <param name="debugCall">whether to log additional information or not</param>
+        /// <typeparam name="TReturn">The type to return, *must* implement <see cref="IDtoModel"/></typeparam>
+        /// <returns>If the request was a success, an object of type <typeparamref name="TReturn"/>, otherwise <c>null</c></returns>
+        private static async Task<TReturn> FinalizeRequestAsync<TReturn>(HttpResponseMessage response,
+            bool debugCall = true)
+            where TReturn : IDtoModel
+        {
+            if (debugCall) Debug.WriteLine($"response: {response}");
+
+            if (response == null)
+            {
+                return default;
+            }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            if (debugCall) Debug.WriteLine($"response content: {jsonResponse}");
+
+            if (jsonResponse == null)
+            {
+                if (debugCall) Debug.WriteLine($"WARNING: response content is null");
+
+                return default;
+            }
+
+            TReturn valueToReturn = JsonConvert.DeserializeObject<TReturn>(jsonResponse);
+
+            if (debugCall) Debug.WriteLine($"translated response object: {valueToReturn}");
+
+            if (valueToReturn != null && valueToReturn.IsFilled()) return valueToReturn;
+
+
+            if (debugCall) Debug.WriteLine("WARNING: response object is null or invalid");
+            return default;
+        }
+
+        /// <summary>
+        /// creates a default HTTPClient, can be overridden to include for example Authorization headers
+        /// </summary>
+        /// 
+        /// <returns>a HTTP client</returns>
         protected virtual HttpClient GetClient()
         {
-            var client = new HttpClient();
+            HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             return client;
         }

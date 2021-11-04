@@ -2,12 +2,63 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Eindwerk.Views.Authentication.RegistrationPage">
+             xmlns:components="clr-namespace:Eindwerk.Components;assembly=Eindwerk"
+             xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
+             x:Class="Eindwerk.Views.Authentication.RegistrationPage" Title="Registration">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Hello, world!"
-                   VerticalOptions="CenterAndExpand"
-                   HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView x:Name="SVMain">
+            <ScrollView.Content>
+                <StackLayout Margin="20">
+
+
+                    <Label x:Name="LblEmail" Text="E-mail" FontSize="Medium" Margin="0,10,0,0" />
+                    <Entry x:Name="EntEmail" Placeholder="E-mail" Keyboard="Email" IsSpellCheckEnabled="False"
+                           Margin="0,0,0,5" />
+                    <Label x:Name="LblEmailError" Text="Invalid email address" FontSize="Small" IsVisible="False"
+                           TextColor="IndianRed" />
+
+                    <Label x:Name="LblUsername" Text="Username" FontSize="Medium" Margin="0,10,0,0" />
+                    <Entry x:Name="EntUsername" Placeholder="Username" IsSpellCheckEnabled="False" Margin="0,0,0,5" />
+                    <Label x:Name="LblUsernameError" Text="Passwords do not match" FontSize="Small" IsVisible="False"
+                           TextColor="IndianRed" />
+
+
+                    <Label x:Name="LblPassword" Text="Password" FontSize="Medium" Margin="0,10,0,0" />
+                    <Entry x:Name="EntPassword" Placeholder="Password" IsPassword="True" Margin="0,0,0,5" />
+
+                    <Label x:Name="LblPasswordCheck" Text="Repeat password" FontSize="Medium" Margin="0,10,0,0" />
+                    <Entry x:Name="EntPasswordCheck" Placeholder="Password" IsPassword="True" Margin="0,0,0,5" />
+                    <Label x:Name="LblPasswordError" Text="Passwords do not match" FontSize="Small" IsVisible="False"
+                           TextColor="IndianRed" />
+
+                    <Label x:Name="LblSearchStation" Text="Train Station you visit most frequently" FontSize="Medium"
+                           Margin="0,10,0,0" />
+                    <Entry x:Name="EntSearchStation" IsSpellCheckEnabled="False" Keyboard="Plain"
+                           Placeholder="Brussel Zuid" />
+
+                    <Frame x:Name="FrStation" HeightRequest="200" BackgroundColor="White">
+                        <ListView x:Name="LstStation">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Station">
+                                    <ViewCell>
+                                        <Label Text="{Binding StandardName}" FontSize="Medium"
+                                               VerticalOptions="Center" />
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Frame>
+
+                    <BoxView x:Name="FrClearSpace" HeightRequest="0" />
+
+                    <Button x:Name="BtnCreateAccount" Text="Create Account"
+                            BackgroundColor="{DynamicResource PrimaryColor}"
+                            TextColor="{DynamicResource PrimaryTextColor}" />
+
+
+                </StackLayout>
+            </ScrollView.Content>
+        </ScrollView>
+
     </ContentPage.Content>
 </ContentPage>

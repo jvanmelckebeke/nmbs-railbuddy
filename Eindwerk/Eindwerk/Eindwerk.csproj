@@ -32,5 +32,11 @@
     <ItemGroup>
       <None Remove="Assets\Icons\logout.png" />
       <EmbeddedResource Include="Assets\Icons\logout.png" />
+      <None Remove="Assets\Icons\chevron-left.png" />
+      <EmbeddedResource Include="Assets\Icons\chevron-left.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Mono.Android" />
     </ItemGroup>
 </Project>

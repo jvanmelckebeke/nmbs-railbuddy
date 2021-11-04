@@ -1,6 +1,8 @@
-﻿namespace Eindwerk.Models
+﻿using System;
+
+namespace Eindwerk.Models
 {
-    public class Tokens
+    public class Tokens : IDtoModel
     {
         public string AccessToken { get; set; }
 
@@ -9,6 +11,11 @@
         public override string ToString()
         {
             return $"Tokens[AccessToken='{AccessToken}', RefreshToken='{RefreshToken}']";
+        }
+
+        public bool IsFilled()
+        {
+            return !string.IsNullOrEmpty(AccessToken) && !string.IsNullOrEmpty(RefreshToken);
         }
     }
 }

@@ -31,8 +31,12 @@ namespace Eindwerk.Repository
 
         private async Task<Tokens> RequestTokens(string url, object payload)
         {
-            Tokens tokens = await DoPostRequest<Tokens>(url, payload);
-            return tokens;
+            return await DoPostRequest<Tokens>(url, payload);
+        }
+
+        public async Task<UserProfile> CreateProfile(UserProfileCreation creation)
+        {
+            return await DoPostRequest<UserProfile>($"{BASEURI}/user/create", creation);
         }
     }
 }

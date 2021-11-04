@@ -1,10 +1,11 @@
 ﻿using System;
 using Eindwerk.Tools;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace Eindwerk.Models
 {
-    public class UserProfile
+    public class UserProfile : IDtoModel
     {
         [JsonProperty(PropertyName = "profileId")]
         public Guid ProfileId { get; set; }
@@ -13,7 +14,7 @@ namespace Eindwerk.Models
         public string Username { get; set; }
 
         [JsonProperty(PropertyName = "email")] public string Email { get; set; }
-        
+
         [JsonProperty(PropertyName = "targetCity")]
         public string TargetCity { get; set; }
 
@@ -29,6 +30,11 @@ namespace Eindwerk.Models
 
                 return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200";
             }
+        }
+
+        public bool IsFilled()
+        {
+            return !(Email.IsNullOrEmpty() || Username.IsNullOrEmpty());
         }
     }
 }

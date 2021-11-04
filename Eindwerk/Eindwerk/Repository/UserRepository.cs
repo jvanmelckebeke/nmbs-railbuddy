@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Eindwerk.Models;
-using Eindwerk.Repository;
 
-namespace Eindwerk.Services
+namespace Eindwerk.Repository
 {
     public class UserRepository : RailBuddyApiRepository
     {

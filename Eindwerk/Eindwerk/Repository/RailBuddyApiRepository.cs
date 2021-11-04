@@ -21,8 +21,7 @@ namespace Eindwerk.Repository
 
         protected override HttpClient GetClient()
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            HttpClient client = base.GetClient();
             if (AccessToken != null)
                 client.DefaultRequestHeaders.Add("Authorization", AccessToken);
             return client;

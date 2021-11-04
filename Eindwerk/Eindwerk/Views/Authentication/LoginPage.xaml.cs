@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
+using Eindwerk.Exceptions;
 using Eindwerk.Models;
 using Eindwerk.Services;
 using Xamarin.Essentials;
@@ -22,10 +23,17 @@ namespace Eindwerk.Views.Authentication
             _authenticationService = new AuthenticationService();
 
             BtnLogin.Clicked += BtnLoginClicked;
+            BtnRegistration.Clicked += BtnRegistrationClicked;
+        }
+
+        private void BtnRegistrationClicked(object sender, EventArgs e)
+        {
+            GoToRegistrationPage();
         }
 
         private async void BtnLoginClicked(object sender, EventArgs e)
         {
+            IProgressDialog dialog = UserDialogs.Instance.Loading("logging in");
             Credentials credentials = new Credentials()
             {
                 Email = EntEmail.Text,
@@ -34,24 +42,26 @@ namespace Eindwerk.Views.Authentication
 
             if (credentials.ValidateInputs())
             {
-                Tokens tokens = await _authenticationService.LoginAsync(credentials);
-
-                if (tokens != null)
+                try
                 {
+                    Tokens tokens = await _authenticationService.LoginAsync(credentials);
+
                     GoToMainPage(tokens);
                 }
-                else
+                catch (WrongCredentialsException)
                 {
-                    var toastConfig = new ToastConfig("toasting...");
-                    toastConfig.SetDuration(3000);
+                    UserDialogs.Instance.Alert("Sorry, email or password is wrong");
 
-                    UserDialogs.Instance.Toast(toastConfig);
+                    LblEmail.TextColor = Color.PaleVioletRed;
+                    LblPassword.TextColor = Color.PaleVioletRed;
                 }
             }
             else
             {
-                UserDialogs.Instance.Toast("input invalid");
+                UserDialogs.Instance.Toast("Email is invalid, check that your mail is written as 'example@domain.com'");
             }
+
+            dialog.Hide();
         }
 
         protected override void OnAppearing()
@@ -60,7 +70,7 @@ namespace Eindwerk.Views.Authentication
             CheckAuthentication();
         }
 
-        private async Task CheckAuthentication()
+        private async void CheckAuthentication()
         {
             var refreshToken = Preferences.Get("refreshToken", null);
 
@@ -86,7 +96,12 @@ namespace Eindwerk.Views.Authentication
 
         private void GoToMainPage(Tokens tokens)
         {
-            Navigation.PushAsync(new MainPage(tokens));
+            Navigation.PushAsync(new MainPage(tokens), true);
+        }
+
+        private void GoToRegistrationPage()
+        {
+            Navigation.PushAsync(new RegistrationPage(), true);
         }
     }
 }

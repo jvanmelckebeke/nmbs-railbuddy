@@ -36,6 +36,8 @@ namespace Eindwerk.Services
         {
             Tokens tokens = await _authenticationRepository.LoginRequest(credentials);
 
+            Debug.WriteLine(tokens);
+            
             if (tokens == null) throw new WrongCredentialsException();
 
             SetTokens(tokens);
