@@ -15,11 +15,12 @@ namespace Eindwerk.Views.Authentication
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : EncapsulatedPage
     {
-        private AuthenticationService _authenticationService;
+        private readonly AuthenticationService _authenticationService;
 
         public LoginPage()
         {
             InitializeComponent();
+            
             _authenticationService = new AuthenticationService();
 
             BtnLogin.Clicked += BtnLoginClicked;
@@ -84,16 +85,21 @@ namespace Eindwerk.Views.Authentication
 
             Debug.WriteLine("a refresh token was present");
 
-            Tokens tokens = await EncapsulateExceptions(() => _authenticationService.TryRefreshTokensAsync());
 
-            Debug.WriteLine($"tokens: {tokens}");
-            if (tokens != null)
+            await EncapsulateExceptionsAsync(async () =>
             {
-                GoToMainPage(tokens);
-                return;
-            }
+                Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
 
-            Debug.WriteLine("refresh token expired");
+                Debug.WriteLine($"tokens: {tokens}");
+                
+                if (tokens != null)
+                {
+                    GoToMainPage(tokens);
+                    return;
+                }
+
+                Debug.WriteLine("refresh token expired");
+            });
         }
 
 
