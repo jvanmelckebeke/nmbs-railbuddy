@@ -16,7 +16,7 @@ using Credentials = Eindwerk.Models.Forms.Credentials;
 namespace Eindwerk.Views.Authentication
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RegistrationPage : ContentPage
+    public partial class RegistrationPage: EncapsulatedPage
     {
         private const int STATION_LIMIT_TO_SHOW = 8;
 

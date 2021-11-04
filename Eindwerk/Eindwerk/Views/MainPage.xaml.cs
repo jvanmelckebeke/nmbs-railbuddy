@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace Eindwerk.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : EncapsulatedPage
     {
         private AuthenticationService _authenticationService;
         private UserService _userService;

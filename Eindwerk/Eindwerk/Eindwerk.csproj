@@ -34,6 +34,9 @@
       <EmbeddedResource Include="Assets\Icons\logout.png" />
       <None Remove="Assets\Icons\chevron-left.png" />
       <EmbeddedResource Include="Assets\Icons\chevron-left.png" />
+      <None Remove="Assets\Icons\no-internet.jpg" />
+      <None Remove="Assets\Icons\no-connection.gif" />
+      <EmbeddedResource Include="Assets\Icons\no-connection.gif" />
     </ItemGroup>
 
     <ItemGroup>

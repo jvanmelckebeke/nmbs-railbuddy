@@ -37,31 +37,29 @@ namespace Eindwerk.Repository
             string payload,
             bool debugCall) where TReturn : IDtoModel
         {
+            HttpContent httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            if (debugCall)
+            {
+                Debug.WriteLine("payload to send: ");
+                Debug.WriteLine(payload);
+            }
+
+            HttpResponseMessage response;
+
             try
             {
-                HttpContent httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
-
-                if (debugCall)
-                {
-                    Debug.WriteLine("payload to send: ");
-                    Debug.WriteLine(payload);
-                }
-
-                HttpResponseMessage response = await doRequest(httpContent);
-
-                return await FinalizeRequestAsync<TReturn>(response, debugCall);
+                response = await doRequest(httpContent);
             }
-            catch (NoNetworkException e)
+            catch (Exception e)
             {
                 Debug.WriteLine($"[ERROR] NetworkException");
                 Debug.WriteLine(e);
                 throw new NoNetworkException();
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+
+
+            return await FinalizeRequestAsync<TReturn>(response, debugCall);
         }
 
         /// <summary>
@@ -114,9 +112,9 @@ namespace Eindwerk.Repository
         {
             using (HttpClient client = GetClient())
             {
-                return await DoAnyPayloadRequest<TReturn>(content => client.PostAsync(url, content),
-                    JsonConvert.SerializeObject(payload),
-                    debugCall);
+                    return await DoAnyPayloadRequest<TReturn>(content => client.PostAsync(url, content),
+                        JsonConvert.SerializeObject(payload),
+                        debugCall);
             }
         }
 

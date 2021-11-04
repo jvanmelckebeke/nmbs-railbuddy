@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Eindwerk.Exceptions;
 using Xamarin.Forms;
 
@@ -10,7 +12,7 @@ namespace Eindwerk.Views
         {
             Navigation.PushAsync(new NoNetworkPage());
         }
-        
+
         protected T EncapsulateExceptions<T>(Func<T> functionToRun)
         {
             try
@@ -19,10 +21,34 @@ namespace Eindwerk.Views
             }
             catch (NoNetworkException e)
             {
+                Debug.WriteLine(e);
                 GoToNoNetworkPage();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                throw;
             }
 
             return default;
+        }
+
+        protected async Task EncapsulateExceptionsAsync(Func<Task> functionToRun)
+        {
+            try
+            {
+                await functionToRun();
+            }
+            catch (NoNetworkException e)
+            {
+                Debug.WriteLine(e);
+                GoToNoNetworkPage();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                throw;
+            }
         }
     }
 }

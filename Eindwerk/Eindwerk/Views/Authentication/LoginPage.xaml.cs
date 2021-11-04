@@ -13,7 +13,7 @@ using Credentials = Eindwerk.Models.Forms.Credentials;
 namespace Eindwerk.Views.Authentication
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoginPage : ContentPage
+    public partial class LoginPage : EncapsulatedPage
     {
         private AuthenticationService _authenticationService;
 
@@ -44,9 +44,12 @@ namespace Eindwerk.Views.Authentication
             {
                 try
                 {
-                    Tokens tokens = await _authenticationService.LoginAsync(credentials);
+                    await EncapsulateExceptionsAsync(async () =>
+                    {
+                        Tokens tokens = await _authenticationService.LoginAsync(credentials);
 
-                    GoToMainPage(tokens);
+                        GoToMainPage(tokens);
+                    });
                 }
                 catch (WrongCredentialsException)
                 {
@@ -81,7 +84,7 @@ namespace Eindwerk.Views.Authentication
 
             Debug.WriteLine("a refresh token was present");
 
-            Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
+            Tokens tokens = await EncapsulateExceptions(() => _authenticationService.TryRefreshTokensAsync());
 
             Debug.WriteLine($"tokens: {tokens}");
             if (tokens != null)
