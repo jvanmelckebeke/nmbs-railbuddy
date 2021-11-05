@@ -13,26 +13,29 @@ using Credentials = Eindwerk.Models.Forms.Credentials;
 namespace Eindwerk.Views.Authentication
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoginPage : EncapsulatedPage
+    public partial class LoginPage : NetworkDependentPage
     {
         private readonly AuthenticationService _authenticationService;
 
         public LoginPage()
         {
             InitializeComponent();
-            
+
             _authenticationService = new AuthenticationService();
 
-            BtnLogin.Clicked += BtnLoginClicked;
-            BtnRegistration.Clicked += BtnRegistrationClicked;
+            BtnLogin.Clicked += OnBtnLoginClicked;
+            BtnRegistration.Clicked += OnBtnRegistrationClicked;
         }
 
-        private void BtnRegistrationClicked(object sender, EventArgs e)
+        protected override void OnAppearing()
         {
-            GoToRegistrationPage();
+            base.OnAppearing();
+            CheckRefreshToken();
         }
 
-        private async void BtnLoginClicked(object sender, EventArgs e)
+        #region event handlers
+
+        private async void OnBtnLoginClicked(object sender, EventArgs e)
         {
             IProgressDialog dialog = UserDialogs.Instance.Loading("logging in");
             Credentials credentials = new Credentials()
@@ -43,22 +46,7 @@ namespace Eindwerk.Views.Authentication
 
             if (credentials.ValidateInputs())
             {
-                try
-                {
-                    await EncapsulateExceptionsAsync(async () =>
-                    {
-                        Tokens tokens = await _authenticationService.LoginAsync(credentials);
-
-                        GoToMainPage(tokens);
-                    });
-                }
-                catch (WrongCredentialsException)
-                {
-                    UserDialogs.Instance.Alert("Sorry, email or password is wrong");
-
-                    LblEmail.TextColor = Color.PaleVioletRed;
-                    LblPassword.TextColor = Color.PaleVioletRed;
-                }
+                await DoLogin(credentials);
             }
             else
             {
@@ -68,30 +56,48 @@ namespace Eindwerk.Views.Authentication
             dialog.Hide();
         }
 
-        protected override void OnAppearing()
+        private void OnBtnRegistrationClicked(object sender, EventArgs e)
         {
-            base.OnAppearing();
-            CheckAuthentication();
+            GoToRegistrationPage();
         }
 
-        private async void CheckAuthentication()
+        #endregion
+        private async Task DoLogin(Credentials credentials)
+        {
+            await HandleNetworkAsync(async () =>
+            {
+                try
+                {
+                    Tokens tokens = await _authenticationService.LoginAsync(credentials);
+                    GoToMainPage(tokens);
+                }
+                catch (WrongCredentialsException)
+                {
+                    UserDialogs.Instance.Alert("Sorry, email or password is wrong");
+
+                    LblEmail.TextColor = Color.PaleVioletRed;
+                    LblPassword.TextColor = Color.PaleVioletRed;
+                }
+            });
+        }
+
+       
+
+        private async void CheckRefreshToken()
         {
             var refreshToken = Preferences.Get("refreshToken", null);
 
-            if (refreshToken == null)
-            {
-                return;
-            }
+            if (refreshToken == null) return;
 
             Debug.WriteLine("a refresh token was present");
 
 
-            await EncapsulateExceptionsAsync(async () =>
+            await HandleNetworkAsync(async () =>
             {
                 Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
 
                 Debug.WriteLine($"tokens: {tokens}");
-                
+
                 if (tokens != null)
                 {
                     GoToMainPage(tokens);
@@ -103,6 +109,8 @@ namespace Eindwerk.Views.Authentication
         }
 
 
+        #region navigation
+
         private void GoToMainPage(Tokens tokens)
         {
             Navigation.PushAsync(new MainPage(tokens), true);
@@ -112,5 +120,7 @@ namespace Eindwerk.Views.Authentication
         {
             Navigation.PushAsync(new RegistrationPage(), true);
         }
+
+        #endregion
     }
 }

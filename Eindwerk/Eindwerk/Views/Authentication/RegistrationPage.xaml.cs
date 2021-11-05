@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Models;
 using Eindwerk.Repository;
 using Eindwerk.Services;
-using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -16,7 +16,7 @@ using Credentials = Eindwerk.Models.Forms.Credentials;
 namespace Eindwerk.Views.Authentication
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RegistrationPage: EncapsulatedPage
+    public partial class RegistrationPage : NetworkDependentPage
     {
         private const int STATION_LIMIT_TO_SHOW = 8;
 
@@ -50,12 +50,51 @@ namespace Eindwerk.Views.Authentication
             tapGestureRecognizer.Tapped += OnBtnGoBackClicked;
         }
 
+        #region event handlers
+
         private void OnBtnGoBackClicked(object sender, EventArgs e)
         {
             Navigation.PopAsync(true);
         }
 
         private async void OnCreateAccountClicked(object sender, EventArgs e)
+        {
+            await HandleNetworkAsync(UnsafeCreateProfile);
+        }
+
+        private async void OnSearchStationInput(object sender, TextChangedEventArgs e)
+        {
+            await HandleNetworkAsync(UnsafeFilterStationWithInput(e.NewTextValue));
+        }
+
+
+        private void OnStationSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            _selectedStation = (Station) LstStation.SelectedItem;
+
+            EntSearchStation.Text = _selectedStation.StandardName;
+        }
+
+        private void OnSearchStationUnfocussed(object sender, FocusEventArgs e)
+        {
+            // dirty hack to fix keyboard clearspace
+            FrStation.HeightRequest -= 50;
+            FrClearSpace.HeightRequest = 0;
+        }
+
+        private async void OnSearchStationFocussed(object sender, FocusEventArgs e)
+        {
+            // dirty hack to make content below keyboard visible
+            FrStation.HeightRequest += 50;
+            FrClearSpace.HeightRequest = 180;
+
+            await SVMain.ScrollToAsync(EntSearchStation, ScrollToPosition.Start, true);
+        }
+
+        #endregion
+
+        #region unsafe network calls
+        private async Task UnsafeCreateProfile()
         {
             var allGood = PerformValidation();
 
@@ -91,6 +130,54 @@ namespace Eindwerk.Views.Authentication
             UserDialogs.Instance.Alert("a profile with that email already exists");
         }
 
+        private Func<Task> UnsafeFilterStationWithInput(string newText)
+        {
+            return async () =>
+            {
+                Station[] stations = await _railService.FilterStations(newText);
+
+                if (_selectedStation != null)
+                {
+                    _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW - 1));
+
+                    if (_stationsToShow.Contains(_selectedStation))
+                    {
+                        _stationsToShow.Remove(_selectedStation);
+                    }
+
+                    _stationsToShow.Insert(0, _selectedStation);
+                }
+                else
+                {
+                    _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+                }
+
+                UpdateStationsToShow();
+            };
+        }
+
+        private async Task UnsafeShowStationsAsync()
+        {
+            Station[] stations = await _railService.GetStations();
+
+            _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+
+            UpdateStationsToShow();
+        }
+
+        #endregion
+
+        private async void ShowStations()
+        {
+            await HandleNetworkAsync(UnsafeShowStationsAsync);
+        }
+
+        private void UpdateStationsToShow()
+        {
+            LstStation.ItemsSource = _stationsToShow;
+            LstStation.HeightRequest = Math.Min(_stationsToShow.Count, 5) * LstStation.RowHeight;
+        }
+
         private bool PerformValidation()
         {
             // validate email
@@ -124,67 +211,6 @@ namespace Eindwerk.Views.Authentication
             }
 
             return true;
-        }
-
-        private void OnStationSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            _selectedStation = (Station) LstStation.SelectedItem;
-
-            EntSearchStation.Text = _selectedStation.StandardName;
-        }
-
-        private async void OnSearchStationInput(object sender, TextChangedEventArgs e)
-        {
-            Station[] stations = await _railService.FilterStations(e.NewTextValue);
-
-            if (_selectedStation != null)
-            {
-                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW - 1));
-
-                if (_stationsToShow.Contains(_selectedStation))
-                {
-                    _stationsToShow.Remove(_selectedStation);
-                }
-
-                _stationsToShow.Insert(0, _selectedStation);
-            }
-            else
-            {
-                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
-            }
-
-            UpdateStationsToShow();
-        }
-
-        private void OnSearchStationUnfocussed(object sender, FocusEventArgs e)
-        {
-            // dirty hack to fix keyboard clearspace
-            FrStation.HeightRequest -= 50;
-            FrClearSpace.HeightRequest = 0;
-        }
-
-        private async void OnSearchStationFocussed(object sender, FocusEventArgs e)
-        {
-            // dirty hack to make content below keyboard visible
-            FrStation.HeightRequest += 50;
-            FrClearSpace.HeightRequest = 180;
-
-            await SVMain.ScrollToAsync(EntSearchStation, ScrollToPosition.Start, true);
-        }
-
-        private async void ShowStations()
-        {
-            Station[] stations = await _railService.GetStations();
-
-            _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
-
-            UpdateStationsToShow();
-        }
-
-        private void UpdateStationsToShow()
-        {
-            LstStation.ItemsSource = _stationsToShow;
-            LstStation.HeightRequest = Math.Min(_stationsToShow.Count, 5) * LstStation.RowHeight;
         }
     }
 }

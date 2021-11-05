@@ -27,6 +27,10 @@
         <DependentUpon>LoginPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Error\NoNetworkPage.xaml.cs">
+        <DependentUpon>NoNetworkPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -37,6 +41,10 @@
       <None Remove="Assets\Icons\no-internet.jpg" />
       <None Remove="Assets\Icons\no-connection.gif" />
       <EmbeddedResource Include="Assets\Icons\no-connection.gif" />
+      <None Remove="Assets\Icons\plus.png" />
+      <EmbeddedResource Include="Assets\Icons\plus.png" />
+      <None Remove="Assets\Icons\fail.png" />
+      <EmbeddedResource Include="Assets\Icons\fail.png" />
     </ItemGroup>
 
     <ItemGroup>
