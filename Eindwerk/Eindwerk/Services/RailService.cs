@@ -40,5 +40,11 @@ namespace Eindwerk.Services
             return Array.FindAll(_cachedStations,
                 station => station.StandardName.StartsWith(partOfName, true, CultureInfo.InvariantCulture));
         }
+
+        public async Task<List<Connection>> GetConnections(Station from, List<Station> to, TimeSelection timeSelection, DateTime date, TimeSpan time)
+        {
+            // todo
+            return await Task.FromResult(new List<Connection>());
+        }
     }
 }

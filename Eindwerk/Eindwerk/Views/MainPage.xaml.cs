@@ -10,15 +10,17 @@ namespace Eindwerk.Views
 {
     public partial class MainPage : NetworkDependentPage
     {
-        private AuthenticationService _authenticationService;
+        private readonly AuthenticationService _authenticationService;
         private UserService _userService;
         private UserProfile _userProfile;
+        private readonly Tokens _tokens;
 
         public MainPage(Tokens tokens)
         {
+            _tokens = tokens;
             _authenticationService = new AuthenticationService(tokens);
             InitializeComponent();
-            
+
             SetupListeners();
         }
 
@@ -65,21 +67,48 @@ namespace Eindwerk.Views
             TapGestureRecognizer clickGestureRecognizer = new TapGestureRecognizer();
             clickGestureRecognizer.Tapped += LogoutTapped;
             FrLogout.GestureRecognizers.Add(clickGestureRecognizer);
-            
+
             BtnStartTravel.Clicked += OnStartTravelClicked;
         }
 
         #region event handlers
 
-        private void OnStartTravelClicked(object sender, EventArgs e)
+        private async void OnStartTravelClicked(object sender, EventArgs e)
         {
-            
+            const string actionPrepareRoute = "Prepare route";
+
+            var action =
+                await DisplayActionSheet("What would you like to do?", "Cancel", null,
+                    actionPrepareRoute,
+                    "Send seat to a buddy",
+                    "Request seat from a buddy");
+
+
+            Debug.WriteLine("Action: " + action);
+            switch (action)
+            {
+                case actionPrepareRoute:
+                    GoToPrepareRoute();
+                    return;
+                default:
+                    Debug.WriteLine("cancel clicked");
+                    return;
+            }
         }
 
         private void LogoutTapped(object sender, EventArgs e)
         {
             _authenticationService.Logout();
             Navigation.PopToRootAsync();
+        }
+
+        #endregion
+
+        #region navigation
+
+        private void GoToPrepareRoute()
+        {
+            Navigation.PushAsync(new PrepareRoutePage(_tokens));
         }
 
         #endregion

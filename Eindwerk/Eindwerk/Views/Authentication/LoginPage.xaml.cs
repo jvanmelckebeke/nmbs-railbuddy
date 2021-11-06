@@ -51,6 +51,7 @@ namespace Eindwerk.Views.Authentication
             else
             {
                 UserDialogs.Instance.Toast("Email is invalid, check that your mail is written as 'example@domain.com'");
+                
             }
 
             dialog.Hide();

@@ -45,17 +45,9 @@ namespace Eindwerk.Views.Authentication
             LstStation.ItemSelected += OnStationSelected;
 
             BtnCreateAccount.Clicked += OnCreateAccountClicked;
-
-            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += OnBtnGoBackClicked;
         }
 
         #region event handlers
-
-        private void OnBtnGoBackClicked(object sender, EventArgs e)
-        {
-            Navigation.PopAsync(true);
-        }
 
         private async void OnCreateAccountClicked(object sender, EventArgs e)
         {

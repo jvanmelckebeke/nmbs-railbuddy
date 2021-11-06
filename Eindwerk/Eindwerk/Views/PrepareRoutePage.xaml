@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                            xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                            xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
+                            x:Class="Eindwerk.Views.PrepareRoutePage" Title="Prepare route">
+    <ContentPage.Content>
+        <ScrollView x:Name="SVPage">
+            <StackLayout Margin="10">
+                <!-- From station -->
+                <Label x:Name="LblFromStation" Text="From station" FontSize="Medium"
+                       Margin="0,10,0,0" />
+                <Entry x:Name="EntFromStation" IsSpellCheckEnabled="False" Keyboard="Plain"
+                       Placeholder="Train station" />
+                <Label x:Name="LblFromStationError" Text="Select a starting station" FontSize="Small" IsVisible="False"
+                       TextColor="IndianRed" />
+                <Frame x:Name="FrFromStation" HeightRequest="200" IsVisible="False">
+                    <ListView x:Name="LstFromStation">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Station">
+                                <ViewCell>
+                                    <Label Text="{Binding StandardName}" FontSize="Medium"
+                                           VerticalOptions="Center" />
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Frame>
+                <!-- end From station -->
+
+                <!-- To station -->
+                <Label x:Name="LblToStation" Text="To station" FontSize="Medium"
+                       Margin="0,10,0,0" />
+                <Entry x:Name="EntToStation" IsSpellCheckEnabled="False" Keyboard="Plain"
+                       Placeholder="Train station" />
+                <Label x:Name="LblToStationError" Text="Select a destination station" FontSize="Small" IsVisible="False"
+                       TextColor="IndianRed" />
+                <Frame x:Name="FrToStation" HeightRequest="200" IsVisible="False">
+                    <ListView x:Name="LstToStation">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Station">
+                                <ViewCell>
+                                    <Label Text="{Binding StandardName}" FontSize="Medium"
+                                           VerticalOptions="Center" />
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Frame>
+
+
+                <BoxView x:Name="FrClearSpaceTo" HeightRequest="200" IsVisible="False" />
+                <!-- end To station -->
+
+
+                <!-- Time settings  -->
+                <FlexLayout Direction="Row" JustifyContent="SpaceBetween" Margin="0,10">
+                    <StackLayout Orientation="Vertical">
+                        <Label FontSize="Medium" Text="Date" />
+                        <DatePicker x:Name="PckDate" Format="dd/MM/yyyy" />
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical">
+                        <Label FontSize="Medium" Text="Time" />
+                        <TimePicker x:Name="PckTime" Format="HH:mm" />
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical">
+                        <Label FontSize="Medium" Text="" />
+                        <StackLayout Orientation="Horizontal" Spacing="0">
+                            <Button x:Name="BtnDeparture" Text="Departure"
+                                    BackgroundColor="{DynamicResource PrimaryColor}"
+                                    TextColor="{DynamicResource PrimaryTextColor}" CornerRadius="0" WidthRequest="110" />
+                            <Button x:Name="BtnArrival" Text="Arrival" BackgroundColor="Gray"
+                                    TextColor="{DynamicResource SecondaryTextColor}" CornerRadius="0"
+                                    WidthRequest="110" />
+                        </StackLayout>
+                    </StackLayout>
+                </FlexLayout>
+                <!-- end Time settings -->
+
+                <Button x:Name="BtnSearchRoute" BackgroundColor="{DynamicResource PrimaryColor}"
+                        TextColor="{DynamicResource PrimaryTextColor}" Text="Search route" Margin="0,20" />
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</views:NetworkDependentPage>
