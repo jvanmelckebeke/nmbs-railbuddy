@@ -2,13 +2,10 @@
 
 <views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                            xmlns:local="clr-namespace:Eindwerk"
-                            xmlns:components="clr-namespace:Eindwerk.Components;assembly=Eindwerk"
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
-                            x:Class="Eindwerk.Views.MainPage" NavigationPage.HasNavigationBar="False">
+                            x:Class="Eindwerk.Views.Tabs.HomeTabPage" Title="Home"
+                            NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-
-
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="54" />
@@ -42,7 +39,7 @@
                     </StackLayout>
                 </Frame>
             </Grid>
-            
+
             <!-- Favorite Routes -->
             <StackLayout Grid.Row="1" Orientation="Vertical">
                 <Label Text="Favorite routes" FontSize="Medium" HorizontalOptions="StartAndExpand" />
@@ -55,7 +52,7 @@
                     </Frame>
                 </FlexLayout>
             </StackLayout>
-            
+
             <!-- Buddies -->
             <StackLayout Grid.Row="2" Orientation="Vertical">
                 <Label Text="Buddies" FontSize="Medium" HorizontalOptions="StartAndExpand" />

@@ -1,32 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Services;
 using Eindwerk.Tools;
+using Eindwerk.ViewModels;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
-namespace Eindwerk.Views
+namespace Eindwerk.Views.Tabs
 {
-    public partial class MainPage : NetworkDependentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class HomeTabPage : NetworkDependentPage
     {
-        private readonly AuthenticationService _authenticationService;
+        private AuthenticationService _authenticationService;
         private UserService _userService;
         private UserProfile _userProfile;
-        private readonly Tokens _tokens;
 
-        public MainPage(Tokens tokens)
+        private Tokens _tokens;
+
+        public HomeTabPage(Tokens tokens)
         {
-            _tokens = tokens;
-            _authenticationService = new AuthenticationService(tokens);
             InitializeComponent();
-
-            SetupListeners();
+            _tokens = tokens;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            _authenticationService = new AuthenticationService(_tokens);
 
             SetupProfileAsync();
         }

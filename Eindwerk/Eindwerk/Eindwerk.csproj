@@ -19,16 +19,20 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\MainPage.xaml.cs">
-        <DependentUpon>MainPage.xaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\Authentication\LoginPage.xaml.cs">
         <DependentUpon>LoginPage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
       <Compile Update="Views\Error\NoNetworkPage.xaml.cs">
         <DependentUpon>NoNetworkPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Route\ConnectionsResultPage.xaml.cs">
+        <DependentUpon>ConnectionsResultPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Route\PrepareRoutePage.xaml.cs">
+        <DependentUpon>PrepareRoutePage.xaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
@@ -45,6 +49,14 @@
       <EmbeddedResource Include="Assets\Icons\plus.png" />
       <None Remove="Assets\Icons\fail.png" />
       <EmbeddedResource Include="Assets\Icons\fail.png" />
+      <None Remove="Assets\Icons\seat.png" />
+      <EmbeddedResource Include="Assets\Icons\seat.png" />
+      <None Remove="Assets\Icons\train.png" />
+      <EmbeddedResource Include="Assets\Icons\train.png" />
+      <None Remove="Assets\Icons\account.png" />
+      <EmbeddedResource Include="Assets\Icons\account.png" />
+      <None Remove="Assets\Icons\buddies.png" />
+      <EmbeddedResource Include="Assets\Icons\buddies.png" />
     </ItemGroup>
 
     <ItemGroup>
