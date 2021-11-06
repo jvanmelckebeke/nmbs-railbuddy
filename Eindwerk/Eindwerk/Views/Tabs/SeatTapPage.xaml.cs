@@ -10,14 +10,11 @@ using Xamarin.Forms.Xaml;
 namespace Eindwerk.Views.Tabs
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SeatTapPage : NetworkDependentPage
+    public partial class SeatTapPage : LoggedInPage
     {
-        private Tokens _tokens;
-
-        public SeatTapPage(Tokens tokens)
+        public SeatTapPage(Tokens tokens) : base(tokens)
         {
             InitializeComponent();
-            _tokens = tokens;
         }
     }
 }

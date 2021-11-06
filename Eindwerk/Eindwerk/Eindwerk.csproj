@@ -38,8 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Assets\Icons\logout.png" />
-      <EmbeddedResource Include="Assets\Icons\logout.png" />
       <None Remove="Assets\Icons\chevron-left.png" />
       <EmbeddedResource Include="Assets\Icons\chevron-left.png" />
       <None Remove="Assets\Icons\no-internet.jpg" />
@@ -57,6 +55,8 @@
       <EmbeddedResource Include="Assets\Icons\account.png" />
       <None Remove="Assets\Icons\buddies.png" />
       <EmbeddedResource Include="Assets\Icons\buddies.png" />
+      <None Remove="Assets\Icons\logout.png" />
+      <EmbeddedResource Include="Assets\Icons\logout.png" />
     </ItemGroup>
 
     <ItemGroup>

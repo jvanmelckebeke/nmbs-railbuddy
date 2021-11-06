@@ -1,58 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using Acr.UserDialogs;
 using Eindwerk.Models;
-using Eindwerk.Services;
+using Eindwerk.Tools;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Eindwerk.Views.Tabs
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProfileTapPage : NetworkDependentPage
+    public partial class ProfileTapPage : LoggedInPage
     {
-        private Tokens _tokens;
-        private AuthenticationService _authenticationService;
-        private UserService _userService;
 
-        private UserProfile _profile;
 
-        public ProfileTapPage(Tokens tokens)
+        public ProfileTapPage(Tokens tokens)  : base(tokens)
         {
             InitializeComponent();
-            _tokens = tokens;
-
-            _authenticationService = new AuthenticationService(_tokens);
-            _userService = _authenticationService.CreateWithTokens<UserService>();
-
-            SetupProfile();
             SetupListeners();
         }
 
-        private async void SetupProfile()
+        protected override void OnAppearing()
         {
-            await HandleNetworkAsync(async () =>
-                _profile = await _userService.GetUserProfileAsync());
-            SetupVisual();
+            base.OnAppearing();
+            if (Profile != null)
+            {
+                SetupVisual();
+            }
         }
 
-        private void SetupVisual()
+
+        protected override void SetupVisual()
         {
-            LblUser.Text = $"Hi, {_profile.Username}!";
-            ImgAvatar.Source = ImageSource.FromUri(new Uri(_profile.AvatarUrl));
+            LblUser.Text = $"Hi, {Profile.Username}!";
+            ImgAvatar.Source = ImageSource.FromUri(new Uri(Profile.AvatarUrl));
+
+            ImgLogout.Source = AssetHelper.GetIcon("logout.png");
         }
 
         private void SetupListeners()
         {
-            BtnLogout.Clicked += OnLogoutClicked;
+            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OnLogoutClicked;
+
+            FrLogout.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
         private void OnLogoutClicked(object sender, EventArgs e)
         {
-            _authenticationService.Logout();
-            Navigation.PopToRootAsync();
+            ConfirmConfig confirmConfig = new ConfirmConfig()
+            {
+                Message = "Do you really want to logout",
+                CancelText = "No",
+                OkText = "Yes",
+                OnAction = confirmed =>
+                {
+                    Debug.WriteLine($"result was {confirmed}");
+                    if (!confirmed) return;
+                        Debug.WriteLine("logging out");
+                        AuthenticationService.Logout();
+                        Navigation.PopToRootAsync();
+                }
+            };
+            UserDialogs.Instance.Confirm(confirmConfig);
         }
     }
 }

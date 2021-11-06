@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                             x:Class="Eindwerk.Views.Tabs.SeatTapPage" Title="Seat"
@@ -12,4 +12,4 @@
                    HorizontalOptions="CenterAndExpand" />
         </StackLayout>
     </ContentPage.Content>
-</views:NetworkDependentPage>
+</views:LoggedInPage>

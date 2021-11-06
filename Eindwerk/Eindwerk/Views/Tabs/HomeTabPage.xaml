@@ -1,48 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                            xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
                             x:Class="Eindwerk.Views.Tabs.HomeTabPage" Title="Home"
                             NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <Grid Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="54" />
-                <RowDefinition Height="128" />
                 <RowDefinition Height="128" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <!-- Intro bar -->
-            <Grid Grid.Row="0" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <Frame Grid.Column="0" CornerRadius="100" HorizontalOptions="Center" Padding="0" Margin="0"
-                       IsClippedToBounds="True"
-                       HeightRequest="50"
-                       WidthRequest="50">
-                    <Image x:Name="ImgAvatar" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="50"
-                           Aspect="AspectFill"
-                           HeightRequest="50" />
-                </Frame>
-                <Label Grid.Column="1" x:Name="LblUser" VerticalOptions="Center" HorizontalOptions="Center" Margin="10"
-                       Text="Hi, user!!" />
-                <Frame Grid.Column="2" x:Name="FrLogout" Padding="4" Margin="0" VerticalOptions="Center"
-                       HorizontalOptions="EndAndExpand">
-                    <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand"
-                                 HorizontalOptions="FillAndExpand">
-                        <Image x:Name="ImgLogoutIcon" Aspect="AspectFill" />
-                        <Label Text="Log Out" />
-                    </StackLayout>
-                </Frame>
-            </Grid>
-
             <!-- Favorite Routes -->
-            <StackLayout Grid.Row="1" Orientation="Vertical">
+            <StackLayout Grid.Row="0" Orientation="Vertical">
                 <Label Text="Favorite routes" FontSize="Medium" HorizontalOptions="StartAndExpand" />
+                <ListView x:Name="LstFavRoutes" HorizontalOptions="FillAndExpand">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:FavoriteConnection"></DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
                 <FlexLayout x:Name="FlexFavRoutes" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
                             JustifyContent="Start" AlignContent="Start">
                     <Frame x:Name="FrAddFavorite" HeightRequest="48" Padding="4" Margin="4" WidthRequest="48"
@@ -53,21 +30,9 @@
                 </FlexLayout>
             </StackLayout>
 
-            <!-- Buddies -->
-            <StackLayout Grid.Row="2" Orientation="Vertical">
-                <Label Text="Buddies" FontSize="Medium" HorizontalOptions="StartAndExpand" />
-                <FlexLayout x:Name="FlexBuddies" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
-                            JustifyContent="Start" AlignContent="Start">
-                    <Frame x:Name="FrAddBuddy" HeightRequest="48" Padding="4" Margin="4" WidthRequest="48"
-                           CornerRadius="96" IsClippedToBounds="True">
-                        <Image x:Name="ImgAddBuddy" Aspect="AspectFill" HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Frame>
-                </FlexLayout>
-            </StackLayout>
-            <Button Grid.Row="3" x:Name="BtnStartTravel" Text="Start traveling"
+            <Button Grid.Row="2" x:Name="BtnStartTravel" Text="Start traveling"
                     BackgroundColor="{DynamicResource PrimaryColor}" VerticalOptions="EndAndExpand"
                     TextColor="{DynamicResource PrimaryTextColor}" />
         </Grid>
     </ContentPage.Content>
-</views:NetworkDependentPage>
+</views:LoggedInPage>

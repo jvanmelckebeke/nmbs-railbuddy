@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                             x:Class="Eindwerk.Views.Tabs.ProfileTapPage" Title="Profile"
@@ -10,7 +10,7 @@
             <Label x:Name="LblUser"
                    Text="Hi, user!"
                    HorizontalOptions="CenterAndExpand" FontSize="Large" />
-            <Frame CornerRadius="100" HorizontalOptions="Center" Padding="0" Margin="0"
+            <Frame CornerRadius="100" HorizontalOptions="Center" Padding="0" Margin="0,15"
                    IsClippedToBounds="True"
                    HeightRequest="100"
                    WidthRequest="100">
@@ -18,9 +18,13 @@
                        Aspect="AspectFill"
                        HeightRequest="100" />
             </Frame>
-
-            <Button x:Name="BtnLogout" BackgroundColor="{DynamicResource PrimaryColor}" TextColor="{DynamicResource PrimaryTextColor}"
-                    Text="Logout" VerticalOptions="EndAndExpand" Margin="0, 12" />
+            
+            <Frame x:Name="FrLogout" BackgroundColor="{DynamicResource PrimaryColor}" VerticalOptions="EndAndExpand" Margin="0, 12" HasShadow="True">
+                <FlexLayout Direction="Row" AlignContent="Center" JustifyContent="Center">
+                    <Label TextColor="{DynamicResource PrimaryTextColor}" Text="Logout" TextTransform="Uppercase" FontAttributes="Bold" />
+                    <Image Aspect="AspectFill" x:Name="ImgLogout" Margin="6, 0" />
+                </FlexLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
-</views:NetworkDependentPage>
+</views:LoggedInPage>

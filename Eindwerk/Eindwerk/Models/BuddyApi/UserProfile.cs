@@ -28,9 +28,12 @@ namespace Eindwerk.Models
                 var emailLowercase = Email.ToLower().Trim();
                 var emailHash = Crypto.ComputeMd5(emailLowercase);
 
-                return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200";
+                return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200&qzone=2";
             }
         }
+
+        public string QrCodeUrl =>
+            $"https://api.qrserver.com/v1/create-qr-code/?data={ProfileId.ToString()}&size=300x300&ecc=M";
 
         public bool IsFilled()
         {
