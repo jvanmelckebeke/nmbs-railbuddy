@@ -1,4 +1,5 @@
 ﻿using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Tools;
 using Eindwerk.Views.Tabs;
 using Xamarin.Forms;

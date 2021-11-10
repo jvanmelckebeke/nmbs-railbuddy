@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using Eindwerk.Models;
+using Eindwerk.Models.Rail;
+using Eindwerk.Models.Rail.Requests;
+using Eindwerk.Models.Rail.Stations;
 using Eindwerk.Repository;
 
 namespace Eindwerk.Services
@@ -41,10 +45,19 @@ namespace Eindwerk.Services
                 station => station.StandardName.StartsWith(partOfName, true, CultureInfo.InvariantCulture));
         }
 
-        public async Task<List<Connection>> GetConnections(Station from, List<Station> to, TimeSelection timeSelection, DateTime date, TimeSpan time)
+        public async Task<List<Route>> GetRoutes(Station from, Station to, TimeSelection timeSelection, DateTime date, TimeSpan time)
         {
-            // todo
-            return await Task.FromResult(new List<Connection>());
+            SearchRoutesRequest searchRoutesRequest = new SearchRoutesRequest()
+            {
+                FromStation = from,
+                ToStation = to,
+                TimeSelection = timeSelection,
+                Time = date.Add(time)
+            };
+
+            List<Route> response = await _railApiRepository.GetRoutes(searchRoutesRequest);
+            Debug.WriteLine($"first route: {response[0]}");
+            return response;
         }
     }
 }

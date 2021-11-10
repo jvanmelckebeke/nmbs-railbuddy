@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Acr.UserDialogs;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Tools;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

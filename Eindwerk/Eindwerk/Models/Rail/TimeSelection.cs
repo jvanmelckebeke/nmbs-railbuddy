@@ -1,4 +1,4 @@
-﻿namespace Eindwerk.Models
+﻿namespace Eindwerk.Models.Rail
 {
     public enum TimeSelection
     {

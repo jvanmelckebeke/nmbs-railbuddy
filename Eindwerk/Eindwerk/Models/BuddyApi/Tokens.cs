@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eindwerk.Models
+﻿namespace Eindwerk.Models.BuddyApi
 {
     public class Tokens : IDtoModel
     {

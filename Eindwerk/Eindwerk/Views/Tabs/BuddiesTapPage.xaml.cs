@@ -1,5 +1,6 @@
 ﻿using System;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

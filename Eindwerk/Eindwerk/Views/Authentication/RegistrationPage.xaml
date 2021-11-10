@@ -5,6 +5,7 @@
              xmlns:components="clr-namespace:Eindwerk.Components;assembly=Eindwerk"
              xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
              xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+             xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
              x:Class="Eindwerk.Views.Authentication.RegistrationPage" Title="Registration">
     <ContentPage.Content>
         <ScrollView x:Name="SVMain">
@@ -39,7 +40,7 @@
                     <Frame x:Name="FrStation" HeightRequest="200" BackgroundColor="White">
                         <ListView x:Name="LstStation">
                             <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:Station">
+                                <DataTemplate x:DataType="stations:Station">
                                     <ViewCell>
                                         <Label Text="{Binding StandardName}" FontSize="Medium"
                                                VerticalOptions="Center" />

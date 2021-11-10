@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
+using Eindwerk.Models.Rail;
+using Eindwerk.Models.Rail.Stations;
 using Eindwerk.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -29,10 +32,10 @@ namespace Eindwerk.Views
         public PrepareRoutePage(Tokens tokens)
         {
             InitializeComponent();
-            
+
             _tokens = tokens;
             _railService = new RailService();
-            
+
             SetupVisual();
             SetupListeners();
             SetupStations();
@@ -81,7 +84,7 @@ namespace Eindwerk.Views
 
         private async Task SearchConnectionsUnsafe()
         {
-            List<Connection> connections = await _railService.GetConnections(_stationFrom, _stationsTo, _timeSelection,
+            List<Route> connections = await _railService.GetRoutes(_stationFrom, _stationTo, _timeSelection,
                 PckDate.Date, PckTime.Time);
             await Navigation.PushAsync(new ConnectionsResultPage(connections));
         }

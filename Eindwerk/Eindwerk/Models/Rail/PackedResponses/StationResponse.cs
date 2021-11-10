@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
+using Eindwerk.Models.Rail.Stations;
 using Newtonsoft.Json;
 
-namespace Eindwerk.Models.DtoResponses
+namespace Eindwerk.Models.Rail.PackedResponses
 {
-    public class StationResponse : IDtoModel
+    public class StationResponse : IPackedResponse<List<Station>>
     {
-        /**
-         * yes, I kid u not, the response JSON has a property named 'station' (NOT 'stations' !!!) which contains a list
-         */
-        [JsonProperty("station")]
-        public List<Station> Stations { get; set; }
+        [JsonProperty("station")] public List<Station> Stations { get; set; }
+
+        public List<Station> Content => Stations;
 
         public bool IsFilled()
         {

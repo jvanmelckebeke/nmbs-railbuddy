@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Eindwerk.Models
+namespace Eindwerk.Models.Rail.Stations
 {
     public class Station : IDtoModel, IComparable
     {
@@ -19,10 +19,12 @@ namespace Eindwerk.Models
 
         public override string ToString()
         {
-            return $"Station[Id='{Id}', Name='{Name}', StandardName='{StandardName}']";
+            return $"Station[{nameof(Id)}: {Id}, " +
+                   $"{nameof(Name)}: {Name}, " +
+                   $"{nameof(StandardName)}: {StandardName}]";
         }
 
-        
+
         public int CompareTo(object obj)
         {
             if (obj.GetType() != GetType())

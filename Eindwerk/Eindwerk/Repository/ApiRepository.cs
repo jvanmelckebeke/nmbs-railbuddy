@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Eindwerk.Exceptions;
 using Eindwerk.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Eindwerk.Repository
 {
@@ -39,11 +40,7 @@ namespace Eindwerk.Repository
         {
             HttpContent httpContent = new StringContent(payload, Encoding.UTF8, "application/json");
 
-            if (debugCall)
-            {
-                Debug.WriteLine("payload to send: ");
-                Debug.WriteLine(payload);
-            }
+            if (debugCall) Debug.WriteLine($"payload to send: {ConvertToFormattedJson(payload)}");
 
             HttpResponseMessage response;
 
@@ -112,9 +109,9 @@ namespace Eindwerk.Repository
         {
             using (HttpClient client = GetClient())
             {
-                    return await DoAnyPayloadRequest<TReturn>(content => client.PostAsync(url, content),
-                        JsonConvert.SerializeObject(payload),
-                        debugCall);
+                return await DoAnyPayloadRequest<TReturn>(content => client.PostAsync(url, content),
+                    JsonConvert.SerializeObject(payload),
+                    debugCall);
             }
         }
 
@@ -150,7 +147,7 @@ namespace Eindwerk.Repository
             bool debugCall = true)
             where TReturn : IDtoModel
         {
-            if (debugCall) Debug.WriteLine($"response: {response}");
+            if (debugCall) Debug.WriteLine($"response code: {response.StatusCode}");
 
             if (response == null)
             {
@@ -159,7 +156,7 @@ namespace Eindwerk.Repository
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
 
-            if (debugCall) Debug.WriteLine($"response content: {jsonResponse}");
+            if (debugCall) Debug.WriteLine($"response content: {ConvertToFormattedJson(jsonResponse)}");
 
             if (jsonResponse == null)
             {
@@ -189,6 +186,13 @@ namespace Eindwerk.Repository
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             return client;
+        }
+
+
+        private static string ConvertToFormattedJson(string json)
+        {
+            JToken jt = JToken.Parse(json);
+            return jt.ToString(Formatting.Indented);
         }
     }
 }

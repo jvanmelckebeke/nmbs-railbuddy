@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 
 namespace Eindwerk.Repository
 {

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Eindwerk.Exceptions;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Forms;
 using Eindwerk.Repository;
 using Eindwerk.Tools;

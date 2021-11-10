@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Exceptions;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;

@@ -3,7 +3,7 @@ using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace Eindwerk.Models
+namespace Eindwerk.Models.BuddyApi
 {
     public class UserProfile : IDtoModel
     {
@@ -18,9 +18,9 @@ namespace Eindwerk.Models
         [JsonProperty(PropertyName = "targetCity")]
         public string TargetCity { get; set; }
 
-        /**
-         * <value>Generated Gravatar url</value>
-         */
+        /// <summary>
+        /// generated Gravatar url
+        /// </summary>
         public string AvatarUrl
         {
             get

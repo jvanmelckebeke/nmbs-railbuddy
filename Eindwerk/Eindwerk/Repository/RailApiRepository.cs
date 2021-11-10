@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Eindwerk.Models;
-using Eindwerk.Models.DtoResponses;
+using Eindwerk.Models.Rail;
+using Eindwerk.Models.Rail.PackedResponses;
+using Eindwerk.Models.Rail.Requests;
+using Eindwerk.Models.Rail.Stations;
 
 namespace Eindwerk.Repository
 {
@@ -20,27 +24,43 @@ namespace Eindwerk.Repository
             return client;
         }
 
-        private string PrepareUrl(string path)
+        private async Task<TContent> GetRailData<TPackedResponse, TContent>(string path, IGetRequest parameters = null)
+            where TPackedResponse : IPackedResponse<TContent>
         {
-            if (!path.StartsWith("/"))
+            var url = PrepareUrl(path, parameters);
+
+            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, false);
+
+            if (packedResponse != null && packedResponse.IsFilled())
             {
-                path = $"/{path}";
+                return packedResponse.Content;
             }
 
-            return path.Contains("?") ? $"{BASEURI}{path}&format=json" : $"{BASEURI}{path}?format=json";
+            return default;
         }
 
+        private string PrepareUrl(string path, IGetRequest request = null)
+        {
+            if (!path.StartsWith("/")) path = $"/{path}";
+
+            if (request != null)
+            {
+                Debug.WriteLine($"get parameters: {request.ToGetParameters()}");
+            }
+
+            return request == null
+                ? $"{BASEURI}{path}?format=json"
+                : $"{BASEURI}{path}?format=json&{request.ToGetParameters()}";
+        }
 
         public async Task<List<Station>> GetStations()
         {
-            StationResponse response = await DoGetRequest<StationResponse>(PrepareUrl("/stations"), false);
+            return await GetRailData<StationResponse, List<Station>>("/stations");
+        }
 
-            if (response != null && response.IsFilled())
-            {
-                return response.Stations;
-            }
-
-            return null;
+        public async Task<List<Route>> GetRoutes(SearchRoutesRequest request)
+        {
+            return await GetRailData<ConnectionResponse, List<Route>>("/connections", request);
         }
     }
 }

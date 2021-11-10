@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Models;
+using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
 
 namespace Eindwerk.Views

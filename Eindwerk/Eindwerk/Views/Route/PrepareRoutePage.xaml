@@ -4,6 +4,7 @@
                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                             xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
+                            xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
                             x:Class="Eindwerk.Views.PrepareRoutePage" Title="Prepare route">
     <ContentPage.Content>
         <ScrollView x:Name="SVPage">
@@ -18,7 +19,7 @@
                 <Frame x:Name="FrFromStation" HeightRequest="200" IsVisible="False">
                     <ListView x:Name="LstFromStation">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="models:Station">
+                            <DataTemplate x:DataType="stations:Station">
                                 <ViewCell>
                                     <Label Text="{Binding StandardName}" FontSize="Medium"
                                            VerticalOptions="Center" />
@@ -39,7 +40,7 @@
                 <Frame x:Name="FrToStation" HeightRequest="200" IsVisible="False">
                     <ListView x:Name="LstToStation">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="models:Station">
+                            <DataTemplate x:DataType="stations:Station">
                                 <ViewCell>
                                     <Label Text="{Binding StandardName}" FontSize="Medium"
                                            VerticalOptions="Center" />
