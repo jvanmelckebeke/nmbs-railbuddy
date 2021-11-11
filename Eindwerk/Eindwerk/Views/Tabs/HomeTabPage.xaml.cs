@@ -2,6 +2,7 @@
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Tools;
+using Eindwerk.Views.RouteViews;
 using Xamarin.Forms.Xaml;
 
 namespace Eindwerk.Views.Tabs

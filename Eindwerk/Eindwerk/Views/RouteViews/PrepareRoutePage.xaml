@@ -5,7 +5,7 @@
                             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                             xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
                             xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
-                            x:Class="Eindwerk.Views.PrepareRoutePage" Title="Prepare route">
+                            x:Class="Eindwerk.Views.RouteViews.PrepareRoutePage" Title="Prepare route">
     <ContentPage.Content>
         <ScrollView x:Name="SVPage">
             <StackLayout Margin="10">

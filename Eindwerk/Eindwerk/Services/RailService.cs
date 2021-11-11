@@ -45,16 +45,28 @@ namespace Eindwerk.Services
                 station => station.StandardName.StartsWith(partOfName, true, CultureInfo.InvariantCulture));
         }
 
-        public async Task<List<Route>> GetRoutes(Station from, Station to, TimeSelection timeSelection, DateTime date, TimeSpan time)
+        public static SearchRoutesRequest CreateSearchRoutesRequest(Station from, Station to,
+            TimeSelection timeSelection, DateTime date, TimeSpan time)
         {
-            SearchRoutesRequest searchRoutesRequest = new SearchRoutesRequest()
+            return new SearchRoutesRequest()
             {
                 FromStation = from,
                 ToStation = to,
                 TimeSelection = timeSelection,
                 Time = date.Add(time)
             };
+        }
 
+        public async Task<List<Route>> GetRoutes(Station from, Station to, TimeSelection timeSelection, DateTime date,
+            TimeSpan time)
+        {
+            SearchRoutesRequest searchRoutesRequest = CreateSearchRoutesRequest(from, to, timeSelection, date, time);
+
+            return await GetRoutes(searchRoutesRequest);
+        }
+
+        public async Task<List<Route>> GetRoutes(SearchRoutesRequest searchRoutesRequest)
+        {
             List<Route> response = await _railApiRepository.GetRoutes(searchRoutesRequest);
             Debug.WriteLine($"first route: {response[0]}");
             return response;

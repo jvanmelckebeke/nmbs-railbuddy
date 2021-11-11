@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
+using Eindwerk.Models.Rail.Requests;
 using Eindwerk.Models.Rail.Stations;
 using Eindwerk.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Eindwerk.Views
+namespace Eindwerk.Views.RouteViews
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PrepareRoutePage : NetworkDependentPage
@@ -84,9 +84,11 @@ namespace Eindwerk.Views
 
         private async Task SearchConnectionsUnsafe()
         {
-            List<Route> connections = await _railService.GetRoutes(_stationFrom, _stationTo, _timeSelection,
+            SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(_stationFrom, _stationTo,
+                _timeSelection,
                 PckDate.Date, PckTime.Time);
-            await Navigation.PushAsync(new ConnectionsResultPage(connections));
+            List<Route> connections = await _railService.GetRoutes(routesRequest);
+            await Navigation.PushAsync(new ConnectionsResultPage(_tokens, routesRequest, connections));
         }
 
         private bool ValidateInputs()
