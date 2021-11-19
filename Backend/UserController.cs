@@ -15,24 +15,27 @@ namespace Backend
 {
     public static class UserController
     {
-        /**
-         * <summary>Helper function which does a couple of things:
-         * <list type="number">
-         * <item><description>Checks if the <c>Authorization</c> header is present and valid with a JWT token</description></item>
-         * <item><description>if the <c>Authorization</c> header is invalid, then returns an appropriate <c>HTTP 401</c> response</description></item>
-         * <item><description>if the <c>Authorization</c> header is valid, executes the function passed in <paramref name="handleRequest"/>
-         * and converts it to an <c>ObjectResult</c> with statuscode in <paramref name="successStatusCode"/></description></item>
-         * </list></summary>
-         *
-         * <typeparam name="TReturn">the return type of the <paramref name="handleRequest"/> function, also the non-JSON return type of the http function</typeparam>
-         *
-         * <param name="handleRequest">service function to execute if authorization is ok, also the function that handles the request</param>
-         * <param name="req">the raw http request</param>
-         * <param name="successStatusCode">Which HTTP status code should be returned if the request is a success</param>
-         * <param name="acceptRefreshToken">whether a refresh token can be accepted in the authorization header</param>
-         */
-        private static async Task<IActionResult> AuthorizedHelper<TReturn>(Func<Task<TReturn>> handleRequest,
-            HttpRequest req, int successStatusCode = 200, bool acceptRefreshToken = false)
+        /// <summary>
+        /// Helper function which does a couple of things:
+        /// <list type="number">
+        /// <item><description>Checks if the <c>Authorization</c> header is present and has valid JWT token</description></item>
+        /// <item><description>if the <c>Authorization</c> header is invalid, then returns an appropriate <c>HTTP 401</c> response</description></item>
+        /// <item><description>if the <c>Authorization</c> header is valid, executes the function passed in <paramref name="handleRequest"/>
+        /// and converts it to an <c>ObjectResult</c> with statuscode in <paramref name="successStatusCode"/></description></item>
+        /// </list>
+        /// </summary>
+        ///
+        /// <typeparam name="TReturn">the return type of the <paramref name="handleRequest"/> function, also the non-JSON return type of the http function</typeparam>
+        ///
+        /// <param name="handleRequest">service function to execute if authorization is ok, also the function that handles the request</param>
+        /// <param name="req">the raw http request</param>
+        /// <param name="successStatusCode">Which HTTP status code should be returned if the request is a success</param>
+        /// <param name="acceptRefreshToken">whether a refresh token can be accepted in the authorization header</param>
+        private static async Task<IActionResult> AuthorizedHelper<TReturn>(
+            Func<Task<TReturn>> handleRequest,
+            HttpRequest req,
+            int successStatusCode = 200,
+            bool acceptRefreshToken = false)
         {
             string accessToken = req.Headers["Authorization"];
             try

@@ -7,22 +7,25 @@ using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Backend.repositories
 {
-    public static class UserRepository
+    public class UserRepository : TableRepository
     {
         private static CloudTable GetUserTable()
         {
-            var connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
-            CloudTableClient cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
-            return cloudTableClient.GetTableReference("users");
+            return GetTable("users");
         }
 
         private static async Task<UserProfile> FindOneAsync(TableQuery<UserProfile> query)
         {
-            CloudTable table = GetUserTable();
+            return await FindOneAsync("users", query);
+        }
 
-            TableQuerySegment<UserProfile> queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
-            return queryResult.Results.Count > 0 ? queryResult.Results[0] : null;
+
+        public static async Task<UserProfile> FindOneByProfileIdAsync(Guid profileId)
+        {
+            TableQuery<UserProfile> query = new TableQuery<UserProfile>()
+                .Where(TableQuery.GenerateFilterConditionForGuid("ProfileId", QueryComparisons.Equal, profileId));
+
+            return await FindOneAsync(query);
         }
 
         public static async Task<UserProfile> GetLoginProfileAsync(string email, string passwordHash)
@@ -35,15 +38,6 @@ namespace Backend.repositories
                 ));
 
             return await FindOneAsync(profileQuery);
-        }
-
-
-        public static async Task<UserProfile> FindOneByProfileIdAsync(Guid profileId)
-        {
-            TableQuery<UserProfile> query = new TableQuery<UserProfile>()
-                .Where(TableQuery.GenerateFilterConditionForGuid("ProfileId", QueryComparisons.Equal, profileId));
-
-            return await FindOneAsync(query);
         }
 
         public static async Task<UserProfile> CreateProfileAsync(UserProfile profile)
