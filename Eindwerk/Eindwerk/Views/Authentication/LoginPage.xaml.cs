@@ -66,21 +66,18 @@ namespace Eindwerk.Views.Authentication
 
         private async Task DoLogin(Credentials credentials)
         {
-            await HandleNetworkAsync(async () =>
+            try
             {
-                try
-                {
-                    Tokens tokens = await _authenticationService.LoginAsync(credentials);
-                    GoToMainPage(tokens);
-                }
-                catch (WrongCredentialsException)
-                {
-                    UserDialogs.Instance.Alert("Sorry, email or password is wrong");
+                Tokens tokens = await _authenticationService.LoginAsync(credentials);
+                GoToMainPage(tokens);
+            }
+            catch (WrongCredentialsException)
+            {
+                UserDialogs.Instance.Alert("Sorry, email or password is wrong");
 
-                    LblEmail.TextColor = Color.PaleVioletRed;
-                    LblPassword.TextColor = Color.PaleVioletRed;
-                }
-            });
+                LblEmail.TextColor = Color.PaleVioletRed;
+                LblPassword.TextColor = Color.PaleVioletRed;
+            }
         }
 
 
@@ -93,20 +90,17 @@ namespace Eindwerk.Views.Authentication
             Debug.WriteLine("a refresh token was present");
 
 
-            await HandleNetworkAsync(async () =>
+            Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
+
+            Debug.WriteLine($"tokens: {tokens}");
+
+            if (tokens != null)
             {
-                Tokens tokens = await _authenticationService.TryRefreshTokensAsync();
+                GoToMainPage(tokens);
+                return;
+            }
 
-                Debug.WriteLine($"tokens: {tokens}");
-
-                if (tokens != null)
-                {
-                    GoToMainPage(tokens);
-                    return;
-                }
-
-                Debug.WriteLine("refresh token expired");
-            });
+            Debug.WriteLine("refresh token expired");
         }
 
 

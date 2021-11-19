@@ -78,11 +78,11 @@ namespace Eindwerk.Views.RouteViews
 
             if (validInputs)
             {
-                await HandleNetworkAsync(SearchConnectionsUnsafe);
+                await SearchConnections();
             }
         }
 
-        private async Task SearchConnectionsUnsafe()
+        private async Task SearchConnections()
         {
             SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(_stationFrom, _stationTo,
                 _timeSelection,

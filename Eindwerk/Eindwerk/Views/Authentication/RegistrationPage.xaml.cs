@@ -34,7 +34,7 @@ namespace Eindwerk.Views.Authentication
 
 
             InitializeComponent();
-            ShowStations();
+            ShowStationsAsync();
             SetupListeners();
         }
 
@@ -53,12 +53,12 @@ namespace Eindwerk.Views.Authentication
 
         private async void OnCreateAccountClicked(object sender, EventArgs e)
         {
-            await HandleNetworkAsync(UnsafeCreateProfile);
+            await CreateProfile();
         }
 
         private async void OnSearchStationInput(object sender, TextChangedEventArgs e)
         {
-            await HandleNetworkAsync(UnsafeFilterStationWithInput(e.NewTextValue));
+            await FilterStationWithInput(e.NewTextValue);
         }
 
 
@@ -88,7 +88,8 @@ namespace Eindwerk.Views.Authentication
         #endregion
 
         #region unsafe network calls
-        private async Task UnsafeCreateProfile()
+
+        private async Task CreateProfile()
         {
             var allGood = PerformValidation();
 
@@ -124,33 +125,30 @@ namespace Eindwerk.Views.Authentication
             UserDialogs.Instance.Alert("a profile with that email already exists");
         }
 
-        private Func<Task> UnsafeFilterStationWithInput(string newText)
+        private async Task FilterStationWithInput(string newText)
         {
-            return async () =>
+            Station[] stations = await _railService.FilterStations(newText);
+
+            if (_selectedStation != null)
             {
-                Station[] stations = await _railService.FilterStations(newText);
+                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW - 1));
 
-                if (_selectedStation != null)
+                if (_stationsToShow.Contains(_selectedStation))
                 {
-                    _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW - 1));
-
-                    if (_stationsToShow.Contains(_selectedStation))
-                    {
-                        _stationsToShow.Remove(_selectedStation);
-                    }
-
-                    _stationsToShow.Insert(0, _selectedStation);
-                }
-                else
-                {
-                    _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+                    _stationsToShow.Remove(_selectedStation);
                 }
 
-                UpdateStationsToShow();
-            };
+                _stationsToShow.Insert(0, _selectedStation);
+            }
+            else
+            {
+                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+            }
+
+            UpdateStationsToShow();
         }
 
-        private async Task UnsafeShowStationsAsync()
+        private async void ShowStationsAsync()
         {
             Station[] stations = await _railService.GetStations();
 
@@ -160,11 +158,6 @@ namespace Eindwerk.Views.Authentication
         }
 
         #endregion
-
-        private async void ShowStations()
-        {
-            await HandleNetworkAsync(UnsafeShowStationsAsync);
-        }
 
         private void UpdateStationsToShow()
         {

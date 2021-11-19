@@ -3,29 +3,35 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Eindwerk.Exceptions;
 using Eindwerk.Views.Error;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Eindwerk.Views
 {
     public abstract class NetworkDependentPage : ContentPage
     {
-        protected async Task HandleNetworkAsync(Func<Task> functionToRun)
+        public NetworkDependentPage()
         {
-            try
+            Connectivity.ConnectivityChanged += ConnectivityChanged;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            CheckNetwork();
+        }
+
+        private void CheckNetwork()
+        {
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await functionToRun();
-            }
-            catch (NoNetworkException e)
-            {
-                Debug.WriteLine(e);
                 GoToNoNetworkPage();
             }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-                GoToGenericErrorPage();
-                throw;
-            }
+        }
+
+        private void ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            CheckNetwork();
         }
 
         #region navigation

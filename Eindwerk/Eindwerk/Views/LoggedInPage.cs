@@ -17,22 +17,16 @@ namespace Eindwerk.Views
         {
             Tokens = tokens;
 
-            SetupProfileSafe();
+            SetupProfile();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            SetupProfileSafe();
+            SetupProfile();
         }
 
-        private async void SetupProfileSafe()
-        {
-            await HandleNetworkAsync(SetupProfile);
-            SetupVisual();
-        }
-
-        private async Task SetupProfile()
+        private async void SetupProfile()
         {
             AuthenticationService = new AuthenticationService(Tokens);
             UserService = AuthenticationService.CreateWithTokens<UserService>();
