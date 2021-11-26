@@ -90,7 +90,6 @@ namespace Backend
 
         #endregion
 
-
         [FunctionName("UserLogin")]
         public static async Task<IActionResult> LoginUserAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/login")]
@@ -153,7 +152,7 @@ namespace Backend
 
         [FunctionName("AddFriendRequest")]
         public static async Task<IActionResult> PutFriendRequest(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/{profileid}/friend")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
             FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);

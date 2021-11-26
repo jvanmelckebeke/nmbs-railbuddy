@@ -95,9 +95,9 @@ namespace Backend.services
                 throw new GracefulDuplicateException($"user/{toProfileId}/friend");
             }
 
-            FriendRequest friendRequestSending = new()
+            FriendRequest friendRequestSending = new FriendRequest()
                 {FriendRequestStatus = FriendRequestStatus.Sent, UserId = toProfileGuid};
-            FriendRequest friendRequestRecv = new()
+            FriendRequest friendRequestRecv = new FriendRequest()
                 {FriendRequestStatus = FriendRequestStatus.Sent, UserId = currentProfile.ProfileId};
 
             UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);
