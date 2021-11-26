@@ -53,7 +53,7 @@ namespace Eindwerk.Views.Authentication
 
         private async void OnCreateAccountClicked(object sender, EventArgs e)
         {
-            await CreateProfile();
+             await HandleApi(CreateProfile, "creating profile");
         }
 
         private async void OnSearchStationInput(object sender, TextChangedEventArgs e)
@@ -87,14 +87,14 @@ namespace Eindwerk.Views.Authentication
 
         #endregion
 
-        #region unsafe network calls
+        #region network calls
 
         private async Task CreateProfile()
         {
             var allGood = PerformValidation();
 
             if (!allGood) return;
-            IProgressDialog loadingDialog = UserDialogs.Instance.Loading("creating profile");
+            
 
             UserProfileCreation creationProfile = new UserProfileCreation
             {
@@ -108,7 +108,9 @@ namespace Eindwerk.Views.Authentication
             // correction: never have I ever written even more disgusting code, im sorry
             AuthenticationRepository tempAuthenticationRepository = new AuthenticationRepository();
             UserProfile profile = await tempAuthenticationRepository.CreateProfile(creationProfile);
-            loadingDialog.Hide();
+            
+            
+            
             if (profile.IsFilled())
             {
                 await UserDialogs.Instance.AlertAsync("profile has been created", "Profile created", "Let's go");

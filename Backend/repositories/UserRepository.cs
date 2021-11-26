@@ -53,7 +53,8 @@ namespace Backend.repositories
         {
             Container container = GetUserContainer();
 
-            return await container.CreateItemAsync(profile, new PartitionKey(profile.TargetCity));
+            UserProfile resp =  await container.CreateItemAsync(profile, new PartitionKey(profile.TargetCity));
+            return resp;
         }
 
         public static async Task<FriendRequestStatus?> GetFriendRequestStatus(Guid fromProfileId, Guid toProfileId)

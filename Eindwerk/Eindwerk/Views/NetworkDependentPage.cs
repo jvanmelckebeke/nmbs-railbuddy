@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 using Eindwerk.Exceptions;
 using Eindwerk.Views.Error;
 using Xamarin.Essentials;
@@ -32,6 +33,29 @@ namespace Eindwerk.Views
         private void ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             CheckNetwork();
+        }
+
+        protected async Task HandleApi(Func<Task> apiCall, string loadingText = null)
+        {
+            IProgressDialog loadingDialog = null;
+            if (loadingText != null)
+            {
+                loadingDialog = UserDialogs.Instance.Loading(loadingText);
+            }
+
+            try
+            {
+                
+                await apiCall();
+
+                loadingDialog?.Hide();
+            }
+            catch (Exception e)
+            {
+                loadingDialog?.Hide();
+                Debug.WriteLine(e);
+                GoToGenericErrorPage();
+            }
         }
 
         #region navigation

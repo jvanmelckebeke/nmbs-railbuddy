@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend.Domain;
@@ -17,7 +18,9 @@ namespace Backend.repositories
             var connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
 
             CosmosClient client = new CosmosClient(connectionString);
-            return client.GetContainer("railbuddy-data", tableName);
+            Container container = client.GetContainer("railbuddy", tableName);
+            Debug.WriteLine(container);
+            return container;
         }
 
         protected static async Task<T> FindOneAsync<T>(string tableName, QueryDefinition query)

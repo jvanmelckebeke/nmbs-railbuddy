@@ -149,9 +149,10 @@ namespace Eindwerk.Repository
         {
             if (debugCall) Debug.WriteLine($"response code: {response.StatusCode}");
 
-            if (response == null)
+            if (!response.IsSuccessStatusCode)
             {
-                return default;
+                Debug.WriteLine(response);
+                throw new Exception("something went wrong with the API");
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();

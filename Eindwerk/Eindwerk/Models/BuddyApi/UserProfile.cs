@@ -8,7 +8,7 @@ namespace Eindwerk.Models.BuddyApi
 {
     public class UserProfile : IDtoModel
     {
-        [JsonProperty(PropertyName = "profileId")]
+        [JsonProperty(PropertyName = "id")]
         public Guid ProfileId { get; set; }
 
         [JsonProperty(PropertyName = "username")]
