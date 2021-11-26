@@ -31,6 +31,13 @@ namespace Backend.services
             return acceptRefresh || !bool.Parse(claims[2].Value);
         }
 
+        public static string GetProfileIdFromToken(string token)
+        {
+            List<Claim> claims = TokenService.GetTokenClaims(token);
+
+            return claims[0].Value;
+        }
+
         public static TokenResponse RefreshToken(TokenRefreshRequest refreshRequest)
         {
             return TokenService.RefreshToken(refreshRequest);
