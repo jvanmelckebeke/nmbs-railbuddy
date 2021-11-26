@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
@@ -16,9 +17,19 @@ namespace Eindwerk.Views.Tabs
             SetupListeners();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Debug.WriteLine("PROFILEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            Debug.WriteLine(Profile);
+            Debug.WriteLine("PROFILEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+        }
+
         protected override void SetupVisual()
         {
             ImgQr.Source = ImageSource.FromUri(new Uri(Profile.QrCodeUrl));
+
+            Debug.WriteLine(ImgQr.Source);
         }
 
         private void SetupListeners()

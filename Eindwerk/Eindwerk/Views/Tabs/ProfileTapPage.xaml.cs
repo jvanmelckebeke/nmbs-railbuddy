@@ -12,21 +12,10 @@ namespace Eindwerk.Views.Tabs
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ProfileTapPage : LoggedInPage
     {
-
-
-        public ProfileTapPage(Tokens tokens)  : base(tokens)
+        public ProfileTapPage(Tokens tokens) : base(tokens)
         {
             InitializeComponent();
             SetupListeners();
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            if (Profile != null)
-            {
-                SetupVisual();
-            }
         }
 
 
@@ -57,9 +46,9 @@ namespace Eindwerk.Views.Tabs
                 {
                     Debug.WriteLine($"result was {confirmed}");
                     if (!confirmed) return;
-                        Debug.WriteLine("logging out");
-                        AuthenticationService.Logout();
-                        Navigation.PopToRootAsync();
+                    Debug.WriteLine("logging out");
+                    AuthenticationService.Logout();
+                    Navigation.PopToRootAsync();
                 }
             };
             UserDialogs.Instance.Confirm(confirmConfig);

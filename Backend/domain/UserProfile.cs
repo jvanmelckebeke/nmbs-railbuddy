@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Backend.tools;
-using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
 namespace Backend.Domain

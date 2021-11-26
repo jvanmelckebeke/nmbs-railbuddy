@@ -32,6 +32,8 @@ namespace Eindwerk.Views
             UserService = AuthenticationService.CreateWithTokens<UserService>();
 
             Profile = await UserService.GetUserProfileAsync();
+            
+            SetupVisual();
         }
 
         protected virtual void SetupVisual()

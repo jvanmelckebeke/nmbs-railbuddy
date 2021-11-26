@@ -6,7 +6,7 @@ namespace Backend.dto
 {
     public class UserProfileResponse
     {
-        [JsonProperty(PropertyName = "profileId")]
+        [JsonProperty(PropertyName = "id")]
         public Guid ProfileId { get; set; }
 
         [JsonProperty(PropertyName = "username")]
