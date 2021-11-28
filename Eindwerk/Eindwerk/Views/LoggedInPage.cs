@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Acr.UserDialogs;
-using Eindwerk.Models;
-using Eindwerk.Models.BuddyApi;
+﻿using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
 
 namespace Eindwerk.Views
@@ -12,7 +9,7 @@ namespace Eindwerk.Views
         protected AuthenticationService AuthenticationService;
         protected UserService UserService;
         protected UserProfile Profile;
-        
+
         protected LoggedInPage(Tokens tokens)
         {
             Tokens = tokens;
@@ -31,7 +28,7 @@ namespace Eindwerk.Views
             AuthenticationService = new AuthenticationService(Tokens);
             UserService = AuthenticationService.CreateWithTokens<UserService>();
 
-            Profile = await UserService.GetUserProfileAsync();
+            await HandleApi(async () => { Profile = await UserService.GetOwnUserProfileAsync(); }, "loading profile");
             
             SetupVisual();
         }

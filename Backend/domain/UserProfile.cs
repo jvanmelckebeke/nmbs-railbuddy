@@ -24,5 +24,17 @@ namespace Backend.Domain
 
         [JsonProperty("friendRequestSent")]
         public List<FriendRequest> FriendRequestsSent { get; set; } = new List<FriendRequest>();
+
+        public override string ToString()
+        {
+            return $"{nameof(UserProfile)}[{nameof(ProfileId)}: {ProfileId}, " +
+                   $"{nameof(Username)}: {Username}, " +
+                   $"{nameof(Email)}: {Email}, " +
+                   $"{nameof(Password)}: {Password}, " +
+                   $"{nameof(TargetCity)}: {TargetCity}, " +
+                   $"{nameof(Friends)}: {Friends.Count} friends, " +
+                   $"{nameof(FriendRequestsReceived)}: {FriendRequestsReceived.Count} requests, " +
+                   $"{nameof(FriendRequestsSent)}: {FriendRequestsSent.Count} requests]";
+        }
     }
 }

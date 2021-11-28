@@ -31,15 +31,14 @@ namespace Eindwerk.Views.Authentication
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            CheckRefreshToken();
+            HandleApi(CheckRefreshToken);
         }
 
         #region event handlers
 
         private async void OnBtnLoginClicked(object sender, EventArgs e)
         {
-            IProgressDialog dialog = UserDialogs.Instance.Loading("logging in");
-            Credentials credentials = new Credentials()
+            Credentials credentials = new Credentials
             {
                 Email = EntEmail.Text,
                 Password = EntPassword.Text
@@ -47,14 +46,12 @@ namespace Eindwerk.Views.Authentication
 
             if (credentials.ValidateInputs())
             {
-                await DoLogin(credentials);
+                await HandleApi(async () => await DoLogin(credentials), "logging in");
             }
             else
             {
                 UserDialogs.Instance.Toast("Email is invalid, check that your mail is written as 'example@domain.com'");
             }
-
-            dialog.Hide();
         }
 
         private void OnBtnRegistrationClicked(object sender, EventArgs e)
@@ -81,7 +78,7 @@ namespace Eindwerk.Views.Authentication
         }
 
 
-        private async void CheckRefreshToken()
+        private async Task CheckRefreshToken()
         {
             var refreshToken = Preferences.Get("refreshToken", null);
 

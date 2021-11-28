@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Backend.Domain;
 using Backend.dto;
+using Backend.dto.token;
 using Backend.exceptions;
 using Backend.repositories;
 using Backend.tools;

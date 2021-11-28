@@ -11,6 +11,7 @@ namespace Eindwerk.Services
         private UserRepository _userRepository;
 
         private string _ownProfileId;
+        private UserProfile _ownProfile;
 
 
         public UserService(string accessToken) : base(accessToken)
@@ -28,6 +29,18 @@ namespace Eindwerk.Services
         {
             _userRepository = new UserRepository(AccessToken);
             _ownProfileId = JwtTokenTools.ExtractTokenSubject(AccessToken);
+            SetOwnUserProfileAsync();
+        }
+
+
+        private async void SetOwnUserProfileAsync()
+        {
+            _ownProfile = await GetUserProfileAsync(_ownProfileId);
+        }
+
+        public async Task<UserProfile> GetOwnUserProfileAsync()
+        {
+            return _ownProfile ?? await GetUserProfileAsync();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web.Http;
 using Backend.Domain;
 using Backend.dto;
+using Backend.dto.token;
 using Backend.exceptions;
 using Backend.repositories;
 using Backend.services;
@@ -12,7 +14,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using FriendRequest = Backend.Domain.FriendRequest;
 
 namespace Backend
 {
@@ -34,11 +35,12 @@ namespace Backend
         ///
         /// <param name="handleRequest">service function to execute if authorization is ok, also the function that handles the request (must be async)</param>
         /// <param name="req">the raw http request</param>
+        /// <param name="log">the logger for the function</param>
         /// <param name="successStatusCode">Which HTTP status code should be returned if the request is a success</param>
         /// <param name="acceptRefreshToken">whether a refresh token can be accepted in the authorization header</param>
         private static async Task<IActionResult> AuthorizedHelper<TReturn>(
             Func<UserProfile, Task<TReturn>> handleRequest,
-            HttpRequest req,
+            HttpRequest req, ILogger log,
             int successStatusCode = 200,
             bool acceptRefreshToken = false)
         {
@@ -59,6 +61,11 @@ namespace Backend
             {
                 return new ObjectResult(new {Message = "Access Token expired"}) {StatusCode = 401};
             }
+            catch (Exception e)
+            {
+                log.LogTrace(e, "request failed with exception");
+                return new ExceptionResult(e, false);
+            }
         }
 
         /// <summary>
@@ -75,17 +82,18 @@ namespace Backend
         ///
         /// <param name="handleRequest">service function to execute if authorization is ok, also the function that handles the request (must not be async)</param>
         /// <param name="req">the raw http request</param>
+        /// <param name="log">the logger for the function</param>
         /// <param name="successStatusCode">Which HTTP status code should be returned if the request is a success</param>
         /// <param name="acceptRefreshToken">whether a refresh token can be accepted in the authorization header</param>
         private static async Task<IActionResult> AuthorizedHelper<TReturn>(
             Func<UserProfile, TReturn> handleRequest,
-            HttpRequest req,
+            HttpRequest req, ILogger log,
             int successStatusCode = 200,
             bool acceptRefreshToken = false)
         {
             return await AuthorizedHelper(
                 profile => Task.FromResult(handleRequest(profile)),
-                req, successStatusCode, acceptRefreshToken);
+                req, log, successStatusCode, acceptRefreshToken);
         }
 
         #endregion
@@ -95,6 +103,7 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/login")]
             Credentials credentials, ILogger log)
         {
+            log.LogDebug("logging user in with Credentials: {credentials}", credentials);
             try
             {
                 return new OkObjectResult(await AuthenticationService.LoginUserAsync(credentials));
@@ -104,6 +113,11 @@ namespace Backend
                 log.LogWarning(e, $"Wrong credentials for {credentials.Email}");
                 return new ObjectResult(new {Message = "Wrong credentials", Authenticated = false}) {StatusCode = 401};
             }
+            catch (Exception e)
+            {
+                log.LogTrace(e, "login failed with exception");
+                return new ExceptionResult(e, false);
+            }
         }
 
         [FunctionName("TokenRefresh")]
@@ -111,7 +125,16 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refresh")]
             TokenRefreshRequest refreshRequest, ILogger log)
         {
-            return new OkObjectResult(AuthenticationService.RefreshToken(refreshRequest));
+            log.LogDebug("refreshing token for {refreshRequest}", refreshRequest);
+            try
+            {
+                return new OkObjectResult(AuthenticationService.RefreshToken(refreshRequest));
+            }
+            catch (Exception e)
+            {
+                log.LogTrace(e, "refresh failed with exception");
+                return new ExceptionResult(e, false);
+            }
         }
 
         [FunctionName("UserCreate")]
@@ -119,6 +142,7 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/create")]
             UserProfile userProfile, ILogger log)
         {
+            log.LogDebug("creating new profile from {userProfile}", userProfile);
             try
             {
                 return new ObjectResult(await UserService.CreateProfileAsync(userProfile)) {StatusCode = 201};
@@ -131,6 +155,11 @@ namespace Backend
                     Message = "This email is already registered"
                 }) {StatusCode = 409};
             }
+            catch (Exception e)
+            {
+                log.LogTrace(e, "profile creation failed with exception");
+                return new ExceptionResult(e, false);
+            }
         }
 
         [FunctionName("UserGet")]
@@ -138,7 +167,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}")]
             HttpRequest req, string profileid, ILogger log)
         {
-            return await AuthorizedHelper(_ => UserService.GetProfileByProfileIdAsync(profileid), req);
+            log.LogDebug("getting user with profileId {profileId}", profileid);
+            return await AuthorizedHelper(_ => UserService.GetProfileByProfileIdAsync(profileid), req, log);
         }
 
         [FunctionName("UserGetFriends")]
@@ -146,7 +176,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}/friends")]
             HttpRequest req, string profileid, ILogger log)
         {
-            return await AuthorizedHelper(_ => UserService.GetFriendsAsync(profileid), req);
+            log.LogDebug("getting friends of user with userid {profileid}", profileid);
+            return await AuthorizedHelper(_ => UserService.GetFriendsAsync(profileid), req, log);
         }
 
 
@@ -156,7 +187,8 @@ namespace Backend
             HttpRequest req, string profileId, ILogger log)
         {
             FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
-            
+
+            log.LogDebug("running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
                 return action.Action switch
@@ -166,7 +198,7 @@ namespace Backend
                     FriendAction.Delete => UserService.DeleteFriendAsync(currentProfile, profileId),
                     _ => throw new NotImplementedException()
                 };
-            }, req);
+            }, req, log);
         }
 
         [FunctionName("GetFriendStatus")]
@@ -174,9 +206,10 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
+            log.LogDebug("getting friend status of user with profile id {user}", profileId);
             return await AuthorizedHelper(
                 profile => UserService.GetFriendRequestStatus(profile, profileId),
-                req);
+                req, log);
         }
     }
 }

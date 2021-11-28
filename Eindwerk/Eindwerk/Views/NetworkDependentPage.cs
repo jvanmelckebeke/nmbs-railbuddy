@@ -45,7 +45,6 @@ namespace Eindwerk.Views
 
             try
             {
-                
                 await apiCall();
 
                 loadingDialog?.Hide();

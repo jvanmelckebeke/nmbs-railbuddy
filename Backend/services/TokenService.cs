@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Backend.dto;
+using Backend.dto.token;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.services
