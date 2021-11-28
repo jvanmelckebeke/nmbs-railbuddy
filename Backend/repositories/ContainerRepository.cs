@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Backend.Domain;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Serialization.HybridRow.IO;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -24,16 +25,16 @@ namespace Backend.repositories
         }
 
         protected static async Task<T> FindOneAsync<T>(string tableName, QueryDefinition query)
-            
+
         {
             Container container = GetContainer(tableName);
 
             using FeedIterator<T> resultSet = container.GetItemQueryIterator<T>(query);
-            
+
             while (resultSet.HasMoreResults)
             {
                 FeedResponse<T> response = await resultSet.ReadNextAsync();
-                return response.First();
+                return response.IsNullOrEmpty() ? default : response.First();
             }
 
             return default;
@@ -44,7 +45,7 @@ namespace Backend.repositories
             Container container = GetContainer(tableName);
 
             List<T> results = new List<T>();
-            
+
             using FeedIterator<T> resultSet = container.GetItemQueryIterator<T>(query);
 
             while (resultSet.HasMoreResults)
