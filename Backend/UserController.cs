@@ -45,13 +45,23 @@ namespace Backend
             bool acceptRefreshToken = false)
         {
             string accessToken = req.Headers["Authorization"];
+
+            if (accessToken.StartsWith("Bearer "))
+            {
+                accessToken = accessToken[7..];
+            }
+            
             try
             {
-                if (!AuthenticationService.ValidateJwt(accessToken, acceptRefreshToken))
+                AuthenticationService service = new AuthenticationService(log);
+                
+                log.LogDebug("authorizing with token {}", accessToken);
+                if (!service.ValidateJwt(accessToken, acceptRefreshToken))
                     return new ObjectResult(new {Message = "expected Access Token but Refresh Token was given"})
                         {StatusCode = 401};
+                log.LogDebug("validated jwt");
 
-                string currentUserId = AuthenticationService.GetProfileIdFromToken(accessToken);
+                string currentUserId = service.GetProfileIdFromToken(accessToken);
                 UserProfile profile = await UserRepository.FindOneByProfileIdAsync(Guid.Parse(currentUserId));
 
                 TReturn result = await handleRequest(profile);
@@ -63,7 +73,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogTrace(e, "request failed with exception");
+                log.LogError(e, "request failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -106,7 +116,7 @@ namespace Backend
             log.LogDebug("logging user in with Credentials: {credentials}", credentials);
             try
             {
-                return new OkObjectResult(await AuthenticationService.LoginUserAsync(credentials));
+                return new OkObjectResult(await new AuthenticationService(log).LoginUserAsync(credentials));
             }
             catch (WrongCredentialsException e)
             {
@@ -115,7 +125,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogTrace(e, "login failed with exception");
+                log.LogError(e, "login failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -132,7 +142,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogTrace(e, "refresh failed with exception");
+                log.LogError(e, "refresh failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -145,7 +155,7 @@ namespace Backend
             log.LogDebug("creating new profile from {userProfile}", userProfile);
             try
             {
-                return new ObjectResult(await UserService.CreateProfileAsync(userProfile)) {StatusCode = 201};
+                return new ObjectResult(await new UserService(log).CreateProfileAsync(userProfile)) {StatusCode = 201};
             }
             catch (DuplicateProfileException e)
             {
@@ -157,7 +167,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogTrace(e, "profile creation failed with exception");
+                log.LogError(e, "profile creation failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -167,8 +177,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}")]
             HttpRequest req, string profileid, ILogger log)
         {
-            log.LogDebug("getting user with profileId {profileId}", profileid);
-            return await AuthorizedHelper(_ => UserService.GetProfileByProfileIdAsync(profileid), req, log);
+            log.LogInformation("getting user with profileId {profileId}", profileid);
+            return await AuthorizedHelper(_ => new UserService(log).GetProfileByProfileIdAsync(profileid), req, log);
         }
 
         [FunctionName("UserGetFriends")]
@@ -177,7 +187,7 @@ namespace Backend
             HttpRequest req, string profileid, ILogger log)
         {
             log.LogDebug("getting friends of user with userid {profileid}", profileid);
-            return await AuthorizedHelper(_ => UserService.GetFriendsAsync(profileid), req, log);
+            return await AuthorizedHelper(_ => new UserService(log).GetFriendsAsync(profileid), req, log);
         }
 
 
@@ -191,11 +201,12 @@ namespace Backend
             log.LogDebug("running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
+                UserService service = new UserService(log);
                 return action.Action switch
                 {
-                    FriendAction.Request => UserService.CreateFriendRequestAsync(currentProfile, profileId),
-                    FriendAction.Accept => UserService.AcceptFriendRequestAsync(currentProfile, profileId),
-                    FriendAction.Delete => UserService.DeleteFriendAsync(currentProfile, profileId),
+                    FriendAction.Request => service.CreateFriendRequestAsync(currentProfile, profileId),
+                    FriendAction.Accept => service.AcceptFriendRequestAsync(currentProfile, profileId),
+                    FriendAction.Delete => service.DeleteFriendAsync(currentProfile, profileId),
                     _ => throw new NotImplementedException()
                 };
             }, req, log);
@@ -208,7 +219,7 @@ namespace Backend
         {
             log.LogDebug("getting friend status of user with profile id {user}", profileId);
             return await AuthorizedHelper(
-                profile => UserService.GetFriendRequestStatus(profile, profileId),
+                profile => new UserService(log).GetFriendRequestStatus(profile, profileId),
                 req, log);
         }
     }

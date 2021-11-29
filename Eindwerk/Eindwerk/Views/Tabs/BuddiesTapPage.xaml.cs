@@ -20,9 +20,7 @@ namespace Eindwerk.Views.Tabs
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Debug.WriteLine("PROFILEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            Debug.WriteLine(Profile);
-            Debug.WriteLine("PROFILEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            Debug.WriteLine($"Profile in buddy tap page: {Profile}");
         }
 
         protected override void SetupVisual()

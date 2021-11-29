@@ -37,6 +37,7 @@ namespace Backend.repositories
                 return response.IsNullOrEmpty() ? default : response.First();
             }
 
+            Debug.WriteLine($"found none in {tableName} for query {query.QueryText}");
             return default;
         }
 

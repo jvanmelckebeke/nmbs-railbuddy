@@ -22,5 +22,11 @@ namespace Backend.dto
          */
         [JsonProperty(PropertyName = "targetCity")]
         public string TargetCity { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"UserProfileResponse[{nameof(ProfileId)}: {ProfileId}, {nameof(Username)}: {Username}, {nameof(Email)}: {Email}, {nameof(TargetCity)}: {TargetCity}]";
+        }
     }
 }

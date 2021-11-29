@@ -37,6 +37,7 @@ namespace Eindwerk.Views
 
         protected async Task HandleApi(Func<Task> apiCall, string loadingText = null)
         {
+            
             IProgressDialog loadingDialog = null;
             if (loadingText != null)
             {
@@ -45,7 +46,9 @@ namespace Eindwerk.Views
 
             try
             {
+                Debug.WriteLine("start handling api call");
                 await apiCall();
+                Debug.WriteLine("end handling api call");
 
                 loadingDialog?.Hide();
             }

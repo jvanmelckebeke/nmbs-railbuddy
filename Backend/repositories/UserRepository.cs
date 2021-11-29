@@ -33,6 +33,7 @@ namespace Backend.repositories
 
         public static async Task<UserProfile> FindOneByProfileIdAsync(Guid profileId)
         {
+            Debug.WriteLine($"searching for profile with profileId {profileId}");
             QueryDefinition query = new QueryDefinition("select * from users u where u.id = @profileId")
                 .WithParameter("@profileId", profileId.ToString());
 

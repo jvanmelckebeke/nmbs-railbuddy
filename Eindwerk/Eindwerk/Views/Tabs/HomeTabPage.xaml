@@ -18,17 +18,19 @@
                 <Label Text="Favorite routes" FontSize="Medium" HorizontalOptions="StartAndExpand" />
                 <ListView x:Name="LstFavRoutes" HorizontalOptions="FillAndExpand">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="rail:FavoriteRoute"></DataTemplate>
+                        <DataTemplate x:DataType="rail:FavoriteRoute">
+                            <TextCell Text="{Binding }"></TextCell>
+                        </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <FlexLayout x:Name="FlexFavRoutes" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
+                <!--<FlexLayout x:Name="FlexFavRoutes" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
                             JustifyContent="Start" AlignContent="Start">
                     <Frame x:Name="FrAddFavorite" HeightRequest="48" Padding="4" Margin="4" WidthRequest="48"
                            CornerRadius="8">
                         <Image x:Name="ImgAddFavorite" Aspect="AspectFill" HorizontalOptions="Center"
                                VerticalOptions="Center" />
                     </Frame>
-                </FlexLayout>
+                </FlexLayout>-->
             </StackLayout>
 
             <Button Grid.Row="2" x:Name="BtnStartTravel" Text="Start traveling"

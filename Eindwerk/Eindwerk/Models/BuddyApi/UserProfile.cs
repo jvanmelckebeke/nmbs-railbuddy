@@ -40,5 +40,11 @@ namespace Eindwerk.Models.BuddyApi
         {
             return !(Email.IsNullOrEmpty() || Username.IsNullOrEmpty());
         }
+
+
+        public override string ToString()
+        {
+            return $"{nameof(UserProfile)}[{nameof(ProfileId)}: {ProfileId}, {nameof(Username)}: {Username}, {nameof(Email)}: {Email}, {nameof(TargetCity)}: {TargetCity}, {nameof(AvatarUrl)}: {AvatarUrl}, {nameof(QrCodeUrl)}: {QrCodeUrl}]";
+        }
     }
 }

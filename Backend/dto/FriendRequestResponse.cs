@@ -7,5 +7,11 @@ namespace Backend.dto
     {
         [JsonProperty("status")]
         public FriendRequestStatus FriendRequestStatus { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"FriendRequestResponse[{nameof(FriendRequestStatus)}: {FriendRequestStatus}]";
+        }
     }
 }

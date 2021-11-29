@@ -31,10 +31,13 @@ namespace Eindwerk.Models.Rail
 
         public TimeSpan ArrivalDelay => ArrivalConnection.Delay;
 
+        public string Name => $"{DepartureConnection.Station.StandardName} - {ArrivalConnection.Station.StandardName}";
+
         public override string ToString()
         {
             return
-                $"Route[{nameof(ViaConnections)}: {(_via == null ? "no vias" : ViaConnections.Count + " via connections")}, " +
+                $"Route[{nameof(Name)}: {Name}, " +
+                $"{nameof(ViaConnections)}: {(_via == null ? "no vias" : ViaConnections.Count + " via connections")}, " +
                 $"{nameof(DepartureConnection)}: {DepartureConnection}, " +
                 $"{nameof(ArrivalConnection)}: {ArrivalConnection}, " +
                 $"{nameof(Duration)}: {Duration:g}, " +

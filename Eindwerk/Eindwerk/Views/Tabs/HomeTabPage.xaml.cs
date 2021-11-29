@@ -20,7 +20,7 @@ namespace Eindwerk.Views.Tabs
         {
             #region static images
 
-            ImgAddFavorite.Source = AssetHelper.GetIcon("plus.png");
+            // ImgAddFavorite.Source = AssetHelper.GetIcon("plus.png");
 
             #endregion
 
