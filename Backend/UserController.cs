@@ -45,23 +45,24 @@ namespace Backend
             bool acceptRefreshToken = false)
         {
             string accessToken = req.Headers["Authorization"];
+            EventId id = new EventId();
 
             if (accessToken.StartsWith("Bearer "))
             {
                 accessToken = accessToken[7..];
             }
-            
+
             try
             {
                 AuthenticationService service = new AuthenticationService(log);
-                
-                log.LogDebug("authorizing with token {}", accessToken);
+
+                log.LogDebug(id, "authorizing with token {}", accessToken);
                 if (!service.ValidateJwt(accessToken, acceptRefreshToken))
                     return new ObjectResult(new {Message = "expected Access Token but Refresh Token was given"})
                         {StatusCode = 401};
-                log.LogDebug("validated jwt");
+                log.LogDebug(id, "validated jwt");
 
-                string currentUserId = service.GetProfileIdFromToken(accessToken);
+                var currentUserId = service.GetProfileIdFromToken(accessToken);
                 UserProfile profile = await UserRepository.FindOneByProfileIdAsync(Guid.Parse(currentUserId));
 
                 TReturn result = await handleRequest(profile);
@@ -73,7 +74,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogError(e, "request failed with exception");
+                log.LogError(id, e, "request failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -113,19 +114,20 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/login")]
             Credentials credentials, ILogger log)
         {
-            log.LogDebug("logging user in with Credentials: {credentials}", credentials);
+            EventId id = new EventId();
+            log.LogDebug(id, "logging user in with Credentials: {credentials}", credentials);
             try
             {
                 return new OkObjectResult(await new AuthenticationService(log).LoginUserAsync(credentials));
             }
             catch (WrongCredentialsException e)
             {
-                log.LogWarning(e, $"Wrong credentials for {credentials.Email}");
+                log.LogWarning(id, e, $"Wrong credentials for {credentials.Email}");
                 return new ObjectResult(new {Message = "Wrong credentials", Authenticated = false}) {StatusCode = 401};
             }
             catch (Exception e)
             {
-                log.LogError(e, "login failed with exception");
+                log.LogError(id, e, "login failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -135,14 +137,15 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refresh")]
             TokenRefreshRequest refreshRequest, ILogger log)
         {
-            log.LogDebug("refreshing token for {refreshRequest}", refreshRequest);
+            EventId id = new EventId();
+            log.LogDebug(id, "refreshing token for {refreshRequest}", refreshRequest);
             try
             {
                 return new OkObjectResult(AuthenticationService.RefreshToken(refreshRequest));
             }
             catch (Exception e)
             {
-                log.LogError(e, "refresh failed with exception");
+                log.LogError(id, e, "refresh failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -152,14 +155,15 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/create")]
             UserProfile userProfile, ILogger log)
         {
-            log.LogDebug("creating new profile from {userProfile}", userProfile);
+            EventId id = new EventId();
+            log.LogDebug(id, "creating new profile from {userProfile}", userProfile);
             try
             {
                 return new ObjectResult(await new UserService(log).CreateProfileAsync(userProfile)) {StatusCode = 201};
             }
             catch (DuplicateProfileException e)
             {
-                log.LogWarning(e, $"a profile with email {userProfile.Email} is already registered");
+                log.LogWarning(id, e, $"a profile with email {userProfile.Email} is already registered");
                 return new ObjectResult(new
                 {
                     Message = "This email is already registered"
@@ -167,7 +171,7 @@ namespace Backend
             }
             catch (Exception e)
             {
-                log.LogError(e, "profile creation failed with exception");
+                log.LogError(id, e, "profile creation failed with exception");
                 return new ExceptionResult(e, false);
             }
         }
@@ -177,7 +181,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}")]
             HttpRequest req, string profileid, ILogger log)
         {
-            log.LogInformation("getting user with profileId {profileId}", profileid);
+            EventId id = new EventId();
+            log.LogInformation(id, "getting user with profileId {profileId}", profileid);
             return await AuthorizedHelper(_ => new UserService(log).GetProfileByProfileIdAsync(profileid), req, log);
         }
 
@@ -186,7 +191,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}/friends")]
             HttpRequest req, string profileid, ILogger log)
         {
-            log.LogDebug("getting friends of user with userid {profileid}", profileid);
+            EventId id = new EventId();
+            log.LogDebug(id, "getting friends of user with userid {profileid}", profileid);
             return await AuthorizedHelper(_ => new UserService(log).GetFriendsAsync(profileid), req, log);
         }
 
@@ -196,10 +202,11 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
-            log.LogDebug("body: {body}", req.Body);
+            EventId id = new EventId();
+            log.LogDebug(id, "body: {body}", req.Body);
             FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
 
-            log.LogDebug("running friend action {action} on user with profile id {profileid}", action, profileId);
+            log.LogDebug(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
                 UserService service = new UserService(log);
@@ -218,7 +225,8 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
-            log.LogDebug("getting friend status of user with profile id {user}", profileId);
+            EventId id = new EventId();
+            log.LogDebug(id, "getting friend status of user with profile id {user}", profileId);
             return await AuthorizedHelper(
                 profile => new UserService(log).GetFriendRequestStatus(profile, profileId),
                 req, log);
