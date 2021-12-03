@@ -63,7 +63,7 @@ namespace Backend.services
             return resp;
         }
 
-        public async Task<List<UserProfileResponse>> GetFriendsAsync(string profileId)
+        public async Task<List<Friend>> GetFriendsAsync(string profileId)
         {
             _log.LogDebug("getting friends for profileId {}", profileId);
             Guid profileGuid = Guid.Parse(profileId);
@@ -71,15 +71,9 @@ namespace Backend.services
             UserProfile profile = await UserRepository.FindOneByProfileIdAsync(profileGuid);
             _log.LogDebug("found a profile: {}", profile);
 
-            List<UserProfileResponse> ret = new List<UserProfileResponse>();
-            foreach (Guid friendId in profile.Friends)
-            {
-                ret.Add(await GetProfileByProfileIdAsync(friendId));
-            }
+            _log.LogDebug("found friends: {}", StringTools.FormatList(profile.Friends));
 
-            _log.LogDebug("found friends: {}", StringTools.FormatList(ret));
-
-            return ret;
+            return profile.Friends;
         }
 
         public FriendRequestStatus GetFriendRequestStatus(UserProfile currentProfile,
@@ -89,7 +83,7 @@ namespace Backend.services
             _log.LogDebug(logId, "getting friend request status for current profile {0} with friend profileId {1}", currentProfile, friendId);
             Guid friendGuid = Guid.Parse(friendId);
 
-            if (currentProfile.Friends.Any(friend => friend == friendGuid))
+            if (currentProfile.Friends.Any(friend => friend.UserId == friendGuid))
             {
                 _log.LogDebug(logId,"friend request status is accepted");
                 return FriendRequestStatus.Accepted;
@@ -118,7 +112,7 @@ namespace Backend.services
             Guid toProfileGuid = Guid.Parse(toProfileId);
             if (currentProfile.FriendRequestsSent.Any(friendRequest => friendRequest.UserId == toProfileGuid) ||
                 currentProfile.FriendRequestsReceived.Any(request => request.UserId == toProfileGuid) ||
-                currentProfile.Friends.Any(friend => friend == toProfileGuid))
+                currentProfile.Friends.Any(friend => friend.UserId == toProfileGuid))
             {
                 _log.LogWarning(logId, "there was already a friend request sent");
                 throw new GracefulDuplicateException($"user/{toProfileId}/friend");
@@ -163,7 +157,7 @@ namespace Backend.services
             _log.LogDebug(logId, "request is to accept friend request using current profile {0} and sent friend id {1}", currentProfile, toProfileId);
             Guid toProfileGuid = Guid.Parse(toProfileId);
 
-            if (currentProfile.Friends.Any(friend => friend == toProfileGuid))
+            if (currentProfile.Friends.Any(friend => friend.UserId == toProfileGuid))
             {
                 _log.LogWarning(logId, "friend request was already accepted");
                 throw new GracefulDuplicateException($"user/{toProfileId}/friend");
@@ -185,8 +179,12 @@ namespace Backend.services
             currentProfile.FriendRequestsReceived.Remove(requestRecv);
             
             _log.LogDebug(logId,"adding friends to friend properties");
-            toProfile.Friends.Add(currentProfile.ProfileId);
-            currentProfile.Friends.Add(toProfileGuid);
+
+            Friend current = ClassMapping.ConvertDomainDto<UserProfile, Friend>(currentProfile);
+            Friend to = ClassMapping.ConvertDomainDto<UserProfile, Friend>(toProfile);
+            
+            toProfile.Friends.Add(current);
+            currentProfile.Friends.Add(to);
             
             _log.LogDebug(logId, "updating profiles");
             _log.LogDebug(logId, "updating current profile");
@@ -214,14 +212,14 @@ namespace Backend.services
             _log.LogDebug(id, "removing from all requests and friends in current profile");
             currentProfile.FriendRequestsReceived.RemoveAll(request => request.UserId == toProfileGuid);
             currentProfile.FriendRequestsSent.RemoveAll(request => request.UserId == toProfileGuid);
-            currentProfile.Friends.RemoveAll(friendGuid => friendGuid == toProfileGuid);
+            currentProfile.Friends.RemoveAll(friend => friend.UserId == toProfileGuid);
             _log.LogDebug(id, "removed from all requests and friends in current profile");
 
 
             _log.LogDebug(id, "removing from all requests and friends in friend profile");
             toProfile.FriendRequestsReceived.RemoveAll(request => request.UserId == currentProfile.ProfileId);
             toProfile.FriendRequestsSent.RemoveAll(request => request.UserId == currentProfile.ProfileId);
-            toProfile.Friends.RemoveAll(friendGuid => friendGuid == currentProfile.ProfileId);
+            toProfile.Friends.RemoveAll(friend => friend.UserId == currentProfile.ProfileId);
             _log.LogDebug(id, "removed from all requests and friends in friend profile");
 
             _log.LogDebug(id, "updating profiles");

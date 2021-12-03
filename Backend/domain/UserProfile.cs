@@ -16,7 +16,7 @@ namespace Backend.Domain
 
         [JsonProperty("targetCity")] public string TargetCity { get; set; }
 
-        [JsonProperty("friends")] public List<Guid> Friends { get; set; } = new List<Guid>();
+        [JsonProperty("friends")] public List<Friend> Friends { get; set; } = new List<Friend>();
 
         [JsonProperty("friendRequestReceived")]
         public List<FriendRequest> FriendRequestsReceived { get; set; } = new List<FriendRequest>();
