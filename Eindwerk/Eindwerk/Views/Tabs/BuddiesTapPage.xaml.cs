@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
@@ -11,6 +13,8 @@ namespace Eindwerk.Views.Tabs
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BuddiesTapPage : LoggedInPage
     {
+        private List<UserProfile> Friends = new List<UserProfile>();
+
         public BuddiesTapPage(Tokens tokens) : base(tokens)
         {
             InitializeComponent();
@@ -20,14 +24,22 @@ namespace Eindwerk.Views.Tabs
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            Task.Run(SetupFriendsAsync).Wait();
             Debug.WriteLine($"Profile in buddy tap page: {Profile}");
         }
 
         protected override void SetupVisual()
         {
             ImgQr.Source = ImageSource.FromUri(new Uri(Profile.QrCodeUrl));
+            LstBuddies.ItemsSource = Friends;
 
             Debug.WriteLine(ImgQr.Source);
+            Debug.WriteLine($"{Friends.Count} friends");
+        }
+
+        private async void SetupFriendsAsync()
+        {
+            Friends = await UserService.GetFriendsAsync();
         }
 
         private void SetupListeners()
@@ -41,7 +53,7 @@ namespace Eindwerk.Views.Tabs
                 await DisplayActionSheet("Add a buddy", "Cancel", null,
                     "Find by email",
                     "Scan a buddy QR code");
-            
+
             // todo
         }
     }

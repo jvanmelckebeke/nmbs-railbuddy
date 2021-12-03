@@ -2,7 +2,6 @@
 using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Xamarin.Forms;
 
 namespace Eindwerk.Models.BuddyApi
 {

@@ -9,7 +9,11 @@ namespace Backend.tools
         {
             var ret = list.Aggregate("[", (current, item) => current + $"{item}, ");
 
-            ret = ret[..^2];
+            if (ret.Length > 1)
+            {
+                ret = ret[..^2];
+            }
+
             return ret + " ]";
         }
     }

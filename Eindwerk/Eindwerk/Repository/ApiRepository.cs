@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
@@ -176,7 +177,8 @@ namespace Eindwerk.Repository
             if (debugCall) Debug.WriteLine("WARNING: response object is null or invalid");
             return default;
         }
-
+        
+        
         /// <summary>
         /// creates a default HTTPClient, can be overridden to include for example Authorization headers
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Repository;
@@ -42,5 +43,18 @@ namespace Eindwerk.Services
         {
             return _ownProfile ?? await GetUserProfileAsync();
         }
+
+        public async Task<List<UserProfile>> GetFriendsAsync(string profileId = null)
+        {
+            if (profileId == null)
+            {
+                profileId = _ownProfileId;
+            }
+
+            List<UserProfile> friends = await _userRepository.GetFriendsAsync(profileId);
+
+            return friends;
+        }
+        
     }
 }
