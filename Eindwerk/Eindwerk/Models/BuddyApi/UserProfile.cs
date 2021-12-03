@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -7,8 +8,7 @@ namespace Eindwerk.Models.BuddyApi
 {
     public class UserProfile : IDtoModel
     {
-        [JsonProperty(PropertyName = "id")]
-        public Guid ProfileId { get; set; }
+        [JsonProperty(PropertyName = "id")] public Guid ProfileId { get; set; }
 
         [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
@@ -17,6 +17,15 @@ namespace Eindwerk.Models.BuddyApi
 
         [JsonProperty(PropertyName = "targetCity")]
         public string TargetCity { get; set; }
+
+        [JsonProperty("friends")] public List<Friend> Friends { get; set; } = new List<Friend>();
+
+        [JsonProperty("friendRequestReceived")]
+        public List<FriendRequest> FriendRequestsReceived { get; set; } = new List<FriendRequest>();
+
+
+        [JsonProperty("friendRequestSent")]
+        public List<FriendRequest> FriendRequestsSent { get; set; } = new List<FriendRequest>();
 
         /// <summary>
         /// generated Gravatar url
@@ -43,7 +52,15 @@ namespace Eindwerk.Models.BuddyApi
 
         public override string ToString()
         {
-            return $"{nameof(UserProfile)}[{nameof(ProfileId)}: {ProfileId}, {nameof(Username)}: {Username}, {nameof(Email)}: {Email}, {nameof(TargetCity)}: {TargetCity}, {nameof(AvatarUrl)}: {AvatarUrl}, {nameof(QrCodeUrl)}: {QrCodeUrl}]";
+            return $"{nameof(UserProfile)}[{nameof(ProfileId)}: {ProfileId}, " +
+                   $"{nameof(Username)}: {Username}, " +
+                   $"{nameof(Email)}: {Email}, " +
+                   $"{nameof(QrCodeUrl)}: {QrCodeUrl}, " +
+                   $"{nameof(AvatarUrl)}: {AvatarUrl}, " +
+                   $"{nameof(TargetCity)}: {TargetCity}, " +
+                   $"{nameof(Friends)}: {Friends.Count} friends, " +
+                   $"{nameof(FriendRequestsReceived)}: {FriendRequestsReceived.Count} requests, " +
+                   $"{nameof(FriendRequestsSent)}: {FriendRequestsSent.Count} requests]";
         }
     }
 }

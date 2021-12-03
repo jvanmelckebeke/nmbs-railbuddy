@@ -34,18 +34,12 @@ namespace Eindwerk.Views.Tabs
         protected override void SetupVisual()
         {
             ImgQr.Source = ImageSource.FromUri(new Uri(Profile.QrCodeUrl));
-            LstBuddies.ItemsSource = Friends;
+            LstBuddies.ItemsSource = Profile.Friends;
+            LstBuddyRequest.ItemsSource = Profile.FriendRequestsReceived;
 
             Debug.WriteLine(ImgQr.Source);
             Debug.WriteLine($"{Friends.Count} friends");
         }
-
-
-        protected override async Task SetupData()
-        {
-            Friends = await UserService.GetFriendsAsync();
-        }
-
         private void SetupListeners()
         {
             BtnAddBuddy.Clicked += OnAddBuddyClick;
