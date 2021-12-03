@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,11 +151,16 @@ namespace Eindwerk.Repository
         {
             if (debugCall) Debug.WriteLine($"response code: {response.StatusCode}");
 
-            if (response.StatusCode.ToString().StartsWith("5"))
+            if (response.StatusCode.ToString().StartsWith("5") )
             {
                 Debug.WriteLine(response);
                 
                 throw new Exception("something went wrong with the API");
+            }
+
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return default;
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();

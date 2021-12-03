@@ -80,19 +80,21 @@ namespace Backend.services
             string friendId)
         {
             EventId logId = new EventId();
-            _log.LogDebug(logId, "getting friend request status for current profile {0} with friend profileId {1}", currentProfile, friendId);
+            _log.LogDebug(logId, "getting friend request status for current profile {0} with friend profileId {1}",
+                currentProfile, friendId);
             Guid friendGuid = Guid.Parse(friendId);
 
             if (currentProfile.Friends.Any(friend => friend.UserId == friendGuid))
             {
-                _log.LogDebug(logId,"friend request status is accepted");
+                _log.LogDebug(logId, "friend request status is accepted");
                 return FriendRequestStatus.Accepted;
             }
 
             foreach (FriendRequest request in currentProfile.FriendRequestsSent.Where(request =>
                 request.UserId == friendGuid))
             {
-                _log.LogDebug(logId,"friend request status was sent from current profile and has status: {}", request.FriendRequestStatus);
+                _log.LogDebug(logId, "friend request status was sent from current profile and has status: {}",
+                    request.FriendRequestStatus);
                 return request.FriendRequestStatus;
             }
 
@@ -100,7 +102,7 @@ namespace Backend.services
                 .Where(request => request.UserId == friendGuid)
                 .Select(request => request.FriendRequestStatus)
                 .FirstOrDefault();
-            _log.LogDebug(logId,"friend request status was sent from current profile and has status: {}", status);
+            _log.LogDebug(logId, "friend request status was sent from current profile and has status: {}", status);
             return status;
         }
 
@@ -108,8 +110,10 @@ namespace Backend.services
             string toProfileId)
         {
             EventId logId = new EventId();
-            _log.LogDebug(logId,"creating friend request from current profile {0} to profile with id {1}", currentProfile, toProfileId);
+            _log.LogDebug(logId, "creating friend request from current profile {0} to profile with id {1}",
+                currentProfile, toProfileId);
             Guid toProfileGuid = Guid.Parse(toProfileId);
+            UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);
             if (currentProfile.FriendRequestsSent.Any(friendRequest => friendRequest.UserId == toProfileGuid) ||
                 currentProfile.FriendRequestsReceived.Any(request => request.UserId == toProfileGuid) ||
                 currentProfile.Friends.Any(friend => friend.UserId == toProfileGuid))
@@ -119,22 +123,33 @@ namespace Backend.services
             }
 
             FriendRequest friendRequestSending = new FriendRequest()
-                {FriendRequestStatus = FriendRequestStatus.Sent, UserId = toProfileGuid};
+            {
+                FriendRequestStatus = FriendRequestStatus.Sent,
+                UserId = toProfileGuid,
+                Username = toProfile.Username,
+                Email = toProfile.Email
+            };
             _log.LogDebug(logId, "sending friend request is: {}", friendRequestSending);
-            
+
             FriendRequest friendRequestRecv = new FriendRequest()
-                {FriendRequestStatus = FriendRequestStatus.Sent, UserId = currentProfile.ProfileId};
+            {
+                FriendRequestStatus = FriendRequestStatus.Sent,
+                UserId = currentProfile.ProfileId,
+                Username = currentProfile.Username,
+                Email = currentProfile.Email
+            };
             _log.LogDebug(logId, "receiving friend request is: {}", friendRequestSending);
-            
-            
-            UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);
+
+
             _log.LogDebug(logId, "receiving friend profile is: {}", toProfile);
 
             currentProfile.FriendRequestsSent.Add(friendRequestSending);
             toProfile.FriendRequestsReceived.Add(friendRequestRecv);
 
-            _log.LogDebug(logId, "current profile sent friend requests are: {}", StringTools.FormatList(currentProfile.FriendRequestsSent));
-            _log.LogDebug(logId, "receiving profile friend requests are: {}", StringTools.FormatList(toProfile.FriendRequestsReceived));
+            _log.LogDebug(logId, "current profile sent friend requests are: {}",
+                StringTools.FormatList(currentProfile.FriendRequestsSent));
+            _log.LogDebug(logId, "receiving profile friend requests are: {}",
+                StringTools.FormatList(toProfile.FriendRequestsReceived));
 
             _log.LogDebug(logId, "updating profiles");
             _log.LogDebug(logId, "updating current profile");
@@ -154,7 +169,8 @@ namespace Backend.services
             string toProfileId)
         {
             EventId logId = new EventId();
-            _log.LogDebug(logId, "request is to accept friend request using current profile {0} and sent friend id {1}", currentProfile, toProfileId);
+            _log.LogDebug(logId, "request is to accept friend request using current profile {0} and sent friend id {1}",
+                currentProfile, toProfileId);
             Guid toProfileGuid = Guid.Parse(toProfileId);
 
             if (currentProfile.Friends.Any(friend => friend.UserId == toProfileGuid))
@@ -177,15 +193,15 @@ namespace Backend.services
             _log.LogDebug("removing friend requests from friend requests properties");
             toProfile.FriendRequestsSent.Remove(requestSent);
             currentProfile.FriendRequestsReceived.Remove(requestRecv);
-            
-            _log.LogDebug(logId,"adding friends to friend properties");
+
+            _log.LogDebug(logId, "adding friends to friend properties");
 
             Friend current = ClassMapping.ConvertDomainDto<UserProfile, Friend>(currentProfile);
             Friend to = ClassMapping.ConvertDomainDto<UserProfile, Friend>(toProfile);
-            
+
             toProfile.Friends.Add(current);
             currentProfile.Friends.Add(to);
-            
+
             _log.LogDebug(logId, "updating profiles");
             _log.LogDebug(logId, "updating current profile");
             await UserRepository.UpdateOneAsync(currentProfile);
@@ -204,7 +220,8 @@ namespace Backend.services
             string toProfileId)
         {
             EventId id = new EventId();
-            _log.LogDebug(id, "request is to remove friend with id {0} from current profile {1}", toProfileId, currentProfile);
+            _log.LogDebug(id, "request is to remove friend with id {0} from current profile {1}", toProfileId,
+                currentProfile);
             Guid toProfileGuid = Guid.Parse(toProfileId);
             UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);
             _log.LogDebug(id, "the friend profile is {}", toProfile);
