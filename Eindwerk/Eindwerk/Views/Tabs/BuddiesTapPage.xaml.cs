@@ -6,6 +6,8 @@ using Eindwerk.Components;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
+using Eindwerk.Tools;
+using Eindwerk.Views.Buddies;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -33,16 +35,28 @@ namespace Eindwerk.Views.Tabs
 
         protected override void SetupVisual()
         {
+            ImGoToFriendRequests.Source = AssetHelper.GetIcon("chevron-right-white.png");
+
             ImgQr.Source = ImageSource.FromUri(new Uri(Profile.QrCodeUrl));
             LstBuddies.ItemsSource = Profile.Friends;
-            LstBuddyRequest.ItemsSource = Profile.FriendRequestsReceived;
 
-            Debug.WriteLine(ImgQr.Source);
-            Debug.WriteLine($"{Friends.Count} friends");
+            LblFriendRequests.Text = $"{Profile.FriendRequestsReceived.Count} Friend requests";
+            FrFriendRequests.IsVisible = Profile.FriendRequestsReceived.Count > 0;
         }
+
         private void SetupListeners()
         {
             BtnAddBuddy.Clicked += OnAddBuddyClick;
+
+            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OnGoToFriendRequestsTapped;
+
+            FrFriendRequests.GestureRecognizers.Add(tapGestureRecognizer);
+        }
+
+        private void OnGoToFriendRequestsTapped(object sender, EventArgs e)
+        {
+            Navigation.PushModalAsync(new FriendRequestOverviewPage(Tokens), true);
         }
 
         private async void OnAddBuddyClick(object sender, EventArgs e)
@@ -77,7 +91,7 @@ namespace Eindwerk.Views.Tabs
 
                     ZXingScannerPage qrScanner = new ZXingScannerPage(options, overlay);
 
-                    
+
                     await Navigation.PushModalAsync(qrScanner);
 
                     qrScanner.OnScanResult += (scanResult) =>

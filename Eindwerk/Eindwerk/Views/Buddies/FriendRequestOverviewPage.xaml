@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+             xmlns:buddyApi="clr-namespace:Eindwerk.Models.BuddyApi;assembly=Eindwerk"
+             x:Class="Eindwerk.Views.Buddies.FriendRequestOverviewPage" NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout Margin="8">
+            <Label x:Name="LblBuddyRequest" Text="Buddy Requests" FontSize="Large" />
+            <ListView x:Name="LstBuddyRequest" RowHeight="60">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="buddyApi:FriendRequest">
+                        <ViewCell>
+                            <Grid Margin="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding Avatar}" Aspect="AspectFill" />
+                                <StackLayout Grid.Column="1" Orientation="Vertical" Margin="4,4">
+                                    <Label FontSize="Subtitle" FontAttributes="Bold" Text="{Binding Username}" />
+                                    <Label FontSize="Subtitle" Text="{Binding Email}" />
+                                </StackLayout>
+                                <StackLayout Grid.Column="2" Orientation="Horizontal">
+                                    <Button Text="c" />
+                                </StackLayout>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="BtnGoBack"  Text="Go Back"/>
+        </StackLayout>
+    </ContentPage.Content>
+</views:LoggedInPage>

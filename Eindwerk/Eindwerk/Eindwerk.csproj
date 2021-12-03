@@ -59,6 +59,10 @@
       <EmbeddedResource Include="Assets\Icons\buddies.png" />
       <None Remove="Assets\Icons\logout.png" />
       <EmbeddedResource Include="Assets\Icons\logout.png" />
+      <None Remove="Assets\Icons\chevron-right.png" />
+      <EmbeddedResource Include="Assets\Icons\chevron-right.png" />
+      <None Remove="Assets\Icons\chevron-right-white.png" />
+      <EmbeddedResource Include="Assets\Icons\chevron-right-white.png" />
     </ItemGroup>
 
     <ItemGroup>

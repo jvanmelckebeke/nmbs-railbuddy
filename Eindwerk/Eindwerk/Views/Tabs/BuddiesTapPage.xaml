@@ -8,12 +8,12 @@
                     Title="Buddies">
     <ContentPage.Content>
 
-        <StackLayout Margin="15">
+        <StackLayout Margin="8">
             <Label x:Name="LblQrShare" Text="Buddy QR code" HorizontalOptions="Center" FontSize="Large" />
             <Image WidthRequest="200" HeightRequest="200" Aspect="AspectFit" x:Name="ImgQr"
                    HorizontalOptions="CenterAndExpand" />
             <Button x:Name="BtnAddBuddy" Text="Add Train Buddy" BackgroundColor="{DynamicResource PrimaryColor}"
-                    TextColor="{DynamicResource PrimaryTextColor}" Margin="0,20" />
+                    TextColor="{DynamicResource PrimaryTextColor}" Margin="0,10" />
             <Label x:Name="LblBuddies" Text="Train Buddies" FontSize="Large" />
             <ListView x:Name="LstBuddies">
                 <ListView.ItemTemplate>
@@ -21,18 +21,16 @@
                         <ViewCell>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="52" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="{Binding AvatarUrl}" Aspect="AspectFill" Height="20" />
+                                <Image Grid.Column="0" Source="{Binding Avatar}" Aspect="AspectFill" />
                                 <StackLayout Grid.Column="1" Orientation="Vertical">
                                     <Label FontSize="Subtitle" FontAttributes="Bold" Text="{Binding Username}" />
-                                    <Label FontSize="Subtitle" FontAttributes="Bold" Text="{Binding Email}" />
+                                    <Label FontSize="Subtitle" Text="{Binding Email}" />
                                 </StackLayout>
                                 <StackLayout Grid.Column="2" Orientation="Horizontal">
-                                    <Button Text="a" />
-                                    <Button Text="b" />
                                     <Button Text="c" />
                                 </StackLayout>
                             </Grid>
@@ -40,32 +38,19 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label x:Name="LblBuddyRequest" Text="Buddy Requests" FontSize="Large" />
-            <ListView x:Name="LstBuddyRequest">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="buddyApi:UserProfile">
-                        <ViewCell>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="20" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="{Binding AvatarUrl}" Aspect="AspectFill" Height="20" />
-                                <StackLayout Grid.Column="1" Orientation="Vertical">
-                                    <Label FontSize="Subtitle" FontAttributes="Bold" Text="{Binding Username}" />
-                                    <Label FontSize="Subtitle" FontAttributes="Bold" Text="{Binding Email}" />
-                                </StackLayout>
-                                <StackLayout Grid.Column="2" Orientation="Horizontal">
-                                    <Button Text="a" />
-                                    <Button Text="b" />
-                                    <Button Text="c" />
-                                </StackLayout>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+
+            <Frame CornerRadius="4" x:Name="FrFriendRequests" HorizontalOptions="Fill"
+                   VerticalOptions="End"
+                   BackgroundColor="{DynamicResource SecondaryColor}" HeightRequest="30" Margin="4" Padding="10">
+                <StackLayout Orientation="Horizontal"
+                             HorizontalOptions="FillAndExpand">
+                    <Label x:Name="LblFriendRequests" 
+                        Text="0 Friend Requests" HorizontalOptions="Center" 
+                           TextColor="{DynamicResource SecondaryTextColor}" VerticalOptions="Center" />
+                    <Image x:Name="ImGoToFriendRequests" HorizontalOptions="EndAndExpand" Aspect="AspectFill"
+                           WidthRequest="26" HeightRequest="26" />
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </views:LoggedInPage>

@@ -19,7 +19,6 @@ namespace Eindwerk.Views
 
             UnselectedTabColor = Color.FromHex("#0169b2").AddLuminosity(-0.5);
             SelectedTabColor = Color.FromHex("#0169b2");
-            ;
 
             Children.Add(new NavigationPage(new HomeTabPage(tokens))
                 {Title = "Home", IconImageSource = AssetHelper.GetIcon("train.png")});
@@ -29,6 +28,7 @@ namespace Eindwerk.Views
                 {Title = "Seat", IconImageSource = AssetHelper.GetIcon("seat.png")});
             Children.Add(new ProfileTapPage(tokens)
                 {Title = "Profile", IconImageSource = AssetHelper.GetIcon("account.png")});
+            
 
             NavigationPage.SetHasNavigationBar(this, false);
         }

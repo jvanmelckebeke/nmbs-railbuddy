@@ -1,6 +1,7 @@
 ﻿using System;
 using Eindwerk.Tools;
 using Newtonsoft.Json;
+using Xamarin.Forms;
 
 namespace Eindwerk.Models.BuddyApi
 {
@@ -25,6 +26,8 @@ namespace Eindwerk.Models.BuddyApi
                 return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200&qzone=2";
             }
         }
+
+        public ImageSource Avatar => ImageSource.FromUri(new Uri(AvatarUrl));
 
         public override string ToString()
         {
