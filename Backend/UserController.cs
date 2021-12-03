@@ -207,7 +207,7 @@ namespace Backend
             EventId id = new EventId();
             String body = await new StreamReader(req.Body).ReadToEndAsync();
             log.LogDebug(id, "body: {body}", body);
-            FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(body);
+            FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
 
             log.LogDebug(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
