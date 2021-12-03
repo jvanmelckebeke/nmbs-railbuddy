@@ -30,7 +30,7 @@ namespace Eindwerk.Repository
         {
             FriendRequest ret = await DoPutRequest<FriendRequest>($"{BASEURI}/user/{profileId}/friend", new
             {
-                Action = "Request"
+                action = "Request"
             });
 
             return ret;
