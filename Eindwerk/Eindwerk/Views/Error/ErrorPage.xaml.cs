@@ -27,7 +27,7 @@ namespace Eindwerk.Views.Error
 
         private void OnPageTapped(object sender, EventArgs args)
         {
-            Navigation.PopToRootAsync();
+            Navigation.PopModalAsync();
         }
     }
 }

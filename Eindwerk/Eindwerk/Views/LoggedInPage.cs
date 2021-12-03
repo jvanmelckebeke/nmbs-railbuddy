@@ -38,6 +38,7 @@ namespace Eindwerk.Views
             {
                 UserDialogs.Instance.Alert("the session has expired", "Invalid profile", "Ok");
                 AuthenticationService.Logout();
+                Navigation.PopToRootAsync();
             }
             else
             {

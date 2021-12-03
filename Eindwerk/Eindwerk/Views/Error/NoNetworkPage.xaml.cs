@@ -33,7 +33,7 @@ namespace Eindwerk.Views
 
                 UserDialogs.Instance.Toast("Network restored");
 
-                await Navigation.PopAsync();
+                await Navigation.PopModalAsync();
             }
             catch (Exception exception)
             {

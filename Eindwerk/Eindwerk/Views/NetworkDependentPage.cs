@@ -37,7 +37,6 @@ namespace Eindwerk.Views
 
         protected async Task HandleApi(Func<Task> apiCall, string loadingText = null)
         {
-            
             IProgressDialog loadingDialog = null;
             if (loadingText != null)
             {
@@ -64,12 +63,12 @@ namespace Eindwerk.Views
 
         private void GoToNoNetworkPage()
         {
-            Navigation.PushAsync(new NoNetworkPage());
+            Navigation.PushModalAsync(new NoNetworkPage(), false);
         }
 
         private void GoToGenericErrorPage()
         {
-            Navigation.PushAsync(new ErrorPage());
+            Navigation.PushModalAsync(new ErrorPage(), false);
         }
 
         #endregion
