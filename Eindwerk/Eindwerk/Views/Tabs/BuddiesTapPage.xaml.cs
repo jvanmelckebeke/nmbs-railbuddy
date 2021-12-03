@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Eindwerk.Components;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ZXing.Mobile;
+using ZXing.Net.Mobile.Forms;
 
 namespace Eindwerk.Views.Tabs
 {
@@ -24,7 +28,6 @@ namespace Eindwerk.Views.Tabs
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Task.Run(SetupFriendsAsync).Wait();
             Debug.WriteLine($"Profile in buddy tap page: {Profile}");
         }
 
@@ -37,7 +40,8 @@ namespace Eindwerk.Views.Tabs
             Debug.WriteLine($"{Friends.Count} friends");
         }
 
-        private async void SetupFriendsAsync()
+
+        protected override async Task SetupData()
         {
             Friends = await UserService.GetFriendsAsync();
         }
@@ -54,7 +58,54 @@ namespace Eindwerk.Views.Tabs
                     "Find by email",
                     "Scan a buddy QR code");
 
-            // todo
+            if (action == "find by email")
+            {
+                Debug.WriteLine("not yet implemented");
+                return;
+            }
+
+            if (action == "Scan a buddy QR code")
+            {
+                try
+                {
+                    MobileBarcodeScanningOptions options = new MobileBarcodeScanningOptions()
+                    {
+                        AutoRotate = false,
+                        UseNativeScanning = true,
+                        TryHarder = true
+                    };
+
+                    ZXingDefaultOverlay overlay = new ZXingDefaultOverlay()
+                    {
+                        TopText = "Buddy QR code scan",
+                        BottomText = "Please Wait...."
+                    };
+
+                    ZXingScannerPage qrScanner = new ZXingScannerPage(options, overlay);
+
+                    
+                    await Navigation.PushModalAsync(qrScanner);
+
+                    qrScanner.OnScanResult += (scanResult) =>
+                    {
+                        qrScanner.IsScanning = false;
+                        AddFriend(scanResult.Text);
+                        Device.BeginInvokeOnMainThread(() => Navigation.PopModalAsync());
+                    };
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    throw;
+                }
+            }
+        }
+
+        private async void AddFriend(string profileId)
+        {
+            Debug.WriteLine($"adding friend with profileId {profileId}");
+            FriendRequest response = await UserService.AddFriendAsync(profileId);
+            Debug.WriteLine(response);
         }
     }
 }

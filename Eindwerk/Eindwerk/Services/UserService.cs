@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
@@ -55,6 +56,10 @@ namespace Eindwerk.Services
 
             return friends;
         }
-        
+
+        public async Task<FriendRequest> AddFriendAsync(string profileId)
+        {
+            return await _userRepository.AddFriendAsync(profileId);
+        }
     }
 }

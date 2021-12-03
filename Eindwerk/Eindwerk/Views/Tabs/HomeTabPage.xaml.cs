@@ -37,7 +37,7 @@ namespace Eindwerk.Views.Tabs
 
         #region event handlers
 
-        private async void OnStartTravelClicked(object sender, EventArgs e)
+        private void OnStartTravelClicked(object sender, EventArgs e)
         {
             GoToPrepareRoute();
         }

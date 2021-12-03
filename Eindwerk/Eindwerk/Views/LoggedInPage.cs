@@ -23,16 +23,14 @@ namespace Eindwerk.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Task.Run(SetupProfile).Wait();
+            SetupProfile();
         }
 
-        private async Task SetupProfile()
+        private async void SetupProfile()
         {
             AuthenticationService = new AuthenticationService(Tokens);
             UserService = AuthenticationService.CreateWithTokens<UserService>();
-
-
-            await HandleApi(async () => { Profile = await UserService.GetOwnUserProfileAsync(); });
+            Profile = await UserService.GetOwnUserProfileAsync();
 
             Debug.WriteLine($"profile: {Profile}");
 
@@ -43,7 +41,8 @@ namespace Eindwerk.Views
             }
             else
             {
-                await HandleApi(SetupVisualTask);
+                await SetupData();
+                SetupVisual();
             }
         }
 
@@ -51,10 +50,9 @@ namespace Eindwerk.Views
         {
         }
 
-        private Task SetupVisualTask()
+        protected virtual async Task SetupData()
         {
-            SetupVisual();
-            return Task.FromResult("whatever");
+            await Task.FromResult("waw");
         }
     }
 }

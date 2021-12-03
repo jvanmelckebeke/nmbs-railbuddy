@@ -196,6 +196,7 @@ namespace Backend
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
+            log.LogDebug("body: {body}", req.Body);
             FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
 
             log.LogDebug("running friend action {action} on user with profile id {profileid}", action, profileId);

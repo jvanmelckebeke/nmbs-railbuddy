@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
@@ -20,7 +22,18 @@ namespace Eindwerk.Repository
         {
             DtoList<UserProfile> ret = await DoGetRequest<DtoList<UserProfile>>($"{BASEURI}/user/{profileId}/friends");
 
-            return new List<UserProfile>(ret);
+            Debug.WriteLine("got friends");
+            return ret == null ? new List<UserProfile>() : ret.ToList();
+        }
+
+        public async Task<FriendRequest> AddFriendAsync(string profileId)
+        {
+            FriendRequest ret = await DoPutRequest<FriendRequest>($"{BASEURI}/user/{profileId}/friend", new
+            {
+                Action = "Request"
+            });
+
+            return ret;
         }
     }
 }

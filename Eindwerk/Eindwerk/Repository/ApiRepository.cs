@@ -150,9 +150,10 @@ namespace Eindwerk.Repository
         {
             if (debugCall) Debug.WriteLine($"response code: {response.StatusCode}");
 
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode.ToString().StartsWith("5"))
             {
                 Debug.WriteLine(response);
+                
                 throw new Exception("something went wrong with the API");
             }
 
