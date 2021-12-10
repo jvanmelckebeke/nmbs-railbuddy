@@ -22,9 +22,7 @@ namespace Eindwerk.Views.Tabs
         protected override void SetupVisual()
         {
             LblUser.Text = $"Hi, {Profile.Username}!";
-            ImgAvatar.Source = ImageSource.FromUri(new Uri(Profile.AvatarUrl));
-
-            ImgLogout.Source = AssetHelper.GetIcon("logout.png");
+            ImgAvatar.Source = Profile.Avatar;
         }
 
         private void SetupListeners()

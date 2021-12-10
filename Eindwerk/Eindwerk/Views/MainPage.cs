@@ -1,4 +1,5 @@
-﻿using Eindwerk.Models;
+﻿using Eindwerk.Assets;
+using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Tools;
 using Eindwerk.Views.Tabs;
@@ -21,14 +22,14 @@ namespace Eindwerk.Views
             SelectedTabColor = Color.FromHex("#0169b2");
 
             Children.Add(new NavigationPage(new HomeTabPage(tokens))
-                {Title = "Home", IconImageSource = AssetHelper.GetIcon("train.png")});
+                {Title = "Home", IconImageSource = BlackIcon.Train});
             Children.Add(new NavigationPage(new BuddiesTapPage(tokens))
-                {Title = "Buddies", IconImageSource = AssetHelper.GetIcon("buddies.png")});
+                {Title = "Buddies", IconImageSource = BlackIcon.Buddies});
             Children.Add(new NavigationPage(new SeatTapPage(tokens))
-                {Title = "Seat", IconImageSource = AssetHelper.GetIcon("seat.png")});
+                {Title = "Seat", IconImageSource = BlackIcon.Seat});
             Children.Add(new ProfileTapPage(tokens)
-                {Title = "Profile", IconImageSource = AssetHelper.GetIcon("account.png")});
-            
+                {Title = "Profile", IconImageSource = BlackIcon.Account});
+
 
             NavigationPage.SetHasNavigationBar(this, false);
         }

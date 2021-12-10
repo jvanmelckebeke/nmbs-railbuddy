@@ -17,11 +17,9 @@ namespace Eindwerk.Views.Error
         {
             InitializeComponent();
 
-            ImgError.Source = AssetHelper.GetIcon("fail.png");
-
             TapGestureRecognizer pageTapGesture = new TapGestureRecognizer();
             pageTapGesture.Tapped += OnPageTapped;
-            
+
             GrPage.GestureRecognizers.Add(pageTapGesture);
         }
 

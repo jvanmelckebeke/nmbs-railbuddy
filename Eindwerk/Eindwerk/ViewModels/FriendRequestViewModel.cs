@@ -29,10 +29,5 @@ namespace Eindwerk.ViewModels
         }
 
         #endregion
-
-
-        public ImageSource AcceptImage => AssetHelper.GetIcon("check.png");
-
-        public ImageSource DenyImage => AssetHelper.GetIcon("close.png");
     }
 }

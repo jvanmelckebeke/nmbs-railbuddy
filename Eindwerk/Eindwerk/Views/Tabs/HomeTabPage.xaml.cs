@@ -18,15 +18,6 @@ namespace Eindwerk.Views.Tabs
 
         protected override void SetupVisual()
         {
-            #region static images
-
-            // ImgAddFavorite.Source = AssetHelper.GetIcon("plus.png");
-
-            #endregion
-
-            #region user text and images
-
-            #endregion
         }
 
 

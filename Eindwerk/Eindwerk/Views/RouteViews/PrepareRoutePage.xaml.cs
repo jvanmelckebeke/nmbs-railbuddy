@@ -136,8 +136,6 @@ namespace Eindwerk.Views.RouteViews
                     BtnDeparture.BackgroundColor = SECONDARY_BG_COLOR;
                     BtnArrival.BackgroundColor = PRIMARY_BG_COLOR;
                     break;
-                default:
-                    break;
             }
         }
 

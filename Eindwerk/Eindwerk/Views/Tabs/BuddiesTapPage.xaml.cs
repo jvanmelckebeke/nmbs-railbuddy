@@ -35,8 +35,6 @@ namespace Eindwerk.Views.Tabs
 
         protected override void SetupVisual()
         {
-            ImGoToFriendRequests.Source = AssetHelper.GetIcon("chevron-right-white.png");
-
             ImgQr.Source = ImageSource.FromUri(new Uri(Profile.QrCodeUrl));
             LstBuddies.ItemsSource = Profile.Friends;
 

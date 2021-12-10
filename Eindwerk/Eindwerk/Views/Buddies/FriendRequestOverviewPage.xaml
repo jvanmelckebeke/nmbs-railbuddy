@@ -5,6 +5,7 @@
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                     xmlns:buddyApi="clr-namespace:Eindwerk.Models.BuddyApi;assembly=Eindwerk"
                     xmlns:viewModels="clr-namespace:Eindwerk.ViewModels;assembly=Eindwerk"
+                    xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.Buddies.FriendRequestOverviewPage" NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <StackLayout Margin="8">
@@ -25,10 +26,10 @@
                                     <Label FontSize="Subtitle" Text="{Binding Email}" />
                                 </StackLayout>
                                 <StackLayout Grid.Column="2" Orientation="Horizontal">
-                                    <ImageButton Source="{Binding AcceptImage}"
+                                    <ImageButton Source="{x:Static assets:WhiteIcon.Check}"
                                                  Aspect="AspectFill" Padding="10" Clicked="HandleAccept"
                                                  BackgroundColor="MediumSeaGreen" />
-                                    <ImageButton Source="{Binding DenyImage}"
+                                    <ImageButton Source="{x:Static assets:WhiteIcon.Close}"
                                                  Aspect="AspectFill" Padding="10" Clicked="HandleDeny"
                                                  BackgroundColor="IndianRed" />
                                 </StackLayout>

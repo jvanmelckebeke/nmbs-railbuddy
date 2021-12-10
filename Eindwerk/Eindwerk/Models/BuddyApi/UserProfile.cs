@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Xamarin.Forms;
 
 namespace Eindwerk.Models.BuddyApi
 {
@@ -38,6 +39,18 @@ namespace Eindwerk.Models.BuddyApi
                 var emailHash = Crypto.ComputeMd5(emailLowercase);
 
                 return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200&qzone=2";
+            }
+        }
+
+        public ImageSource Avatar
+        {
+            get
+            {
+                var avatarUrl = IsFilled()
+                    ? AvatarUrl
+                    : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=200&qzone=2";
+
+                return ImageSource.FromUri(new Uri(avatarUrl));
             }
         }
 

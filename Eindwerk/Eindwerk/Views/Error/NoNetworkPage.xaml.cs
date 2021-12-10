@@ -13,7 +13,6 @@ namespace Eindwerk.Views
         public NoNetworkPage()
         {
             InitializeComponent();
-            ImNoConnection.Source = AssetHelper.GetIcon("no-connection.gif");
 
             TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnPageTapped;

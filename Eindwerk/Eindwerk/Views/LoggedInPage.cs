@@ -53,7 +53,6 @@ namespace Eindwerk.Views
 
         protected virtual async Task SetupData()
         {
-            await Task.FromResult("waw");
         }
     }
 }
