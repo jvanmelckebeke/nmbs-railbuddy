@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
+using Eindwerk.Models.BuddyApi.Friends;
 
 namespace Eindwerk.Repository
 {
@@ -26,12 +27,10 @@ namespace Eindwerk.Repository
             return ret == null ? new List<UserProfile>() : ret.ToList();
         }
 
-        public async Task<FriendRequest> AddFriendAsync(string profileId)
+        public async Task<FriendRequest> DoFriendAction(string profileId, FriendAction action)
         {
-            FriendRequest ret = await DoPutRequest<FriendRequest>($"{BASEURI}/user/{profileId}/friend", new
-            {
-                action = "Request"
-            });
+            FriendRequest ret = await DoPutRequest<FriendRequest>($"{BASEURI}/user/{profileId}/friend",
+                new FriendRequestAction(action));
 
             return ret;
         }

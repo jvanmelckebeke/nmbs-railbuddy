@@ -176,7 +176,6 @@ namespace Backend.services
             if (currentProfile.Friends.Any(friend => friend.UserId == toProfileGuid))
             {
                 _log.LogWarning(logId, "friend request was already accepted");
-                throw new GracefulDuplicateException($"user/{toProfileId}/friend");
             }
 
             UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);

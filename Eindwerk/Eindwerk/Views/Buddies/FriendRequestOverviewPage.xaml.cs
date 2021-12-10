@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
-using Eindwerk.Tools;
-using Eindwerk.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -26,12 +20,7 @@ namespace Eindwerk.Views.Buddies
             base.SetupVisual();
             var friendRequests = Profile.FriendRequestsReceived;
 
-            // this is a bit stupid
-            var viewFriendRequests =
-                friendRequests.Select(friendRequest =>
-                    new FriendRequestViewModel(friendRequest));
-
-            LstBuddyRequest.ItemsSource = viewFriendRequests;
+            LstBuddyRequest.ItemsSource = friendRequests;
 
             SetupHandlers();
         }
@@ -39,26 +28,6 @@ namespace Eindwerk.Views.Buddies
         private void SetupHandlers()
         {
             BtnGoBack.Clicked += OnGoBackClick;
-        }
-
-        private EventHandler CreateAcceptHandler(Friend friendRequest)
-        {
-            return delegate(object sender, EventArgs args)
-            {
-                Debug.WriteLine($"accepting friend request {friendRequest}");
-
-                ConfirmConfig config = new ConfirmConfig()
-                {
-                    Title = $"Add {friendRequest.Username}?",
-                    Message =
-                        $"Are you sure you want to add {friendRequest.Username} ({friendRequest.Email}) to your buddies?",
-                    CancelText = "No",
-                    OkText = "Sure",
-                    OnAction = delegate(bool result) { Debug.WriteLine($"result is {result}"); }
-                };
-
-                UserDialogs.Instance.Confirm(config);
-            };
         }
 
 
@@ -70,50 +39,70 @@ namespace Eindwerk.Views.Buddies
         private void HandleAccept(object sender, EventArgs e)
         {
             ImageButton imageButton = (ImageButton) sender;
-            FriendRequest friendRequest = (FriendRequest) imageButton.BindingContext;
+            FriendRequest request = (FriendRequest) imageButton.BindingContext;
 
-            Debug.WriteLine($"accepting friend request {friendRequest}");
+            Debug.WriteLine($"accepting friend request {request}");
 
-            ConfirmConfig config = new ConfirmConfig()
+            async void ConfirmAction(bool confirm)
             {
-                Title = $"Add {friendRequest.Username}?",
+                if (!confirm) return;
+
+                var req = await UserService.AcceptFriendAsync(request.UserId.ToString());
+
+                UserDialogs.Instance.Toast($"added {req.Username}");
+
+                RefreshProfile();
+            }
+
+            var config = new ConfirmConfig()
+            {
+                Title = $"Add {request.Username}?",
                 Message =
-                    $"Are you sure you want to add {friendRequest.Username} ({friendRequest.Email}) to your buddies?",
+                    $"Are you sure you want to add {request.Username} ({request.Email}) to your buddies?",
                 CancelText = "No",
-                OkText = "Sure",
-                OnAction = HandleConfirmAccept
+                OkText = "Yes",
+                OnAction = ConfirmAction
             };
 
             UserDialogs.Instance.Confirm(config);
-        }
-
-        private void HandleConfirmAccept(bool confirm)
-        {
-            
         }
 
         private void HandleDeny(object sender, EventArgs e)
         {
             ImageButton imageButton = (ImageButton) sender;
-            FriendRequest friendRequest = (FriendRequest) imageButton.BindingContext;
+            FriendRequest request = (FriendRequest) imageButton.BindingContext;
 
-            Debug.WriteLine($"ignoring friend request {friendRequest}");
+            Debug.WriteLine($"ignoring friend request {request}");
+
+            async void ConfirmAction(bool confirm)
+            {
+                if (!confirm) return;
+
+                var req = await UserService.DeleteFriendAsync(request.UserId.ToString());
+
+                if (req == null)
+                {
+                    UserDialogs.Instance.Alert("an error has occured");
+                }
+                else
+                {
+                    UserDialogs.Instance.Toast($"ignored {req.Username}");
+                }
+
+                RefreshProfile();
+            }
 
             var config = new ConfirmConfig()
             {
-                Title = $"Ignore {friendRequest.Username}?",
+                Title = $"Ignore {request.Username}?",
                 Message =
-                    $"Are you sure you want to ignore {friendRequest.Username} ({friendRequest.Email})?",
+                    $"Are you sure you want to ignore {request.Username} ({request.Email})?",
                 CancelText = "No",
                 OkText = "Yes",
-                OnAction = HandleConfirmDeny
+                OnAction = ConfirmAction
             };
 
             UserDialogs.Instance.Confirm(config);
-        }
-
-        private void HandleConfirmDeny(bool confirm)
-        {
         }
     }
 }

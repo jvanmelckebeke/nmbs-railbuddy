@@ -30,7 +30,6 @@ namespace Eindwerk.Views.Tabs
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Debug.WriteLine($"Profile in buddy tap page: {Profile}");
         }
 
         protected override void SetupVisual()
@@ -110,7 +109,7 @@ namespace Eindwerk.Views.Tabs
         private async void AddFriend(string profileId)
         {
             Debug.WriteLine($"adding friend with profileId {profileId}");
-            FriendRequest response = await UserService.AddFriendAsync(profileId);
+            FriendRequest response = await UserService.RequestFriendAsync(profileId);
             Debug.WriteLine(response);
         }
     }

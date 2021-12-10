@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
+using Eindwerk.Models.BuddyApi.Friends;
 using Eindwerk.Repository;
 using Eindwerk.Tools;
 
@@ -57,9 +58,20 @@ namespace Eindwerk.Services
             return friends;
         }
 
-        public async Task<FriendRequest> AddFriendAsync(string profileId)
+        public async Task<FriendRequest> RequestFriendAsync(string friendId)
         {
-            return await _userRepository.AddFriendAsync(profileId);
+            return await _userRepository.DoFriendAction(friendId, FriendAction.Request);
+        }
+
+
+        public async Task<FriendRequest> AcceptFriendAsync(string friendId)
+        {
+            return await _userRepository.DoFriendAction(friendId, FriendAction.Accept);
+        }
+
+        public async Task<FriendRequest> DeleteFriendAsync(string friendId)
+        {
+            return await _userRepository.DoFriendAction(friendId, FriendAction.Delete);
         }
     }
 }

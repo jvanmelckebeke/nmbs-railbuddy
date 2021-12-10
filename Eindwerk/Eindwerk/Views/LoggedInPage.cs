@@ -17,16 +17,19 @@ namespace Eindwerk.Views
         {
             Tokens = tokens;
 
-            SetupProfile();
+            // SetupProfile();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            SetupProfile();
+            if (Profile == null)
+            {
+                RefreshProfile();
+            }
         }
 
-        private async void SetupProfile()
+        private async Task SetupProfile()
         {
             AuthenticationService = new AuthenticationService(Tokens);
             UserService = AuthenticationService.CreateWithTokens<UserService>();
@@ -45,6 +48,14 @@ namespace Eindwerk.Views
                 await SetupData();
                 SetupVisual();
             }
+        }
+
+        protected async void RefreshProfile()
+        {
+            var loader = UserDialogs.Instance.Loading("reloading profile");
+            loader.Show();
+            await SetupProfile();
+            loader.Hide();
         }
 
         protected virtual void SetupVisual()
