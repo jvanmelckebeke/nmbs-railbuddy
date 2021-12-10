@@ -4,10 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend.Domain;
-using Backend.exceptions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Backend.repositories
 {

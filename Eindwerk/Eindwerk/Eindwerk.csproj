@@ -63,6 +63,10 @@
       <EmbeddedResource Include="Assets\Icons\chevron-right.png" />
       <None Remove="Assets\Icons\chevron-right-white.png" />
       <EmbeddedResource Include="Assets\Icons\chevron-right-white.png" />
+      <None Remove="Assets\Icons\check.png" />
+      <EmbeddedResource Include="Assets\Icons\check.png" />
+      <None Remove="Assets\Icons\close.png" />
+      <EmbeddedResource Include="Assets\Icons\close.png" />
     </ItemGroup>
 
     <ItemGroup>

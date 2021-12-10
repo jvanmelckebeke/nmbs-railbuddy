@@ -7,6 +7,17 @@ namespace Eindwerk.Models.BuddyApi
 {
     public class Friend : IDtoModel
     {
+        public Friend()
+        {
+        }
+
+        public Friend(Friend other)
+        {
+            this.UserId = other.UserId;
+            this.Email = other.Email;
+            this.Username = other.Username;
+        }
+
         [JsonProperty("userId")] public Guid UserId { get; set; }
 
         [JsonProperty("email")] public string Email { get; set; }
