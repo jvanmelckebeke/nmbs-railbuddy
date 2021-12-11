@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -203,6 +204,11 @@ namespace Backend
             HttpRequest req, string profileId, ILogger log)
         {
             EventId id = new EventId();
+
+            string content = await new StreamReader(req.Body).ReadToEndAsync();
+            
+            log.LogDebug(id, "incoming data is: {data}", content);
+            
             FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
 
             log.LogDebug(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
