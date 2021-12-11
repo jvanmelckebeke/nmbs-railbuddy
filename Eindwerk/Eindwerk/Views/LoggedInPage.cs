@@ -52,7 +52,7 @@ namespace Eindwerk.Views
 
         protected async void RefreshProfile()
         {
-            var loader = UserDialogs.Instance.Loading("reloading profile");
+            var loader = UserDialogs.Instance.Loading("Loading...");
             loader.Show();
             await SetupProfile();
             loader.Hide();
