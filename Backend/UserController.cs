@@ -69,7 +69,7 @@ namespace Backend
                 TReturn result = await handleRequest(profile);
                 return new ObjectResult(result) {StatusCode = successStatusCode};
             }
-            catch (SecurityTokenExpiredException exp)
+            catch (SecurityTokenExpiredException)
             {
                 return new ObjectResult(new {Message = "Access Token expired"}) {StatusCode = 401};
             }
@@ -205,11 +205,11 @@ namespace Backend
         {
             EventId id = new EventId();
 
-            string content = await new StreamReader(req.Body).ReadToEndAsync();
+            var body = await new StreamReader(req.Body).ReadToEndAsync();
             
-            log.LogDebug(id, "incoming data is: {data}", content);
+            log.LogDebug(id, "incoming data is: {data}", body);
             
-            FriendRequestAction action = await JsonSerializer.DeserializeAsync<FriendRequestAction>(req.Body);
+            FriendRequestAction action =  JsonSerializer.Deserialize<FriendRequestAction>(body);
 
             log.LogDebug(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
