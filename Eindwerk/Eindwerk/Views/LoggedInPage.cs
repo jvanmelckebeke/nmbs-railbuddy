@@ -8,10 +8,10 @@ namespace Eindwerk.Views
 {
     public class LoggedInPage : NetworkDependentPage
     {
-        protected readonly Tokens Tokens;
-        protected AuthenticationService AuthenticationService;
-        protected UserService UserService;
-        protected UserProfile Profile;
+        protected readonly Tokens                Tokens;
+        protected          AuthenticationService AuthenticationService;
+        protected          UserService           UserService;
+        protected          UserProfile           Profile;
 
         protected LoggedInPage(Tokens tokens)
         {
@@ -26,6 +26,20 @@ namespace Eindwerk.Views
             if (Profile == null)
             {
                 RefreshProfile();
+            }
+            else
+            {
+                CheckOwnProfile();
+            }
+        }
+
+        private async void CheckOwnProfile()
+        {
+            var tempProfile = await UserService.GetUserProfileAsync();
+
+            if (Profile == null || tempProfile != Profile)
+            {
+                await SetupProfile();
             }
         }
 
@@ -58,12 +72,8 @@ namespace Eindwerk.Views
             loader.Hide();
         }
 
-        protected virtual void SetupVisual()
-        {
-        }
+        protected virtual void SetupVisual() { }
 
-        protected virtual async Task SetupData()
-        {
-        }
+        protected virtual async Task SetupData() { }
     }
 }

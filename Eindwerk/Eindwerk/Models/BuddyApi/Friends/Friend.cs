@@ -3,7 +3,7 @@ using Eindwerk.Tools;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
-namespace Eindwerk.Models.BuddyApi
+namespace Eindwerk.Models.BuddyApi.Friends
 {
     public class Friend : IDtoModel
     {
@@ -49,5 +49,42 @@ namespace Eindwerk.Models.BuddyApi
         {
             return Email != null;
         }
+
+        #region equality
+
+        protected bool Equals(Friend other)
+        {
+            return UserId.Equals(other.UserId) && Email == other.Email && Username == other.Username;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == this.GetType() && Equals((Friend) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = UserId.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Email != null ? Email.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Username != null ? Username.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Friend left, Friend right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Friend left, Friend right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 }

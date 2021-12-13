@@ -5,6 +5,7 @@
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                     xmlns:buddyApi="clr-namespace:Eindwerk.Models.BuddyApi;assembly=Eindwerk"
                     xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
+                    xmlns:friends="clr-namespace:Eindwerk.Models.BuddyApi.Friends;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.Tabs.BuddiesTapPage" NavigationPage.HasNavigationBar="False"
                     Title="Buddies">
     <ContentPage.Content>
@@ -16,9 +17,9 @@
             <Button x:Name="BtnAddBuddy" Text="Add Train Buddy" BackgroundColor="{DynamicResource PrimaryColor}"
                     TextColor="{DynamicResource PrimaryTextColor}" Margin="0,10" />
             <Label x:Name="LblBuddies" Text="Train Buddies" FontSize="Large" />
-            <ListView x:Name="LstBuddies">
+            <ListView x:Name="LstBuddies" RowHeight="60" HeightRequest="120">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="buddyApi:Friend">
+                    <DataTemplate x:DataType="friends:Friend">
                         <ViewCell>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -32,7 +33,7 @@
                                     <Label FontSize="Subtitle" Text="{Binding Email}" />
                                 </StackLayout>
                                 <StackLayout Grid.Column="2" Orientation="Horizontal">
-                                    <Button Text="c" />
+                                    <Button Text="Delete" Clicked="OnDeleteHandler" />
                                 </StackLayout>
                             </Grid>
                         </ViewCell>

@@ -12,8 +12,39 @@ namespace Eindwerk.Models.BuddyApi.Friends
         {
             Action = action;
         }
+
+        #region equality
+
+        protected bool Equals(FriendRequestAction other)
+        {
+            return Action == other.Action;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == this.GetType() && Equals((FriendRequestAction) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int) Action;
+        }
+
+        public static bool operator ==(FriendRequestAction left, FriendRequestAction right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(FriendRequestAction left, FriendRequestAction right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
-    
+
     [JsonConverter(typeof(StringEnumConverter))]
     public enum FriendAction
     {

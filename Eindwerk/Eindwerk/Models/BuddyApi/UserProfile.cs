@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Eindwerk.Models.BuddyApi.Friends;
 using Eindwerk.Tools;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -75,5 +76,50 @@ namespace Eindwerk.Models.BuddyApi
                    $"{nameof(FriendRequestsReceived)}: {FriendRequestsReceived.Count} requests, " +
                    $"{nameof(FriendRequestsSent)}: {FriendRequestsSent.Count} requests]";
         }
+
+        #region equality
+
+        protected bool Equals(UserProfile other)
+        {
+            return ProfileId.Equals(other.ProfileId) && Username == other.Username && Email == other.Email &&
+                   TargetCity == other.TargetCity && Equals(Friends, other.Friends) &&
+                   Equals(FriendRequestsReceived, other.FriendRequestsReceived) &&
+                   Equals(FriendRequestsSent, other.FriendRequestsSent);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == this.GetType() && Equals((UserProfile) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = ProfileId.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Username != null ? Username.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Email != null ? Email.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TargetCity != null ? TargetCity.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Friends != null ? Friends.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^
+                           (FriendRequestsReceived != null ? FriendRequestsReceived.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (FriendRequestsSent != null ? FriendRequestsSent.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(UserProfile left, UserProfile right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(UserProfile left, UserProfile right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 }

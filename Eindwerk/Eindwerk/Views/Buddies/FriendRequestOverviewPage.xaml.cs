@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
+using Eindwerk.Models.BuddyApi.Friends;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -49,7 +50,7 @@ namespace Eindwerk.Views.Buddies
 
                 var req = await UserService.AcceptFriendAsync(request.UserId.ToString());
 
-                UserDialogs.Instance.Toast($"added {req.Username}");
+                UserDialogs.Instance.Toast($"added {request.Username}");
 
                 RefreshProfile();
             }
