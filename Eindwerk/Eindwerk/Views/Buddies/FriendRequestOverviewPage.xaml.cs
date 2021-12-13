@@ -87,7 +87,7 @@ namespace Eindwerk.Views.Buddies
                 }
                 else
                 {
-                    UserDialogs.Instance.Toast($"ignored {req.Username}");
+                    UserDialogs.Instance.Toast($"ignored {request.Username}");
                 }
 
                 RefreshProfile();

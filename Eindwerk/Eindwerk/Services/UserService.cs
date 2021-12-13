@@ -13,13 +13,11 @@ namespace Eindwerk.Services
     {
         private UserRepository _userRepository;
 
-        private string _ownProfileId;
+        private string      _ownProfileId;
         private UserProfile _ownProfile;
 
 
-        public UserService(string accessToken) : base(accessToken)
-        {
-        }
+        public UserService(string accessToken) : base(accessToken) { }
 
         public async Task<UserProfile> GetUserProfileAsync(string profileId = null)
         {
@@ -58,18 +56,18 @@ namespace Eindwerk.Services
             return friends;
         }
 
-        public async Task<FriendRequest> RequestFriendAsync(string friendId)
+        public async Task<BasicFriendRequestStatus> RequestFriendAsync(string friendId)
         {
             return await _userRepository.DoFriendAction(friendId, FriendAction.Request);
         }
 
 
-        public async Task<FriendRequest> AcceptFriendAsync(string friendId)
+        public async Task<BasicFriendRequestStatus> AcceptFriendAsync(string friendId)
         {
             return await _userRepository.DoFriendAction(friendId, FriendAction.Accept);
         }
 
-        public async Task<FriendRequest> DeleteFriendAsync(string friendId)
+        public async Task<BasicFriendRequestStatus> DeleteFriendAsync(string friendId)
         {
             return await _userRepository.DoFriendAction(friendId, FriendAction.Delete);
         }

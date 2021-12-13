@@ -27,9 +27,9 @@ namespace Eindwerk.Repository
             return ret == null ? new List<UserProfile>() : ret.ToList();
         }
 
-        public async Task<FriendRequest> DoFriendAction(string profileId, FriendAction action)
+        public async Task<BasicFriendRequestStatus> DoFriendAction(string profileId, FriendAction action)
         {
-            FriendRequest ret = await DoPutRequest<FriendRequest>($"{BASEURI}/user/{profileId}/friend",
+            BasicFriendRequestStatus ret = await DoPutRequest<BasicFriendRequestStatus>($"{BASEURI}/user/{profileId}/friend",
                 new FriendRequestAction(action));
 
             return ret;

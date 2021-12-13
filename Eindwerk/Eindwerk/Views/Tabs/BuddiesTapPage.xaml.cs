@@ -55,51 +55,37 @@ namespace Eindwerk.Views.Tabs
 
         private async void OnAddBuddyClick(object sender, EventArgs e)
         {
-            var action =
-                await DisplayActionSheet("Add a buddy", "Cancel", null,
-                    "Find by email",
-                    "Scan a buddy QR code");
-
-            if (action == "find by email")
+            try
             {
-                Debug.WriteLine("not yet implemented");
-                return;
+                var options = new MobileBarcodeScanningOptions()
+                {
+                    AutoRotate = false,
+                    UseNativeScanning = true,
+                    TryHarder = true
+                };
+
+                var overlay = new ZXingDefaultOverlay()
+                {
+                    TopText = "Buddy QR code scan",
+                    BottomText = "Please Wait...."
+                };
+
+                var qrScanner = new ZXingScannerPage(options, overlay);
+
+
+                await Navigation.PushModalAsync(qrScanner);
+
+                qrScanner.OnScanResult += (scanResult) =>
+                {
+                    qrScanner.IsScanning = false;
+                    AddFriend(scanResult.Text);
+                    Device.BeginInvokeOnMainThread(() => Navigation.PopModalAsync());
+                };
             }
-
-            if (action == "Scan a buddy QR code")
+            catch (Exception exception)
             {
-                try
-                {
-                    MobileBarcodeScanningOptions options = new MobileBarcodeScanningOptions()
-                    {
-                        AutoRotate = false,
-                        UseNativeScanning = true,
-                        TryHarder = true
-                    };
-
-                    ZXingDefaultOverlay overlay = new ZXingDefaultOverlay()
-                    {
-                        TopText = "Buddy QR code scan",
-                        BottomText = "Please Wait...."
-                    };
-
-                    ZXingScannerPage qrScanner = new ZXingScannerPage(options, overlay);
-
-
-                    await Navigation.PushModalAsync(qrScanner);
-
-                    qrScanner.OnScanResult += (scanResult) =>
-                    {
-                        qrScanner.IsScanning = false;
-                        AddFriend(scanResult.Text);
-                        Device.BeginInvokeOnMainThread(() => Navigation.PopModalAsync());
-                    };
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                    throw;
-                }
+                Console.WriteLine(exception);
+                throw;
             }
         }
 
@@ -115,7 +101,7 @@ namespace Eindwerk.Views.Tabs
                 if (confirmed)
                 {
                     Debug.WriteLine($"adding friend with profileId {profileId}");
-                    FriendRequest response = await UserService.RequestFriendAsync(profileId);
+                    BasicFriendRequestStatus response = await UserService.RequestFriendAsync(profileId);
                     Debug.WriteLine(response);
                     UserDialogs.Instance.Toast($"friend request sent to {profile.Username}");
                 }

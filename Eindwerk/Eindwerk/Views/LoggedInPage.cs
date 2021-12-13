@@ -29,18 +29,13 @@ namespace Eindwerk.Views
             }
             else
             {
-                CheckOwnProfile();
+                QuietRefreshProfile();
             }
         }
 
-        private async void CheckOwnProfile()
+        private async void QuietRefreshProfile()
         {
-            var tempProfile = await UserService.GetUserProfileAsync();
-
-            if (Profile == null || tempProfile != Profile)
-            {
-                await SetupProfile();
-            }
+            await SetupProfile();
         }
 
         private async Task SetupProfile()
