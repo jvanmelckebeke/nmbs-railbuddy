@@ -5,11 +5,10 @@ namespace Backend.Domain
 {
     public class Friend
     {
-
         public Friend()
         {
-            
         }
+
         public Friend(UserProfile profile)
         {
             UserId = profile.ProfileId;
@@ -37,8 +36,8 @@ namespace Backend.Domain
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Friend) obj);
+
+            return obj.GetType() == GetType() && Equals((Friend) obj);
         }
 
         public override int GetHashCode()

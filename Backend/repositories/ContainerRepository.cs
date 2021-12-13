@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Backend.Domain;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Serialization.HybridRow.IO;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Backend.repositories
 {
@@ -16,11 +12,10 @@ namespace Backend.repositories
     {
         protected static Container GetContainer(string tableName)
         {
-            var connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
+            string connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
 
-            Debug.WriteLine($"connectionstring: {connectionString}");
-
-            CosmosClient client = new CosmosClient(connectionString);
+            var client = new CosmosClient(connectionString);
+            
             Container container = client.GetContainer("railbuddy", tableName);
             Debug.WriteLine(container);
             return container;

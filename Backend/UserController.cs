@@ -49,7 +49,7 @@ namespace Backend
             bool acceptRefreshToken = false)
         {
             string accessToken = req.Headers["Authorization"];
-            EventId id = new EventId();
+            var id = new EventId();
 
             if (accessToken.StartsWith("Bearer "))
             {
@@ -202,22 +202,24 @@ namespace Backend
 
 
         [FunctionName("AddFriendRequest")]
-        public static async Task<IActionResult> PutFriendRequest(
+        public static async Task<IActionResult> HandleFriendRequest(
             [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user/{profileid}/friend")]
             HttpRequest req, string profileId, ILogger log)
         {
-            EventId id = new EventId();
+            var id = new EventId();
 
-            var body = await new StreamReader(req.Body).ReadToEndAsync();
-            
-            log.LogDebug(id, "incoming data is: {data}", body);
-            
-            FriendRequestAction action = JsonConvert.DeserializeObject<FriendRequestAction>(body);
+            string body = await new StreamReader(req.Body).ReadToEndAsync();
 
-            log.LogInformation(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
+            log.LogDebug(id, "incoming data is: {body}", body);
+
+            var action = JsonConvert.DeserializeObject<FriendRequestAction>(body);
+
+            log.LogInformation(id, "running friend action {action} on user with profile id {profileId}", action,
+                               profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
-                UserService service = new UserService(log);
+                var service = new UserService(log);
+                
                 return action.Action switch
                 {
                     FriendAction.Request => service.CreateFriendRequestAsync(currentProfile, profileId),
