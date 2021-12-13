@@ -57,7 +57,7 @@ namespace Backend.services
 
         public async Task<UserProfileResponse> GetProfileByProfileIdAsync(Guid profileGuid)
         {
-            _log.LogDebug("finding profile by guid profileId {0}", profileGuid);
+            _log.LogInformation("finding profile by guid profileId {0}", profileGuid);
             UserProfileResponse resp = ConvertToResponse(await UserRepository.FindOneByProfileIdAsync(profileGuid));
             _log.LogDebug("found userprofile {}", resp);
             return resp;
@@ -65,7 +65,7 @@ namespace Backend.services
 
         public async Task<List<Friend>> GetFriendsAsync(string profileId)
         {
-            _log.LogDebug("getting friends for profileId {}", profileId);
+            _log.LogInformation("getting friends for profileId {}", profileId);
             Guid profileGuid = Guid.Parse(profileId);
 
             UserProfile profile = await UserRepository.FindOneByProfileIdAsync(profileGuid);
@@ -80,7 +80,8 @@ namespace Backend.services
             string friendId)
         {
             EventId logId = new EventId();
-            _log.LogDebug(logId, "getting friend request status for current profile {0} with friend profileId {1}",
+            _log.LogInformation(logId,
+                "getting friend request status for current profile {0} with friend profileId {1}",
                 currentProfile, friendId);
             Guid friendGuid = Guid.Parse(friendId);
 
@@ -91,7 +92,7 @@ namespace Backend.services
             }
 
             foreach (FriendRequest request in currentProfile.FriendRequestsSent.Where(request =>
-                request.UserId == friendGuid))
+                         request.UserId == friendGuid))
             {
                 _log.LogDebug(logId, "friend request status was sent from current profile and has status: {}",
                     request.FriendRequestStatus);
@@ -110,7 +111,7 @@ namespace Backend.services
             string toProfileId)
         {
             EventId logId = new EventId();
-            _log.LogDebug(logId, "creating friend request from current profile {0} to profile with id {1}",
+            _log.LogInformation(logId, "creating friend request from current profile {0} to profile with id {1}",
                 currentProfile, toProfileId);
             Guid toProfileGuid = Guid.Parse(toProfileId);
             UserProfile toProfile = await UserRepository.FindOneByProfileIdAsync(toProfileGuid);
@@ -195,11 +196,18 @@ namespace Backend.services
 
             _log.LogDebug(logId, "adding friends to friend properties");
 
-            Friend current = ClassMapping.ConvertDomainDto<UserProfile, Friend>(currentProfile);
-            Friend to = ClassMapping.ConvertDomainDto<UserProfile, Friend>(toProfile);
+            Friend current = new Friend(currentProfile);
+            Friend to = new Friend(toProfile);
 
-            toProfile.Friends.Add(current);
-            currentProfile.Friends.Add(to);
+            if (!toProfile.Friends.Contains(current))
+            {
+                toProfile.Friends.Add(current);
+            }
+
+            if (!currentProfile.Friends.Contains(to))
+            {
+                currentProfile.Friends.Add(to);
+            }
 
             _log.LogDebug(logId, "updating profiles");
             _log.LogDebug(logId, "updating current profile");

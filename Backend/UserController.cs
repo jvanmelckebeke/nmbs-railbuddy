@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Backend.Domain;
@@ -15,6 +16,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Backend
 {
@@ -209,9 +212,9 @@ namespace Backend
             
             log.LogDebug(id, "incoming data is: {data}", body);
             
-            FriendRequestAction action =  JsonSerializer.Deserialize<FriendRequestAction>(body);
+            FriendRequestAction action = JsonConvert.DeserializeObject<FriendRequestAction>(body);
 
-            log.LogDebug(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
+            log.LogInformation(id, "running friend action {action} on user with profile id {profileid}", action, profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
                 UserService service = new UserService(log);
@@ -231,7 +234,7 @@ namespace Backend
             HttpRequest req, string profileId, ILogger log)
         {
             EventId id = new EventId();
-            log.LogDebug(id, "getting friend status of user with profile id {user}", profileId);
+            log.LogInformation(id, "getting friend status of user with profile id {user}", profileId);
             return await AuthorizedHelper(
                 profile => new UserService(log).GetFriendRequestStatus(profile, profileId),
                 req, log);

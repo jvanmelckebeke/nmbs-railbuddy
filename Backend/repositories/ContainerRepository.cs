@@ -18,6 +18,8 @@ namespace Backend.repositories
         {
             var connectionString = Environment.GetEnvironmentVariable("DatabaseConnectionString");
 
+            Debug.WriteLine($"connectionstring: {connectionString}");
+
             CosmosClient client = new CosmosClient(connectionString);
             Container container = client.GetContainer("railbuddy", tableName);
             Debug.WriteLine(container);

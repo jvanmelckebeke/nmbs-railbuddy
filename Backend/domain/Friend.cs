@@ -5,6 +5,18 @@ namespace Backend.Domain
 {
     public class Friend
     {
+
+        public Friend()
+        {
+            
+        }
+        public Friend(UserProfile profile)
+        {
+            UserId = profile.ProfileId;
+            Email = profile.Email;
+            Username = profile.Username;
+        }
+
         [JsonProperty("userId")] public Guid UserId { get; set; }
 
         [JsonProperty("email")] public string Email { get; set; }
@@ -14,6 +26,34 @@ namespace Backend.Domain
         public override string ToString()
         {
             return $"Friend[{nameof(UserId)}: {UserId}, {nameof(Email)}: {Email}, {nameof(Username)}: {Username}]";
+        }
+
+        protected bool Equals(Friend other)
+        {
+            return UserId.Equals(other.UserId) && Email == other.Email && Username == other.Username;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Friend) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(UserId, Email, Username);
+        }
+
+        public static bool operator ==(Friend left, Friend right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Friend left, Friend right)
+        {
+            return !Equals(left, right);
         }
     }
 }
