@@ -8,10 +8,10 @@ namespace Eindwerk.Views
 {
     public class LoggedInPage : NetworkDependentPage
     {
-        protected readonly Tokens                Tokens;
-        protected          AuthenticationService AuthenticationService;
-        protected          UserService           UserService;
-        protected          UserProfile           Profile;
+        protected Tokens                Tokens;
+        protected AuthenticationService AuthenticationService;
+        protected UserService           UserService;
+        protected UserProfile           Profile;
 
         protected LoggedInPage(Tokens tokens)
         {
@@ -48,9 +48,20 @@ namespace Eindwerk.Views
 
             if (Profile == null)
             {
-                UserDialogs.Instance.Alert("the session has expired", "Invalid profile", "Ok");
-                AuthenticationService.Logout();
-                Navigation.PopToRootAsync();
+                Tokens newTokens = await AuthenticationService.TryRefreshTokensAsync();
+
+                if (newTokens == null)
+                {
+                    await UserDialogs.Instance.AlertAsync("the session has expired", "Invalid profile", "Ok");
+                    AuthenticationService.Logout();
+                    await Navigation.PopToRootAsync();
+                }
+                else
+                {
+                    Tokens = newTokens;
+                    UserService = AuthenticationService.CreateWithTokens<UserService>();
+                    Profile = await UserService.GetOwnUserProfileAsync();
+                }
             }
             else
             {

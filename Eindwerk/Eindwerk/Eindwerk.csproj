@@ -71,6 +71,10 @@
       <EmbeddedResource Include="Assets\Sources\Icons\Black\star.png" />
       <None Remove="Assets\Sources\Icons\Black\star-outline.png" />
       <EmbeddedResource Include="Assets\Sources\Icons\Black\star-outline.png" />
+      <None Remove="Assets\Sources\Icons\Black\dots-vertical.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\dots-vertical.png" />
+      <None Remove="Assets\Sources\Icons\Black\transit-connection.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\transit-connection.png" />
     </ItemGroup>
 
     <ItemGroup>

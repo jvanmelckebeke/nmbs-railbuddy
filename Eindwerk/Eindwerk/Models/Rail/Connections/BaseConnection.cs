@@ -28,8 +28,8 @@ namespace Eindwerk.Models.Rail.Connections
 
         public List<StationStop> Stops => _packedStops?.Stops;
 
-        public bool HasStops  => _packedStops != null;
-        public string StopsText => HasStops ? $"{Stops.Count} stops" : "no stops";
+        public bool   HasStops  => _packedStops != null;
+        public string StopsText => HasStops ? $"{Stops.Count} stop{(Stops.Count > 1 ? "s" : "")}" : "no stops";
 
         [JsonProperty("direction")] private PackedDirection _packedDirection;
 
@@ -37,7 +37,8 @@ namespace Eindwerk.Models.Rail.Connections
 
 
         public string Name => $"{Vehicle.FormattedName} to {Direction}";
-        
+
+
         public override string ToString()
         {
             return

@@ -10,6 +10,11 @@ namespace Eindwerk.Models.Rail
         [JsonProperty("normal")]
         [JsonConverter(typeof(RailConverter))]
         public bool IsUsual { get; set; }
+        
+        
+        public string TrackText => $"Track {Name}";
+
+        public string TrackColor => IsUsual ? "Black" : "Red";
 
         public override string ToString()
         {

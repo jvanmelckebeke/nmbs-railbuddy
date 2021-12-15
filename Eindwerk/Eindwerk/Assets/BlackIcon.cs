@@ -23,5 +23,8 @@ namespace Eindwerk.Assets
 
         public static ImageSource Star => GetBlackIcon("star.png");
         public static ImageSource StarOutline => GetBlackIcon("star-outline.png");
+
+        public static ImageSource DotsVertical => GetBlackIcon("dots-vertical.png");
+        public static ImageSource TransitConnection => GetBlackIcon("transit-connection.png");
     }
 }
