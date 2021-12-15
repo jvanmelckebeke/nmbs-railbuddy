@@ -25,6 +25,8 @@ namespace Eindwerk.Models.Rail.Connections
 
         [JsonProperty("stationinfo")] public Station Station;
 
+        public string StationName => Station.Name;
+
         public override string ToString()
         {
             return $"ViaConnection[{nameof(TimeBetween)}: {TimeBetween:g}, " +

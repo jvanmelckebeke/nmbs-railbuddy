@@ -12,6 +12,9 @@ namespace Eindwerk.Models.Rail
 
         [JsonProperty("number")] public string VehicleNumber { get; set; }
 
+
+        public string FormattedName => $"{VehicleType} {VehicleNumber}";
+
         public override string ToString()
         {
             return

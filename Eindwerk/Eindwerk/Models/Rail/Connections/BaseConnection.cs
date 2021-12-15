@@ -26,12 +26,18 @@ namespace Eindwerk.Models.Rail.Connections
 
         [JsonProperty("stops")] private PackedStop _packedStops;
 
-        public List<StationStop> Stops => _packedStops.Stops;
+        public List<StationStop> Stops => _packedStops?.Stops;
+
+        public bool HasStops  => _packedStops != null;
+        public string StopsText => HasStops ? $"{Stops.Count} stops" : "no stops";
 
         [JsonProperty("direction")] private PackedDirection _packedDirection;
 
         public string Direction => _packedDirection.DirectionName;
 
+
+        public string Name => $"{Vehicle.FormattedName} to {Direction}";
+        
         public override string ToString()
         {
             return
@@ -43,6 +49,47 @@ namespace Eindwerk.Models.Rail.Connections
                 $"{nameof(Stops)}: {(_packedStops == null ? "no stops" : $"{Stops.Count} stops")}, " +
                 $"{nameof(Direction)}: {Direction}]";
         }
+
+        #region equality
+
+        protected bool Equals(BaseConnection other)
+        {
+            return Delay.Equals(other.Delay) && Time.Equals(other.Time) && Equals(Vehicle, other.Vehicle) &&
+                   Equals(Platform, other.Platform) && Canceled == other.Canceled;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((BaseConnection) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = Delay.GetHashCode();
+                hashCode = (hashCode * 397) ^ Time.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Vehicle != null ? Vehicle.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Platform != null ? Platform.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Canceled.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(BaseConnection left, BaseConnection right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(BaseConnection left, BaseConnection right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 
     internal class PackedDirection

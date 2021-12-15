@@ -12,9 +12,8 @@ namespace Eindwerk.Repository
 {
     public class RailApiRepository : ApiRepository
     {
-        public RailApiRepository() : base("https://api.irail.be")
-        {
-        }
+        private const bool DEBUG_RAIL = true;
+        public RailApiRepository() : base("https://api.irail.be") { }
 
         protected override HttpClient GetClient()
         {
@@ -27,9 +26,9 @@ namespace Eindwerk.Repository
         private async Task<TContent> GetRailData<TPackedResponse, TContent>(string path, IGetRequest parameters = null)
             where TPackedResponse : IPackedResponse<TContent>
         {
-            var url = PrepareUrl(path, parameters);
+            string url = PrepareUrl(path, parameters);
 
-            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, false);
+            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, DEBUG_RAIL);
 
             if (packedResponse != null && packedResponse.IsFilled())
             {

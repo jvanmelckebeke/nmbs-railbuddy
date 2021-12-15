@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                    xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
+                    xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
+                    xmlns:connections="clr-namespace:Eindwerk.Models.Rail.Connections;assembly=Eindwerk"
+                    x:Class="Eindwerk.Views.RouteViews.RouteOverviewPage"
+                    Title="Connection overview"
+                    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout Margin="5" x:DataType="rail:Route">
+
+            <!-- <== header -->
+            <StackLayout Orientation="Horizontal" Margin="0,0,0,5">
+                <Label Text="{Binding Name}" FontSize="Large" FontAttributes="Bold" />
+                <Image Source="{Binding FavoriteImageSource}" Aspect="AspectFill" HorizontalOptions="EndAndExpand"
+                       WidthRequest="30" />
+            </StackLayout>
+            <BoxView HeightRequest="4" BackgroundColor="{Binding RouteColor}" Margin="0,5" />
+            <!-- header ==> -->
+
+
+            <!-- <== departure connection -->
+            <!-- <== starting station text -->
+            <Label Text="{Binding DepartureConnection.Station.Name}"
+                   TextColor="{DynamicResource PrimaryColor}"
+                   FontSize="Medium"
+                   FontAttributes="Bold" />
+            <!-- starting station text ==> -->
+            <Label IsVisible="{Binding HasNoVias}" Text="{Binding DepartureConnection.Name}" Margin="15,0"/>
+            <!-- departure connection ==> -->
+            
+            <!-- <== vias -->
+            <CollectionView ItemsSource="{Binding ViaConnections}" IsVisible="{Binding HasVias}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="connections:ViaConnection">
+                        <StackLayout Orientation="Vertical" Margin="10,0"  >
+                            <BoxView HeightRequest="10" HorizontalOptions="FillAndExpand" BackgroundColor="HotPink"/>
+                            <!-- <== arriving connection -->
+                            <Label Text="{Binding Arrival.Name}" />
+                            <Label Text="{Binding Arrival.StopsText}" FontAttributes="Italic" Margin="5,0" />
+                            <CollectionView IsVisible="{Binding Arrival.HasStops}"
+                                            ItemsSource="{Binding Arrival.Stops}"
+                                            Margin="10,0">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="stations:StationStop">
+                                        <StackLayout>
+                                            <Label Text="{Binding Station.Name}" />
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <!-- arriving connection ==> -->
+
+                            <!-- <== change station -->
+                            <Label Text="{Binding StationName}" FontAttributes="Bold" FontSize="Medium" />
+                            <!-- change station ==> -->
+
+                            <!-- <== departing connection  -->
+                            <Label Text="{Binding Departure.Name}" Margin="5,0"/>
+                            <Label Text="{Binding Departure.StopsText}" FontAttributes="Italic" Margin="5,0" />
+                            <CollectionView IsVisible="{Binding Departure.HasStops}"
+                                            ItemsSource="{Binding Departure.Stops}"
+                                            Margin="10,0" MinimumHeightRequest="2">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="stations:StationStop">
+                                        <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding Station.Name}" />
+                                            
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <BoxView HeightRequest="10" HorizontalOptions="FillAndExpand" BackgroundColor="Cyan"/>
+                            <!-- departing connection ==> -->
+                            
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!-- vias ==> -->
+            
+            
+            <Label Text="{Binding ArrivalConnection.StopsText}" />
+            <CollectionView IsVisible="{Binding ArrivalConnection.HasStops}"
+                            ItemsSource="{Binding ArrivalConnection.Stops}" Margin="10" BackgroundColor="HotPink">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="stations:StationStop">
+                        <StackLayout Orientation="Vertical">
+                            <Label Text="weaaaa" />
+                            <Label Text="{Binding Station.Name}" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="{Binding ArrivalConnection.Station.Name}" TextColor="{DynamicResource PrimaryColor}"
+                   FontAttributes="Bold" FontSize="Medium" />
+        </StackLayout>
+    </ContentPage.Content>
+</views:LoggedInPage>

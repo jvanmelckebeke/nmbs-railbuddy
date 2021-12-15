@@ -5,23 +5,25 @@ using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.BuddyApi.Friends;
+using Xamarin.Forms;
 
 namespace Eindwerk.Repository
 {
     public class UserRepository : RailBuddyApiRepository
     {
-        public UserRepository(string accessToken) : base(accessToken)
-        {
-        }
+        const bool DEBUG_USER = false;
+
+        public UserRepository(string accessToken) : base(accessToken) { }
 
         public Task<UserProfile> GetUserProfileAsync(string profileId)
         {
-            return DoGetRequest<UserProfile>($"{BASEURI}/user/{profileId}");
+            return DoGetRequest<UserProfile>($"{BASEURI}/user/{profileId}", DEBUG_USER);
         }
 
         public async Task<List<UserProfile>> GetFriendsAsync(string profileId)
         {
-            DtoList<UserProfile> ret = await DoGetRequest<DtoList<UserProfile>>($"{BASEURI}/user/{profileId}/friends");
+            DtoList<UserProfile> ret =
+                await DoGetRequest<DtoList<UserProfile>>($"{BASEURI}/user/{profileId}/friends", DEBUG_USER);
 
             Debug.WriteLine("got friends");
             return ret == null ? new List<UserProfile>() : ret.ToList();
@@ -29,8 +31,8 @@ namespace Eindwerk.Repository
 
         public async Task<BasicFriendRequestStatus> DoFriendAction(string profileId, FriendAction action)
         {
-            BasicFriendRequestStatus ret = await DoPutRequest<BasicFriendRequestStatus>($"{BASEURI}/user/{profileId}/friend",
-                new FriendRequestAction(action));
+            BasicFriendRequestStatus ret = await DoPutRequest<BasicFriendRequestStatus>(
+                $"{BASEURI}/user/{profileId}/friend", new FriendRequestAction(action), DEBUG_USER);
 
             return ret;
         }

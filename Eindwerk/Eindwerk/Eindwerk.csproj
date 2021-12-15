@@ -67,6 +67,10 @@
       <None Remove="Assets\Icons\chevron-right-white.png" />
       <None Remove="Assets\Icons\check.png" />
       <None Remove="Assets\Icons\close.png" />
+      <None Remove="Assets\Sources\Icons\Black\star.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\star.png" />
+      <None Remove="Assets\Sources\Icons\Black\star-outline.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\star-outline.png" />
     </ItemGroup>
 
     <ItemGroup>

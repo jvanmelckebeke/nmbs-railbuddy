@@ -20,5 +20,8 @@ namespace Eindwerk.Assets
 
         public static ImageSource Seat => GetBlackIcon("seat.png");
         public static ImageSource Train => GetBlackIcon("train.png");
+
+        public static ImageSource Star => GetBlackIcon("star.png");
+        public static ImageSource StarOutline => GetBlackIcon("star-outline.png");
     }
 }

@@ -4,6 +4,8 @@ namespace Eindwerk.Repository
 {
     public class RailBuddyApiRepository : ApiRepository
     {
+       
+        
         /**
          * <value>the JWT Access Token to use in requests</value>
          */

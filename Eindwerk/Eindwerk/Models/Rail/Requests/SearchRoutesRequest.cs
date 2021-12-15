@@ -25,7 +25,7 @@ namespace Eindwerk.Models.Rail.Requests
             var toStationPart = $"to={ToStation.Id}";
             var timeSelectionPart = $"timesel={(TimeSelection == TimeSelection.Arrival ? "arrival" : "departure")}";
             var datePart = $"date={Time:ddMMyy}";
-            var timePart = $"time={Time:hhmm}";
+            var timePart = $"time={Time:HHmm}";
 
             return $"{fromStationPart}&{toStationPart}&{timeSelectionPart}&{datePart}&{timePart}";
         }

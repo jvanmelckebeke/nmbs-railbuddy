@@ -12,5 +12,37 @@ namespace Eindwerk.Models.Rail.Connections
         {
             return $"EndPointConnection[{nameof(Station)}: {Station}, parent: {base.ToString()}]";
         }
+
+        #region equality
+
+        protected bool Equals(EndPointConnection other)
+        {
+            return Equals(Station, other.Station);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((EndPointConnection) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Station != null ? Station.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(EndPointConnection left, EndPointConnection right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(EndPointConnection left, EndPointConnection right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 }
