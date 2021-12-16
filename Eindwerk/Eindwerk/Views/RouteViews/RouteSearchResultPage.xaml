@@ -27,7 +27,7 @@
                     <Label x:Name="LblTime" FontSize="Medium" />
                 </StackLayout>
             </StackLayout>
-            <ListView Grid.Row="1" x:Name="LstRoutes" RowHeight="100">
+            <ListView Grid.Row="1" x:Name="LstRoutes" RowHeight="100" ItemTapped="OnRouteSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="rail:Route">
                         <ViewCell>

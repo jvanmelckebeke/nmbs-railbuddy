@@ -23,13 +23,8 @@ namespace Eindwerk.Views.Buddies
 
             LstBuddyRequest.ItemsSource = friendRequests;
 
-            SetupHandlers();
         }
-
-        private void SetupHandlers()
-        {
-            BtnGoBack.Clicked += OnGoBackClick;
-        }
+        
 
 
         private void OnGoBackClick(object sender, EventArgs e)

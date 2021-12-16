@@ -32,13 +32,11 @@ namespace Eindwerk.Views.RouteViews
             LblTime.Text = _originalRoutesRequest.Time.ToString("H:mm");
 
             LstRoutes.ItemsSource = _connections;
-
-            LstRoutes.ItemSelected += OnRouteSelected;
         }
 
-        private async void OnRouteSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void OnRouteSelected(object sender, ItemTappedEventArgs e)
         {
-            Route r = (Route) LstRoutes.SelectedItem;
+            Route r = (Route) e.Item;
 
             if (r != null)
             {

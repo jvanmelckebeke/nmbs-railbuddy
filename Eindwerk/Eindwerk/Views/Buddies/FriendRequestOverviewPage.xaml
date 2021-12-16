@@ -38,7 +38,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="BtnGoBack" Text="Go Back" />
+            <Button Clicked="OnGoBackClick" Text="Go Back" />
         </StackLayout>
     </ContentPage.Content>
 </views:LoggedInPage>

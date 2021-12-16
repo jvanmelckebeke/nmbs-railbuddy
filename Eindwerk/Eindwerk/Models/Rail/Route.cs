@@ -86,6 +86,8 @@ namespace Eindwerk.Models.Rail
         /// <item><description>the arriving vehicle type</description></item>
         /// <item><description>the duration of the travel</description></item>
         /// <item><description>the number of changes</description></item>
+        /// <item><description>the departure minute</description></item>
+        /// <item><description>the arriving minute</description></item>
         /// </list>
         /// </summary>
         public string RouteColor
@@ -95,19 +97,9 @@ namespace Eindwerk.Models.Rail
                 // I love this technique
                 string mdHash =
                     Crypto.ComputeMd5(
-                        $"{Name} {DepartureConnection.Vehicle.VehicleType} {ArrivalConnection.Vehicle.VehicleType} {Duration:c} {NumberOfViaText}");
+                        $"{Name} {DepartureConnection.Vehicle.VehicleType} {ArrivalConnection.Vehicle.VehicleType} {Duration:c} {NumberOfViaText} {DepartureTime.Minute} {ArrivalTime.Minute}");
 
                 return "#" + mdHash.Substring(0, 6);
-            }
-        }
-
-        public IEnumerable<Station> ChangeStations
-        {
-            get
-            {
-                return ViaConnections == null
-                    ? new List<Station>()
-                    : ViaConnections.Select(viaConnection => viaConnection.Station);
             }
         }
 
