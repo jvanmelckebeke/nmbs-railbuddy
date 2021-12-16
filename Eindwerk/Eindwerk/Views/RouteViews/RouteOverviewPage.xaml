@@ -21,6 +21,8 @@
             </StackLayout>
             <BoxView HeightRequest="4" BackgroundColor="{Binding RouteColor}" Margin="0,5" />
             <!-- header ==> -->
+
+
             <ScrollView>
                 <StackLayout Orientation="Vertical" Spacing="0" Margin="0">
                     <!-- <== departure connection -->
@@ -40,11 +42,12 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+
+                            <!-- <== dot + station name -->
                             <Ellipse Grid.Row="0" Grid.Column="0" Aspect="Uniform" WidthRequest="15"
                                      Fill="White"
                                      Stroke="Teal" StrokeThickness="3" />
                             <StackLayout Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-
                                 <Label
                                     Text="{Binding DepartureConnection.Station.Name}"
                                     TextColor="{DynamicResource PrimaryColor}"
@@ -53,15 +56,24 @@
                                 <Label Text="{Binding DepartureConnection.Time,StringFormat='{0:H\:mm}'}"
                                        VerticalTextAlignment="Center" />
                             </StackLayout>
+                            <!-- dot + station name ==> -->
+
                             <StackLayout Grid.Row="1" Grid.Column="1" Spacing="0">
                                 <!-- <== departure connection -->
 
+                                <!-- <=== vehicle compo btn + "IC to xxx" + number of stops -->
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding DepartureConnection.Name}" />
-                                    <Label Text="(" />
-                                    <Label Text="{Binding DepartureConnection.StopsText}" />
-                                    <Label Text=")" />
+                                    <Label
+                                        Text="{Binding DepartureConnection.Name}" />
+                                    <Label Text="{Binding DepartureConnection.StopsText, StringFormat='( {0} )'}" />
                                 </StackLayout>
+                                <!-- vehicle compo btn + "IC to xxx" + number of stops ==> -->
+
+                                <Button Text="View vehicle"
+                                        BackgroundColor="{DynamicResource SecondaryColor}" Margin="0" Padding="0"
+                                        TextColor="White" WidthRequest="110" HeightRequest="30"
+                                        HorizontalOptions="Start" />
+
                                 <Label Text="{Binding DepartureConnection.Platform.TrackText}"
                                        TextColor="{Binding DepartureConnection.Platform.TrackColor}" />
                                 <Grid IsVisible="{Binding DepartureConnection.HasStops}">
@@ -159,12 +171,18 @@
                                             <StackLayout Grid.Row="4" Grid.Column="1" Orientation="Vertical">
 
                                                 <!-- <== departing connection  -->
-                                                <StackLayout Orientation="Horizontal">
-                                                    <Label Text="{Binding Departure.Name}" Margin="10,0,0,0" />
-                                                    <Label Text="(" />
-                                                    <Label Text="{Binding Departure.StopsText}" />
-                                                    <Label Text=")" />
+                                                <StackLayout Orientation="Horizontal" Margin="10,0,0,0">
+                                                    <Label Text="{Binding Departure.Name}" />
+                                                    <Label Text="{Binding Departure.StopsText, StringFormat='( {0} )'}" />
                                                 </StackLayout>
+
+                                                <Button Text="View vehicle"
+                                                        BackgroundColor="{DynamicResource SecondaryColor}" Margin="10,0,0,0"
+                                                        Padding="0"
+                                                        TextColor="White" WidthRequest="110" HeightRequest="30"
+                                                        HorizontalOptions="Start" />
+
+
                                                 <Grid IsVisible="{Binding Departure.HasStops}">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="15" />
