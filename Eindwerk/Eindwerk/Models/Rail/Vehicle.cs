@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Eindwerk.Repository;
+using Newtonsoft.Json;
 
 namespace Eindwerk.Models.Rail
 {
@@ -14,6 +17,14 @@ namespace Eindwerk.Models.Rail
 
 
         public string FormattedName => $"{VehicleType} {VehicleNumber}";
+
+        public async Task<List<Wagon>> GetComposition()
+        {
+            // yes, im mixing layers
+            var repository = new BeneluxTrainsRepository();
+
+            return await repository.GetTrainCompositionAsync(VehicleNumber);
+        }
 
         public override string ToString()
         {

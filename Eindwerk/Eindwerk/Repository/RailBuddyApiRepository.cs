@@ -2,7 +2,7 @@
 
 namespace Eindwerk.Repository
 {
-    public class RailBuddyApiRepository : ApiRepository
+    public class RailBuddyApiRepository : RestRepository
     {
        
         

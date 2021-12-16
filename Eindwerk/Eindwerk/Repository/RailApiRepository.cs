@@ -10,7 +10,7 @@ using Eindwerk.Models.Rail.Stations;
 
 namespace Eindwerk.Repository
 {
-    public class RailApiRepository : ApiRepository
+    public class RailApiRepository : RestRepository
     {
         private const bool DEBUG_RAIL = true;
         public RailApiRepository() : base("https://api.irail.be") { }

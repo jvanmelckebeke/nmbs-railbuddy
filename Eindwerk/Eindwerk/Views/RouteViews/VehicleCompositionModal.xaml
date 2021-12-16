@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                    xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
+                    xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
+                    x:Class="Eindwerk.Views.RouteViews.VehicleCompositionModal">
+    <ContentPage.Content>
+        <StackLayout x:DataType="rail:Vehicle" Margin="10,10">
+            <Button Text="Back" WidthRequest="100" HorizontalOptions="Start" VerticalOptions="Start"
+                    ImageSource="{x:Static assets:BlackIcon.ChevronLeft}" Clicked="GoBack" />
+
+            <!-- <== header -->
+            <StackLayout Orientation="Vertical">
+                <Label Text="{Binding FormattedName,StringFormat='Train composition of {0}'}"
+                       FontSize="Medium"
+                       TextColor="Black" />
+                <BoxView BackgroundColor="{DynamicResource PrimaryColor}" HeightRequest="2" />
+            </StackLayout>
+            <!-- header ==> -->
+
+            <CollectionView x:Name="ColWagons">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="rail:Wagon">
+                        <Grid Margin="0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Aspect="AspectFit" Source="{Binding Preview}" />
+                            <Label Grid.Column="1" Text="{Binding ModelName}" VerticalTextAlignment="Center"
+                                   VerticalOptions="CenterAndExpand" />
+                            <StackLayout Grid.Column="2" HorizontalOptions="CenterAndExpand"
+                                         VerticalOptions="CenterAndExpand">
+                                <Label Text="gravatar" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+</views:LoggedInPage>

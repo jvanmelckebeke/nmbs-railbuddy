@@ -70,6 +70,7 @@
                                 <!-- vehicle compo btn + "IC to xxx" + number of stops ==> -->
 
                                 <Button Text="View vehicle"
+                                        Clicked="OpenDepartingTrainComposition"
                                         BackgroundColor="{DynamicResource SecondaryColor}" Margin="0" Padding="0"
                                         TextColor="White" WidthRequest="110" HeightRequest="30"
                                         HorizontalOptions="Start" />
@@ -177,10 +178,14 @@
                                                 </StackLayout>
 
                                                 <Button Text="View vehicle"
-                                                        BackgroundColor="{DynamicResource SecondaryColor}" Margin="10,0,0,0"
+                                                        BackgroundColor="{DynamicResource SecondaryColor}"
+                                                        Margin="10,0,0,0"
                                                         Padding="0"
-                                                        TextColor="White" WidthRequest="110" HeightRequest="30"
-                                                        HorizontalOptions="Start" />
+                                                        TextColor="White"
+                                                        WidthRequest="110"
+                                                        HeightRequest="30"
+                                                        HorizontalOptions="Start"
+                                                        Clicked="OpenViaTrainComposition" />
 
 
                                                 <Grid IsVisible="{Binding Departure.HasStops}">
