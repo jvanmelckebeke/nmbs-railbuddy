@@ -38,7 +38,7 @@ namespace Eindwerk.Models.Rail
 
         public TimeSpan ArrivalDelay => ArrivalConnection.Delay;
 
-        public string Name => $"{DepartureConnection.Station.StandardName} - {ArrivalConnection.Station.StandardName}";
+        public string Name => $"{DepartureConnection.Station.FormattedName} - {ArrivalConnection.Station.FormattedName}";
 
         /// <summary>
         /// property that displays the duration of travel as `x hours y minutes`
@@ -80,7 +80,12 @@ namespace Eindwerk.Models.Rail
             : $"{ViaConnections.Count} change{(ViaConnections.Count > 1 ? "s" : "")}";
 
         /// <summary>
-        /// generates a color of the route based on:
+        /// generates a color of the route based on the routehash
+        /// </summary>
+        public string RouteColor => "#" + RouteHash.Substring(0, 6);
+
+        /// <summary>
+        /// generates a hash of the route based on:
         /// <list type="bullet">
         /// <item><description>the departing vehicle type</description></item>
         /// <item><description>the arriving vehicle type</description></item>
@@ -90,18 +95,12 @@ namespace Eindwerk.Models.Rail
         /// <item><description>the arriving minute</description></item>
         /// </list>
         /// </summary>
-        public string RouteColor
-        {
-            get
-            {
-                // I love this technique
-                string mdHash =
-                    Crypto.ComputeMd5(
-                        $"{Name} {DepartureConnection.Vehicle.VehicleType} {ArrivalConnection.Vehicle.VehicleType} {Duration:c} {NumberOfViaText} {DepartureTime.Minute} {ArrivalTime.Minute}");
-
-                return "#" + mdHash.Substring(0, 6);
-            }
-        }
+        public string RouteHash =>
+            Crypto.ComputeMd5(
+                $"{Name}" +
+                $"{DepartureConnection.Vehicle.VehicleType}{ArrivalConnection.Vehicle.VehicleType}" +
+                $"{Duration:c}{NumberOfViaText}" +
+                $"{DepartureTime.Minute}{ArrivalTime.Minute}");
 
         public bool Favorite { get; set; } = false;
 

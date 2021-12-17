@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Requests;
@@ -15,21 +17,21 @@ namespace Eindwerk.Views.RouteViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PrepareRoutePage : NetworkDependentPage
     {
-        private const int MAX_LIST_STATIONS = 6;
-        private static readonly Color PRIMARY_BG_COLOR = Color.FromHex("#0169b2");
-        private static readonly Color SECONDARY_BG_COLOR = Color.Gray;
+        private const           int   MaxListStations  = 6;
+        private static readonly Color PrimaryBgColor   = Color.FromHex("#0169b2");
+        private static readonly Color SecondaryBgColor = Color.Gray;
 
         private List<Station> _stationsFrom;
         private List<Station> _stationsTo;
 
         private readonly RailService _railService;
-        private Tokens _tokens;
+        private readonly Tokens      _tokens;
 
-        private Station _stationFrom;
-        private Station _stationTo;
+        private Station       _stationFrom;
+        private Station       _stationTo;
         private TimeSelection _timeSelection = TimeSelection.Departure;
 
-        public PrepareRoutePage(Tokens tokens)
+        public PrepareRoutePage(Tokens tokens, BaseRouteRequest routeRequest = null)
         {
             InitializeComponent();
 
@@ -39,6 +41,17 @@ namespace Eindwerk.Views.RouteViews
             SetupVisual();
             SetupListeners();
             SetupStations();
+
+            if (routeRequest != null)
+            {
+                EntFromStation.Text = routeRequest.FromStation.FormattedName;
+                EntToStation.Text = routeRequest.ToStation.FormattedName;
+
+                _stationFrom = routeRequest.FromStation;
+                _stationTo = routeRequest.ToStation;
+
+                SearchBaseConnection(routeRequest);
+            }
         }
 
         private void SetupVisual()
@@ -49,8 +62,8 @@ namespace Eindwerk.Views.RouteViews
 
         private async void SetupStations()
         {
-            _stationsFrom = new List<Station>((await _railService.GetStations()).Take(MAX_LIST_STATIONS));
-            _stationsTo = new List<Station>((await _railService.GetStations()).Take(MAX_LIST_STATIONS));
+            _stationsFrom = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
+            _stationsTo = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
         }
 
         private void SetupListeners()
@@ -84,10 +97,30 @@ namespace Eindwerk.Views.RouteViews
 
         private async Task SearchConnections()
         {
+            var loader = UserDialogs.Instance.Loading("Searching routes");
+
             SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(_stationFrom, _stationTo,
                 _timeSelection,
                 PckDate.Date, PckTime.Time);
             List<Route> connections = await _railService.GetRoutes(routesRequest);
+            
+            loader.Hide();
+            await Navigation.PushAsync(new ConnectionsResultPage(_tokens, routesRequest, connections));
+        }
+
+        private async Task SearchBaseConnection(BaseRouteRequest request)
+        {
+            var loader = UserDialogs.Instance.Loading("Searching routes");
+            
+            SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(request.FromStation,
+                request.ToStation,
+                TimeSelection.Departure, PckDate.Date, PckTime.Time);
+
+            Debug.WriteLine($"route request: {routesRequest}");
+            List<Route> connections = await _railService.GetRoutes(routesRequest);
+            
+            loader.Hide();
+            
             await Navigation.PushAsync(new ConnectionsResultPage(_tokens, routesRequest, connections));
         }
 
@@ -129,12 +162,12 @@ namespace Eindwerk.Views.RouteViews
             switch (_timeSelection)
             {
                 case TimeSelection.Departure:
-                    BtnDeparture.BackgroundColor = PRIMARY_BG_COLOR;
-                    BtnArrival.BackgroundColor = SECONDARY_BG_COLOR;
+                    BtnDeparture.BackgroundColor = PrimaryBgColor;
+                    BtnArrival.BackgroundColor = SecondaryBgColor;
                     break;
                 case TimeSelection.Arrival:
-                    BtnDeparture.BackgroundColor = SECONDARY_BG_COLOR;
-                    BtnArrival.BackgroundColor = PRIMARY_BG_COLOR;
+                    BtnDeparture.BackgroundColor = SecondaryBgColor;
+                    BtnArrival.BackgroundColor = PrimaryBgColor;
                     break;
             }
         }
@@ -147,14 +180,14 @@ namespace Eindwerk.Views.RouteViews
         {
             _stationFrom = (Station) e.SelectedItem;
             _stationsFrom = new List<Station>(new[] {_stationFrom});
-            EntFromStation.Text = _stationFrom.StandardName;
+            EntFromStation.Text = _stationFrom.FormattedName;
             EntFromStation.Unfocus();
         }
 
         private async void OnFromStationText(object sender, TextChangedEventArgs e)
         {
             _stationsFrom =
-                new List<Station>((await _railService.FilterStations(e.NewTextValue)).Take(MAX_LIST_STATIONS));
+                new List<Station>((await _railService.FilterStations(e.NewTextValue)).Take(MaxListStations));
             LstFromStation.ItemsSource = _stationsFrom;
         }
 
@@ -177,14 +210,14 @@ namespace Eindwerk.Views.RouteViews
         {
             _stationTo = (Station) e.SelectedItem;
             _stationsTo = new List<Station>(new[] {_stationTo});
-            EntToStation.Text = _stationTo.StandardName;
+            EntToStation.Text = _stationTo.FormattedName;
             EntToStation.Unfocus();
         }
 
         private async void OnToStationText(object sender, TextChangedEventArgs e)
         {
             _stationsTo =
-                new List<Station>((await _railService.FilterStations(e.NewTextValue)).Take(MAX_LIST_STATIONS));
+                new List<Station>((await _railService.FilterStations(e.NewTextValue)).Take(MaxListStations));
             LstToStation.ItemsSource = _stationsTo;
         }
 

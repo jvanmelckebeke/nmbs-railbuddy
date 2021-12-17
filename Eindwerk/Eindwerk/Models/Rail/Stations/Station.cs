@@ -12,6 +12,9 @@ namespace Eindwerk.Models.Rail.Stations
         [JsonProperty(PropertyName = "standardname")]
         public string StandardName { get; set; }
 
+
+        public String FormattedName => Name.Split('/')[0];
+
         public bool IsFilled()
         {
             return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(StandardName);
@@ -21,7 +24,7 @@ namespace Eindwerk.Models.Rail.Stations
         {
             return $"Station[{nameof(Id)}: {Id}, " +
                    $"{nameof(Name)}: {Name}, " +
-                   $"{nameof(StandardName)}: {StandardName}]";
+                   $"{nameof(StandardName)}: {StandardName}, {nameof(FormattedName)}: {FormattedName}]";
         }
 
 
@@ -35,7 +38,7 @@ namespace Eindwerk.Models.Rail.Stations
             Station other = (Station) obj;
 
 
-            return string.Compare(StandardName, other.StandardName, StringComparison.OrdinalIgnoreCase);
+            return string.Compare(FormattedName, other.FormattedName, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

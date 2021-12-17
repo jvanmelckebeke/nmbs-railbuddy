@@ -76,6 +76,14 @@
       <EmbeddedResource Include="Assets\Sources\Icons\Black\dots-vertical.png" />
       <None Remove="Assets\Sources\Icons\Black\transit-connection.png" />
       <EmbeddedResource Include="Assets\Sources\Icons\Black\transit-connection.png" />
+      <None Remove="Assets\Sources\Icons\Black\close.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\close.png" />
+      <None Remove="Assets\Sources\Icons\Black\delete.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\Black\delete.png" />
+      <None Remove="Assets\Sources\Icons\White\delete.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\White\delete.png" />
+      <None Remove="Assets\Sources\Icons\White\navigation.png" />
+      <EmbeddedResource Include="Assets\Sources\Icons\White\navigation.png" />
     </ItemGroup>
 
     <ItemGroup>

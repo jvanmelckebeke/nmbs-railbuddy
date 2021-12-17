@@ -12,7 +12,7 @@ namespace Eindwerk.Repository
 {
     public class RailApiRepository : RestRepository
     {
-        private const bool DEBUG_RAIL = true;
+        private const bool DebugRail = false;
         public RailApiRepository() : base("https://api.irail.be") { }
 
         protected override HttpClient GetClient()
@@ -28,7 +28,7 @@ namespace Eindwerk.Repository
         {
             string url = PrepareUrl(path, parameters);
 
-            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, DEBUG_RAIL);
+            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, DebugRail);
 
             if (packedResponse != null && packedResponse.IsFilled())
             {

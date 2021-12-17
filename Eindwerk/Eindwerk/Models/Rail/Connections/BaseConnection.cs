@@ -33,7 +33,7 @@ namespace Eindwerk.Models.Rail.Connections
 
         [JsonProperty("direction")] private PackedDirection _packedDirection;
 
-        public string Direction => _packedDirection.DirectionName;
+        public string Direction => _packedDirection?.DirectionName.Split('/')[0];
 
 
         public string Name => $"{Vehicle.FormattedName} to {Direction}";

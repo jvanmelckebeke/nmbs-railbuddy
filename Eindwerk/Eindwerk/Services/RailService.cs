@@ -42,7 +42,7 @@ namespace Eindwerk.Services
 
 
             return Array.FindAll(_cachedStations,
-                station => station.StandardName.StartsWith(partOfName, true, CultureInfo.InvariantCulture));
+                station => station.FormattedName.StartsWith(partOfName, true, CultureInfo.InvariantCulture));
         }
 
         public static SearchRoutesRequest CreateSearchRoutesRequest(Station from, Station to,

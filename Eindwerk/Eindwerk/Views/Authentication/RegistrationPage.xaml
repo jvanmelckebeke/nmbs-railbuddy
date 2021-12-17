@@ -42,7 +42,7 @@
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="stations:Station">
                                     <ViewCell>
-                                        <Label Text="{Binding StandardName}" FontSize="Medium"
+                                        <Label Text="{Binding FormattedName}" FontSize="Medium"
                                                VerticalOptions="Center" />
                                     </ViewCell>
                                 </DataTemplate>

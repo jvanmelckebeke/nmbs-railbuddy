@@ -10,7 +10,7 @@ namespace Eindwerk.Assets
             return GetIcon($"White.{icon}");
         }
 
-        
+
         public static ImageSource Check => GetWhiteIcon("check.png");
 
         public static ImageSource ChevronRight => GetWhiteIcon("chevron-right.png");
@@ -18,5 +18,8 @@ namespace Eindwerk.Assets
         public static ImageSource Close => GetWhiteIcon("close.png");
 
         public static ImageSource Logout => GetWhiteIcon("logout.png");
+
+        public static ImageSource Delete => GetWhiteIcon("delete.png");
+        public static ImageSource Navigation => GetWhiteIcon("navigation.png");
     }
 }

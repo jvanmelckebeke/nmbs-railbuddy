@@ -4,28 +4,42 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                     xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
+                    xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
+                    xmlns:requests="clr-namespace:Eindwerk.Models.Rail.Requests;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.RouteViews.ConnectionsResultPage" NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <Grid Margin="15">
             <Grid.RowDefinitions>
-                <RowDefinition Height="80" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackLayout Grid.Row="0">
+            <StackLayout Grid.Row="0" x:DataType="requests:SearchRoutesRequest">
 
-                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="0,0,0,5">
-                    <!-- <Label Text="Routes going from" FontSize="Medium" /> -->
-                    <Label x:Name="LblFromStation" FontSize="Medium" TextTransform="Uppercase" FontAttributes="Bold" />
-                    <Label Text="to" FontSize="Medium" />
-                    <Label x:Name="LblToStation" FontSize="Medium" TextTransform="Uppercase" FontAttributes="Bold" />
-                </StackLayout>
+                <Grid Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="30" />
+                    </Grid.ColumnDefinitions>
+                    <FlexLayout Grid.Column="0" Direction="Row"
+                                JustifyContent="Start" Wrap="Wrap"
+                                HorizontalOptions="FillAndExpand">
+                        <!-- <Label Text="Routes going from" FontSize="Medium" /> -->
+                        <Label Text="{Binding FromStation.FormattedName}" FontSize="Medium"
+                               TextTransform="Uppercase"
+                               FontAttributes="Bold" Margin="0,0,4,0" />
+                        <Label Text="to" FontSize="Medium" Margin="0,0,4,0" />
+                        <Label Text="{Binding ToStation.FormattedName}"
+                               FontSize="Medium" TextTransform="Uppercase" FontAttributes="Bold" />
+                    </FlexLayout>
+                    <Image x:Name="ImFav" Grid.Column="1" Aspect="AspectFit"
+                           HorizontalOptions="EndAndExpand" WidthRequest="30" />
+                </Grid>
 
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                    <Label x:Name="LblTimeSel" FontSize="Medium" />
-                    <Label x:Name="LblDate" FontSize="Medium" />
-                    <Label Text="at" FontSize="Medium" />
-                    <Label x:Name="LblTime" FontSize="Medium" />
+                    <Label Text="{Binding TimeSelectionText}" FontSize="Medium" />
+                    <Label Text="{Binding Time, StringFormat='{0:dd MMMM yyyy} at {0:H\:mm}'}" FontSize="Medium" />
                 </StackLayout>
+                <BoxView HeightRequest="4" Margin="0,4" Color="{Binding Color}" />
             </StackLayout>
             <ListView Grid.Row="1" x:Name="LstRoutes" RowHeight="100" ItemTapped="OnRouteSelected">
                 <ListView.ItemTemplate>

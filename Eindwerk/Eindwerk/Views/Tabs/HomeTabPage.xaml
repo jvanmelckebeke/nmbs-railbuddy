@@ -1,39 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
-                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                            xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
-                            xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
-                            xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
-                            x:Class="Eindwerk.Views.Tabs.HomeTabPage" Title="Home"
-                            NavigationPage.HasNavigationBar="False">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                    xmlns:tabs="clr-namespace:Eindwerk.Views.Tabs;assembly=Eindwerk"
+                    xmlns:requests="clr-namespace:Eindwerk.Models.Rail.Requests;assembly=Eindwerk"
+                    xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
+                    x:Class="Eindwerk.Views.Tabs.HomeTabPage" Title="Home"
+                    NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        <Grid Margin="10">
+        <Grid Margin="10" x:DataType="tabs:HomeTabPageViewModel">
             <Grid.RowDefinitions>
-                <RowDefinition Height="128" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Label Grid.Row="0" Text="Favorite routes" FontSize="Medium" HorizontalOptions="StartAndExpand" />
             <!-- Favorite Routes -->
-            <StackLayout Grid.Row="0" Orientation="Vertical">
-                <Label Text="Favorite routes" FontSize="Medium" HorizontalOptions="StartAndExpand" />
-                <ListView x:Name="LstFavRoutes" HorizontalOptions="FillAndExpand">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="rail:FavoriteRoute">
-                            <TextCell Text="{Binding }"></TextCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <!--<FlexLayout x:Name="FlexFavRoutes" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
-                            JustifyContent="Start" AlignContent="Start">
-                    <Frame x:Name="FrAddFavorite" HeightRequest="48" Padding="4" Margin="4" WidthRequest="48"
-                           CornerRadius="8">
-                        <Image x:Name="ImgAddFavorite" Aspect="AspectFill" HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Frame>
-                </FlexLayout>-->
-            </StackLayout>
+            <ScrollView Grid.Row="1">
+                <FlexLayout x:Name="FlexFavRoutes" Wrap="Wrap" Direction="Row" HorizontalOptions="FillAndExpand"
+                            JustifyContent="SpaceEvenly" AlignContent="Start"
+                            BindableLayout.ItemsSource="{Binding Favorites}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="requests:BaseRouteRequest">
+                            <Frame HeightRequest="112" Padding="4" Margin="4" WidthRequest="160"
+                                   CornerRadius="8" BorderColor="{Binding Color}">
+                                <Grid Margin="4">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="25" />
+                                        <RowDefinition Height="4" />
+                                    </Grid.RowDefinitions>
+                                    <StackLayout Grid.Row="0" Spacing="0">
+                                        <Label Text="{Binding FromStation.FormattedName, StringFormat='{0} - '}"
+                                               LineBreakMode="WordWrap" />
+                                        <Label Text="{Binding ToStation.FormattedName}" LineBreakMode="WordWrap" />
+                                    </StackLayout>
 
-            <Button Grid.Row="2" x:Name="BtnStartTravel" Text="Start traveling"
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <ImageButton Grid.Column="0" 
+                                                     Source="{x:Static assets:WhiteIcon.Delete}"
+                                                     Clicked="OnDeleteFavorite"
+                                                     Aspect="AspectFit" BackgroundColor="Red" />
+                                        <ImageButton Grid.Column="1"
+                                                     Source="{x:Static assets:WhiteIcon.Navigation}"
+                                                     Clicked="OnGoFavorite"
+                                                     Aspect="AspectFit"
+                                                     BackgroundColor="{DynamicResource PrimaryColor}" />
+                                    </Grid>
+                                    <BoxView Grid.Row="2" BackgroundColor="{Binding Color}" CornerRadius="20" />
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </ScrollView>
+
+            <Button Grid.Row="1" x:Name="BtnStartTravel" Text="Start traveling"
                     BackgroundColor="{DynamicResource PrimaryColor}" VerticalOptions="EndAndExpand"
                     TextColor="{DynamicResource PrimaryTextColor}" />
         </Grid>

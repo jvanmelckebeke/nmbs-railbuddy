@@ -66,7 +66,7 @@ namespace Eindwerk.Views.Authentication
         {
             _selectedStation = (Station) LstStation.SelectedItem;
 
-            EntSearchStation.Text = _selectedStation.StandardName;
+            EntSearchStation.Text = _selectedStation.FormattedName;
         }
 
         private void OnSearchStationUnfocussed(object sender, FocusEventArgs e)
@@ -101,7 +101,7 @@ namespace Eindwerk.Views.Authentication
                 Email = EntEmail.Text,
                 Username = EntUsername.Text,
                 Password = EntPassword.Text,
-                TargetCity = _selectedStation == null ? "UNKNOWN" : _selectedStation.StandardName
+                TargetCity = _selectedStation == null ? "UNKNOWN" : _selectedStation.FormattedName
             };
 
             // yes, this is actually a bit dirty

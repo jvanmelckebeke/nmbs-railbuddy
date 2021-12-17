@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Linq;
 using Eindwerk.Models.Rail.Stations;
+using Eindwerk.Tools;
+using Newtonsoft.Json;
 
 namespace Eindwerk.Models.Rail.Requests
 {
-    public class SearchRoutesRequest : IGetRequest
+    public class SearchRoutesRequest : BaseRouteRequest, IGetRequest
     {
-        public Station FromStation { get; set; }
-
-        public Station ToStation { get; set; }
-
         public TimeSelection TimeSelection { get; set; }
+
+        public string TimeSelectionText => TimeSelection == TimeSelection.Departure ? "departure" : "arrival";
 
         public DateTime Time { get; set; }
 
         public bool IsFilled()
         {
-            throw new System.NotImplementedException();
+            return RouteHash != null;
         }
 
         public string ToGetParameters()
@@ -28,6 +28,11 @@ namespace Eindwerk.Models.Rail.Requests
             var timePart = $"time={Time:HHmm}";
 
             return $"{fromStationPart}&{toStationPart}&{timeSelectionPart}&{datePart}&{timePart}";
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }

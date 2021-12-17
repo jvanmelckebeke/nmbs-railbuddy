@@ -1,8 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Acr.UserDialogs;
+using Eindwerk.Assets;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Requests;
+using Eindwerk.Repository;
+using Eindwerk.Services;
+using Newtonsoft.Json;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,18 +27,20 @@ namespace Eindwerk.Views.RouteViews
             InitializeComponent();
             _connections = connections;
             _originalRoutesRequest = originalRoutesRequest;
+
+            BindingContext = _originalRoutesRequest;
+
+            TapGestureRecognizer tapRecognizer = new TapGestureRecognizer();
+            tapRecognizer.Tapped += ToggleFavorite;
+            ImFav.GestureRecognizers.Add(tapRecognizer);
         }
 
         protected override void SetupVisual()
         {
-            LblFromStation.Text = _originalRoutesRequest.FromStation.StandardName;
-            LblToStation.Text = _originalRoutesRequest.ToStation.StandardName;
-
-            LblTimeSel.Text = _originalRoutesRequest.TimeSelection == TimeSelection.Arrival ? "arrival" : "departure";
-            LblDate.Text = _originalRoutesRequest.Time.ToString("dd MMMM yyyy");
-            LblTime.Text = _originalRoutesRequest.Time.ToString("H:mm");
-
             LstRoutes.ItemsSource = _connections;
+            ImFav.Source = FavoriteRepository.IsFavorite(_originalRoutesRequest.RouteHash)
+                ? BlackIcon.Star
+                : BlackIcon.StarOutline;
         }
 
         private async void OnRouteSelected(object sender, ItemTappedEventArgs e)
@@ -45,6 +54,17 @@ namespace Eindwerk.Views.RouteViews
             }
 
             LstRoutes.SelectedItem = null;
+        }
+
+        private void ToggleFavorite(object sender, EventArgs eventArgs)
+        {
+            FavoriteRepository.ToggleFavorite(_originalRoutesRequest);
+            SetupVisual();
+
+            UserDialogs.Instance.Toast(
+                FavoriteRepository.IsFavorite(_originalRoutesRequest.RouteHash)
+                    ? "added route to favorites"
+                    : "removed favorite");
         }
     }
 }

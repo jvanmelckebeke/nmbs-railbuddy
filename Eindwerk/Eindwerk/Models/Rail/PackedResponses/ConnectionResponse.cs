@@ -17,7 +17,7 @@ namespace Eindwerk.Models.Rail.PackedResponses
 
         public override string ToString()
         {
-            return $"ConnectionResponse[number of connections: {Connections.Count}]";
+            return $"ConnectionResponse[number of connections: {Connections?.Count}]";
         }
     }
 }

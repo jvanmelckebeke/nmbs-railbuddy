@@ -25,7 +25,7 @@ namespace Eindwerk.Models.Rail.Connections
 
         [JsonProperty("stationinfo")] public Station Station;
 
-        public string StationName => Station.Name;
+        public string StationName => Station.FormattedName;
 
         public override string ToString()
         {
