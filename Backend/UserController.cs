@@ -288,5 +288,19 @@ namespace Backend
                     return await service.GetFriendsOnLine(lineNumber, profile.Friends);
                 }, req, log);
         }
+
+
+        [FunctionName("GetCurrentLine")]
+        public static async Task<IActionResult> GetCurrentLineAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user/line")]
+            HttpRequest req, ILogger log)
+        {
+            return await AuthorizedHelper(
+                async profile =>
+                {
+                    SeatService service = new SeatService(log);
+                    return await service.GetCurrentLineAsync(profile.ProfileId);
+                }, req, log);
+        }
     }
 }

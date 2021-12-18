@@ -47,5 +47,16 @@ namespace Backend.services
         {
             await SeatRepository.RemoveSeatRegistrationsByProfileId(profileId);
         }
+
+        public async Task<SeatRegistration> GetCurrentLineAsync(Guid profileId)
+        {
+            SeatRegistration currentSeat = await SeatRepository.GetSeatRegistrationByProfileId(profileId);
+            if (currentSeat == null)
+            {
+                _logger.LogWarning("no current line");
+            }
+
+            return currentSeat;
+        }
     }
 }
