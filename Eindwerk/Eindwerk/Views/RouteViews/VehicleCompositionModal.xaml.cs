@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Eindwerk.Models.BuddyApi;
+using Eindwerk.Models.BuddyApi.Friends;
 using Eindwerk.Models.Rail;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -29,8 +30,24 @@ namespace Eindwerk.Views.RouteViews
         {
             Debug.WriteLine("getting composition");
             _wagons = await _vehicle.GetComposition();
+            Debug.WriteLine("gotten composition");
+
+            Debug.WriteLine($"searching for friends on train with number {_vehicle.VehicleNumber}");
+
+            List<FriendSeatRegistration> friendsInTrain =
+                await UserService.GetFriendsOnTrainAsync(_vehicle.VehicleNumber);
+
+            foreach (FriendSeatRegistration friendSeatRegistration in friendsInTrain)
+            {
+                if (_wagons.Count > friendSeatRegistration.SeatRegistration.WagonIndex)
+                {
+                    _wagons[friendSeatRegistration.SeatRegistration.WagonIndex].FriendsInWagon
+                                                                               .Add(friendSeatRegistration.Friend);
+                }
+            }
+
+
             ColWagons.ItemsSource = _wagons;
-            Debug.WriteLine("done composition");
         }
 
         private async void GoBack(object sender, EventArgs e)

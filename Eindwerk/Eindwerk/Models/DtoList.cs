@@ -6,7 +6,7 @@ namespace Eindwerk.Models
     {
         public bool IsFilled()
         {
-            return Count > 0;
+            return true;
         }
     }
 }

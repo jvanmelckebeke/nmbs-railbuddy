@@ -71,5 +71,15 @@ namespace Eindwerk.Services
         {
             return await _userRepository.DoFriendAction(friendId, FriendAction.Delete);
         }
+
+        public async Task<SeatRegistration> RegisterSeat(SeatRegistration seat)
+        {
+            return await _userRepository.RegisterSeat(seat);
+        }
+
+        public async Task<List<FriendSeatRegistration>> GetFriendsOnTrainAsync(string vehicleNumber)
+        {
+            return await _userRepository.GetFriendsOnTrainAsync(vehicleNumber);
+        }
     }
 }

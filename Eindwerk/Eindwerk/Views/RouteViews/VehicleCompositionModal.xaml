@@ -5,6 +5,7 @@
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
                     xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
                     xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
+                    xmlns:friends="clr-namespace:Eindwerk.Models.BuddyApi.Friends;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.RouteViews.VehicleCompositionModal">
     <ContentPage.Content>
         <StackLayout x:DataType="rail:Vehicle" Margin="10,10">
@@ -20,26 +21,51 @@
             </StackLayout>
             <!-- header ==> -->
 
-            <CollectionView x:Name="ColWagons">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="rail:Wagon">
-                        <Grid Margin="0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="80" />
-                            </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Aspect="AspectFit" Source="{Binding Preview}" />
-                            <Label Grid.Column="1" Text="{Binding ModelName}" VerticalTextAlignment="Center"
-                                   VerticalOptions="CenterAndExpand" />
-                            <StackLayout Grid.Column="2" HorizontalOptions="CenterAndExpand"
-                                         VerticalOptions="CenterAndExpand">
-                                <Label Text="gravatar" HorizontalOptions="Center" VerticalOptions="Center" />
-                            </StackLayout>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <ScrollView>
+                <CollectionView x:Name="ColWagons">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="rail:Wagon">
+                            <Grid Margin="0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="2" />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="0" Grid.Column="0" Aspect="AspectFit" Source="{Binding Preview}" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding ModelName}"
+                                       VerticalTextAlignment="Center"
+                                       VerticalOptions="CenterAndExpand" />
+                                <FlexLayout Grid.Row="0" Grid.Column="2"
+                                            BindableLayout.ItemsSource="{Binding FriendsInWagon}"
+                                            VerticalOptions="CenterAndExpand">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="friends:Friend">
+                                            <StackLayout Spacing="0">
+                                                <Frame CornerRadius="50" HorizontalOptions="Center" Padding="0"
+                                                       Margin="0"
+                                                       IsClippedToBounds="True">
+                                                    <Image Aspect="AspectFill" Source="{Binding Avatar}"
+                                                           HorizontalOptions="Center" VerticalOptions="Center"
+                                                           WidthRequest="50" HeightRequest="50" />
+                                                </Frame>
+                                                <Label HorizontalOptions="Center" Text="{Binding Username}"
+                                                       FontSize="Micro" FontAttributes="Bold" />
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </FlexLayout>
+                                <BoxView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                                         Opacity="0.2"
+                                         BackgroundColor="{DynamicResource SecondaryColor}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
         </StackLayout>
     </ContentPage.Content>
 </views:LoggedInPage>

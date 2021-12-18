@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Eindwerk.Models.BuddyApi.Friends;
 using Xamarin.Forms;
 
 namespace Eindwerk.Models.Rail
@@ -17,6 +19,8 @@ namespace Eindwerk.Models.Rail
                 return ImageSource.FromUri(uri);
             }
         }
+
+        public List<Friend> FriendsInWagon { get; set; } = new List<Friend>();
 
         public override string ToString()
         {
