@@ -259,8 +259,8 @@ namespace Backend
             return await AuthorizedHelper(async profile =>
             {
                 registration.ProfileId = profile.ProfileId;
-
-                return await SeatService.RegisterSeat(registration);
+                SeatService service = new SeatService(log);
+                return await service.RegisterSeat(registration);
             }, req, log);
         }
 
@@ -282,7 +282,11 @@ namespace Backend
             HttpRequest req, string lineNumber, ILogger log)
         {
             return await AuthorizedHelper(
-                async profile => await SeatService.GetFriendsOnLine(lineNumber, profile.Friends), req, log);
+                async profile =>
+                {
+                    SeatService service = new SeatService(log);
+                    return await service.GetFriendsOnLine(lineNumber, profile.Friends);
+                }, req, log);
         }
     }
 }

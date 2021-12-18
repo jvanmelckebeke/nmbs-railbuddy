@@ -18,7 +18,7 @@ namespace Backend.repositories
         {
             return await FindOneAsync<SeatRegistration>("seats", query);
         }
-        
+
         private static async Task<List<SeatRegistration>> FindMultipleAsync(QueryDefinition query)
         {
             return await FindMultipleAsync<SeatRegistration>("seats", query);
@@ -32,11 +32,18 @@ namespace Backend.repositories
             return await FindOneAsync(q);
         }
 
+        public static async Task<List<SeatRegistration>> GetSeatRegistrationsByProfileId(Guid profileId)
+        {
+            QueryDefinition q = new QueryDefinition("SELECT * FROM seats s WHERE s.ProfileId = @profileId")
+                .WithParameter("@profileId", profileId.ToString());
+
+            return await FindMultipleAsync(q);
+        }
 
         public static async Task<bool> IsProfileOnLine(string line, Guid profileId)
         {
             QueryDefinition q =
-                new QueryDefinition("SELECT * FROM seats s WHERE s.TrainNumber = @line AND s.ProfileId = @profileId")
+                new QueryDefinition("SELECT * FROM seats s WHERE s.VehicleName = @line AND s.ProfileId = @profileId")
                     .WithParameter("@line", line)
                     .WithParameter("@profileId", profileId.ToString());
 
@@ -45,28 +52,28 @@ namespace Backend.repositories
             return registrations.Count > 0;
         }
 
-        public static async Task RemoveSeatRegistrationByProfileId(Guid profileId)
+        public static async Task RemoveSeatRegistrationsByProfileId(Guid profileId)
         {
             Container c = GetSeatsContainer();
 
-            SeatRegistration oldRegistration = await GetSeatRegistrationByProfileId(profileId);
+            List<SeatRegistration> oldRegistrations = await GetSeatRegistrationsByProfileId(profileId);
 
-            if (oldRegistration == null)
+            foreach (SeatRegistration registration in oldRegistrations)
             {
-                return;
+                await c.DeleteItemAsync<SeatRegistration>(registration.SeatRegistrationId.ToString(),
+                    new PartitionKey(registration.VehicleName));
             }
-
-            await c.DeleteItemAsync<SeatRegistration>(oldRegistration.SeatRegistrationId.ToString(), new PartitionKey(oldRegistration.TrainNumber));
         }
 
         public static async Task<SeatRegistration> RegisterSeat(SeatRegistration registration)
         {
             registration.SeatRegistrationId = Guid.NewGuid();
 
-            await RemoveSeatRegistrationByProfileId(registration.ProfileId);
+            await RemoveSeatRegistrationsByProfileId(registration.ProfileId);
 
             Container c = GetSeatsContainer();
-            SeatRegistration createdSeat = await c.CreateItemAsync(registration, new PartitionKey(registration.TrainNumber));
+            SeatRegistration createdSeat =
+                await c.CreateItemAsync(registration, new PartitionKey(registration.VehicleName));
 
             Debug.WriteLine(createdSeat);
             return registration;

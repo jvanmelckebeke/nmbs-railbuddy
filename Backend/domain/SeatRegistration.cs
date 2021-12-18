@@ -7,7 +7,7 @@ namespace Backend.Domain
     {
         [JsonProperty("id")] public Guid SeatRegistrationId { get; set; }
 
-        public string TrainNumber { get; set; }
+        public string VehicleName { get; set; }
 
         public int WagonIndex { get; set; }
 
