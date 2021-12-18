@@ -76,6 +76,11 @@ namespace Backend
             {
                 return new ObjectResult(new {Message = "Access Token expired"}) {StatusCode = 401};
             }
+            catch (GracefulDuplicateException)
+            {
+                return new BadRequestObjectResult(new {Message = "duplicate item"});
+            }
+
             catch (Exception e)
             {
                 log.LogError(id, e, "request failed with exception");
@@ -215,11 +220,11 @@ namespace Backend
             var action = JsonConvert.DeserializeObject<FriendRequestAction>(body);
 
             log.LogInformation(id, "running friend action {action} on user with profile id {profileId}", action,
-                               profileId);
+                profileId);
             return await AuthorizedHelper((currentProfile) =>
             {
                 var service = new UserService(log);
-                
+
                 return action.Action switch
                 {
                     FriendAction.Request => service.CreateFriendRequestAsync(currentProfile, profileId),
@@ -240,6 +245,44 @@ namespace Backend
             return await AuthorizedHelper(
                 profile => new UserService(log).GetFriendRequestStatus(profile, profileId),
                 req, log);
+        }
+
+
+        [FunctionName("RegisterSeat")]
+        public static async Task<IActionResult> RegisterSeatAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "line")]
+            HttpRequest req, ILogger log)
+        {
+            string body = await new StreamReader(req.Body).ReadToEndAsync();
+            var registration = JsonConvert.DeserializeObject<SeatRegistration>(body);
+
+            return await AuthorizedHelper(async profile =>
+            {
+                registration.ProfileId = profile.ProfileId;
+
+                return await SeatService.RegisterSeat(registration);
+            }, req, log);
+        }
+
+        [FunctionName("UnregisterSeat")]
+        public static async Task<IActionResult> UnregisterSeatAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "line")]
+            HttpRequest req, ILogger log)
+        {
+            return await AuthorizedHelper(async profile =>
+            {
+                await SeatService.UnregisterSeat(profile.ProfileId);
+                return new {Message = "ok"};
+            }, req, log);
+        }
+
+        [FunctionName("GetFriendsOnLine")]
+        public static async Task<IActionResult> GetFriendsOnLineAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "line/{lineNumber}")]
+            HttpRequest req, string lineNumber, ILogger log)
+        {
+            return await AuthorizedHelper(
+                async profile => await SeatService.GetFriendsOnLine(lineNumber, profile.Friends), req, log);
         }
     }
 }
