@@ -89,7 +89,8 @@ namespace Eindwerk.Services
 
             List<Wagon> wagons = await beneluxTrainsRepository.GetTrainCompositionAsync(vehicleNumber);
 
-            if (ownSeat != null && wagons != null && wagons.Count > ownSeat.WagonIndex)
+            if (ownSeat != null && vehicleNumber == ownSeat.VehicleName &&
+                wagons != null && wagons.Count > ownSeat.WagonIndex)
             {
                 if (_ownProfile == null)
                 {
@@ -97,7 +98,7 @@ namespace Eindwerk.Services
                 }
 
                 Debug.WriteLine($"own user profile: {_ownProfile}");
-                
+
                 var own = new Friend
                 {
                     Email = _ownProfile.Email,
