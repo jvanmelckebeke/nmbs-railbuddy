@@ -44,7 +44,17 @@ namespace Eindwerk.Repository
 
         public async Task<List<FriendSeatRegistration>> GetFriendsOnTrainAsync(string vehicleNumber)
         {
-            return await DoGetRequest<DtoList<FriendSeatRegistration>>($"{BASEURI}/line/{vehicleNumber}", true);
+            return await DoGetRequest<DtoList<FriendSeatRegistration>>($"{BASEURI}/line/{vehicleNumber}", DEBUG_USER);
+        }
+
+        public async Task<SeatRegistration> GetOwnSeatRegistrationAsync()
+        {
+            return await DoGetRequest<SeatRegistration>($"{BASEURI}/user/line", DEBUG_USER);
+        }
+
+        public async Task RemoveSeat()
+        {
+            await DoDeleteRequest($"{BASEURI}/line", true);
         }
     }
 }

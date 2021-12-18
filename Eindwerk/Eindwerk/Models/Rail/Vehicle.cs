@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Eindwerk.Repository;
+﻿using Eindwerk.Tools;
 using Newtonsoft.Json;
 
 namespace Eindwerk.Models.Rail
@@ -18,13 +16,9 @@ namespace Eindwerk.Models.Rail
 
         public string FormattedName => $"{VehicleType} {VehicleNumber}";
 
-        public async Task<List<Wagon>> GetComposition()
-        {
-            // yes, im mixing layers
-            var repository = new BeneluxTrainsRepository();
-
-            return await repository.GetTrainCompositionAsync(VehicleNumber);
-        }
+        public string VehicleHash => Crypto.ComputeMd5(FormattedName);
+        
+        public string VehicleColor => "#" + VehicleHash.Substring(0, 6);
 
         public override string ToString()
         {

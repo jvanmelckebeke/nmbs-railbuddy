@@ -61,5 +61,11 @@ namespace Eindwerk.Repository
         {
             return await GetRailData<ConnectionResponse, List<Route>>("/connections", request);
         }
+
+        public async Task<Vehicle> GetVehicleAsync(VehicleRequest request)
+        {
+
+            return await GetRailData<VehicleResponse, Vehicle>("/vehicle", request);
+        }
     }
 }

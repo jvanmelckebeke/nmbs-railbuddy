@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Cache;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Eindwerk.Repository
     public class RestRepository : ApiRepository
     {
         protected RestRepository(string baseuri) : base(baseuri) { }
-        
+
         /// <summary>
         /// Performs any request that needs provided JSON <paramref name="payload"/> and returns as <typeparamref name="TReturn"/>
         /// </summary>
@@ -129,6 +130,42 @@ namespace Eindwerk.Repository
             }
         }
 
+
+        protected async Task DoDeleteRequest(string url, bool debugCall = true)
+        {
+            using (HttpClient client = GetClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.DeleteAsync(url);
+
+                    if (debugCall)
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Debug.WriteLine("request successful");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("request not successfull ;(");
+                            Debug.WriteLine(response.Content);
+                        }
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    Debug.WriteLine($"[ERROR] NetworkException for url {url}");
+                    Debug.WriteLine(e);
+                    throw new NoNetworkException();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
         /// <summary>
         /// handles the return value of a given http <paramref name="response"/>, including debug logging
         /// </summary>
@@ -137,15 +174,15 @@ namespace Eindwerk.Repository
         /// <typeparam name="TReturn">The type to return, *must* implement <see cref="IDtoModel"/></typeparam>
         /// <returns>If the request was a success, an object of type <typeparamref name="TReturn"/>, otherwise <c>null</c></returns>
         private static async Task<TReturn> FinalizeRequestAsync<TReturn>(HttpResponseMessage response,
-            bool debugCall = true)
+                                                                         bool debugCall = true)
             where TReturn : IDtoModel
         {
             if (debugCall) Debug.WriteLine($"response code: {response.StatusCode}");
 
-            if (response.StatusCode.ToString().StartsWith("5") )
+            if (response.StatusCode.ToString().StartsWith("5"))
             {
                 Debug.WriteLine(response);
-                
+
                 throw new Exception("something went wrong with the API");
             }
 
@@ -175,8 +212,8 @@ namespace Eindwerk.Repository
             if (debugCall) Debug.WriteLine("WARNING: response object is null or invalid");
             return default;
         }
-        
-        
+
+
         /// <summary>
         /// creates a default HTTPClient, can be overridden to include for example Authorization headers
         /// </summary>

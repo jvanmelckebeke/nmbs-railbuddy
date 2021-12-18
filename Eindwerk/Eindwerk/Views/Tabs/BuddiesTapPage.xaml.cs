@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Acr.UserDialogs;
-using Eindwerk.Components;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.BuddyApi.Friends;
-using Eindwerk.Services;
-using Eindwerk.Tools;
 using Eindwerk.Views.Buddies;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Mobile;

@@ -28,25 +28,10 @@ namespace Eindwerk.Views.RouteViews
 
         protected override async Task SetupData()
         {
-            Debug.WriteLine("getting composition");
-            _wagons = await _vehicle.GetComposition();
-            Debug.WriteLine("gotten composition");
 
-            Debug.WriteLine($"searching for friends on train with number {_vehicle.VehicleNumber}");
+            
 
-            List<FriendSeatRegistration> friendsInTrain =
-                await UserService.GetFriendsOnTrainAsync(_vehicle.VehicleNumber);
-
-            foreach (FriendSeatRegistration friendSeatRegistration in friendsInTrain)
-            {
-                if (_wagons.Count > friendSeatRegistration.SeatRegistration.WagonIndex)
-                {
-                    _wagons[friendSeatRegistration.SeatRegistration.WagonIndex].FriendsInWagon
-                                                                               .Add(friendSeatRegistration.Friend);
-                }
-            }
-
-
+            _wagons = await UserService.GetTrainCompositionAsync(_vehicle.VehicleNumber);
             ColWagons.ItemsSource = _wagons;
         }
 

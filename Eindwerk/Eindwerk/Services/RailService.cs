@@ -46,7 +46,8 @@ namespace Eindwerk.Services
         }
 
         public static SearchRoutesRequest CreateSearchRoutesRequest(Station from, Station to,
-            TimeSelection timeSelection, DateTime date, TimeSpan time)
+                                                                    TimeSelection timeSelection, DateTime date,
+                                                                    TimeSpan time)
         {
             return new SearchRoutesRequest()
             {
@@ -58,7 +59,7 @@ namespace Eindwerk.Services
         }
 
         public async Task<List<Route>> GetRoutes(Station from, Station to, TimeSelection timeSelection, DateTime date,
-            TimeSpan time)
+                                                 TimeSpan time)
         {
             SearchRoutesRequest searchRoutesRequest = CreateSearchRoutesRequest(from, to, timeSelection, date, time);
 
@@ -70,6 +71,11 @@ namespace Eindwerk.Services
             List<Route> response = await _railApiRepository.GetRoutes(searchRoutesRequest);
             Debug.WriteLine($"first route: {response[0]}");
             return response;
+        }
+
+        public async Task<Vehicle> GetVehicle(string vehicleName)
+        {
+            return await _railApiRepository.GetVehicleAsync(new VehicleRequest() {VehicleName = vehicleName});
         }
     }
 }
