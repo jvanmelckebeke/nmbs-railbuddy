@@ -16,7 +16,7 @@ namespace Eindwerk.Views
 
             TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnPageTapped;
-            
+
             GrPage.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
@@ -24,21 +24,23 @@ namespace Eindwerk.Views
         {
             // check network connection
 
-            HttpClient client = new HttpClient();
-            try
+            using (HttpClient client = new HttpClient())
             {
-                string response = await client.GetStringAsync("https://ifconfig.co");
-                Console.WriteLine($"ifconfig.co response: {response}");
+                try
+                {
+                    string response = await client.GetStringAsync("https://ifconfig.co");
+                    Console.WriteLine($"ifconfig.co response: {response}");
 
-                UserDialogs.Instance.Toast("Network restored");
+                    UserDialogs.Instance.Toast("Network restored");
 
-                await Navigation.PopModalAsync();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine("still no network");
+                    await Navigation.PopModalAsync();
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("still no network");
 
-                UserDialogs.Instance.Toast("Sorry, no network connection");
+                    UserDialogs.Instance.Toast("Sorry, no network connection");
+                }
             }
         }
     }

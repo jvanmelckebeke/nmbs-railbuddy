@@ -46,7 +46,12 @@ namespace Eindwerk.Views.Authentication
 
             if (credentials.ValidateInputs())
             {
-                await HandleApi(async () => await DoLogin(credentials), "logging in");
+                async Task DoLoginCall()
+                {
+                    await DoLogin(credentials);
+                }
+
+                await HandleApi(DoLoginCall, "logging in");
             }
             else
             {
@@ -80,7 +85,7 @@ namespace Eindwerk.Views.Authentication
 
         private async Task CheckRefreshToken()
         {
-            var refreshToken = Preferences.Get("refreshToken", null);
+            string refreshToken = Preferences.Get("refreshToken", null);
 
             if (refreshToken == null) return;
 

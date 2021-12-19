@@ -42,12 +42,6 @@ namespace Eindwerk.Views.Tabs
             GoToPrepareRoute();
         }
 
-        private void LogoutTapped(object sender, EventArgs e)
-        {
-            AuthenticationService.Logout();
-            Navigation.PopToRootAsync();
-        }
-
         #endregion
 
         #region navigation

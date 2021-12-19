@@ -16,13 +16,14 @@ namespace Eindwerk.Views
             Connectivity.ConnectivityChanged += ConnectivityChanged;
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
-            base.OnAppearing();
             CheckNetwork();
+            await SetupDataSafe();
+            base.OnAppearing();
         }
 
-        private void CheckNetwork()
+        protected void CheckNetwork()
         {
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
@@ -51,18 +52,41 @@ namespace Eindwerk.Views
 
                 loadingDialog?.Hide();
             }
+            catch (NoNetworkException e)
+            {
+                loadingDialog?.Hide();
+                Debug.WriteLine("START OF NO NETWORK EXCEPTION");
+                Debug.WriteLine(e);
+                Debug.WriteLine("END OF NO NETWORK EXCEPTION");
+                GoToNoNetworkPage();
+            }
             catch (Exception e)
             {
                 loadingDialog?.Hide();
+                Debug.WriteLine("START OF REAL EXCEPTION");
                 Debug.WriteLine(e);
-                GoToGenericErrorPage();
+                Debug.WriteLine("END OF REAL EXCEPTION");
+                GoToNoNetworkPage();
             }
+        }
+
+        protected async Task SetupDataSafe()
+        {
+            Debug.WriteLine("=== setting up data safe");
+            await HandleApi(SetupData, "loading data");
+            Debug.WriteLine("=== end setting up data safe");
+        }
+
+        protected virtual Task SetupData()
+        {
+            return Task.CompletedTask;
         }
 
         #region navigation
 
         private void GoToNoNetworkPage()
         {
+            Debug.WriteLine("going to no network page");
             Navigation.PushModalAsync(new NoNetworkPage(), false);
         }
 

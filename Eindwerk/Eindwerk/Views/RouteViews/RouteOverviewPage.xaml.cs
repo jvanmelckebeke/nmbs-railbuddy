@@ -12,7 +12,7 @@ namespace Eindwerk.Views.RouteViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RouteOverviewPage : LoggedInPage
     {
-        private Route _route;
+        private readonly Route _route;
 
         public RouteOverviewPage(Tokens tokens, Route route) : base(tokens)
         {

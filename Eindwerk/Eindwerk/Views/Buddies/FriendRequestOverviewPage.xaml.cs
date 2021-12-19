@@ -22,9 +22,7 @@ namespace Eindwerk.Views.Buddies
             var friendRequests = Profile.FriendRequestsReceived;
 
             LstBuddyRequest.ItemsSource = friendRequests;
-
         }
-        
 
 
         private void OnGoBackClick(object sender, EventArgs e)
@@ -43,7 +41,7 @@ namespace Eindwerk.Views.Buddies
             {
                 if (!confirm) return;
 
-                var req = await UserService.AcceptFriendAsync(request.UserId.ToString());
+                await HandleApi(async () => await UserService.AcceptFriendAsync(request.UserId.ToString()));
 
                 UserDialogs.Instance.Toast($"added {request.Username}");
 
@@ -74,16 +72,19 @@ namespace Eindwerk.Views.Buddies
             {
                 if (!confirm) return;
 
-                var req = await UserService.DeleteFriendAsync(request.UserId.ToString());
+                await HandleApi(async () =>
+                {
+                    var req = await UserService.DeleteFriendAsync(request.UserId.ToString());
 
-                if (req == null)
-                {
-                    UserDialogs.Instance.Alert("an error has occured");
-                }
-                else
-                {
-                    UserDialogs.Instance.Toast($"ignored {request.Username}");
-                }
+                    if (req == null)
+                    {
+                        UserDialogs.Instance.Alert("an error has occured");
+                    }
+                    else
+                    {
+                        UserDialogs.Instance.Toast($"ignored {request.Username}");
+                    }
+                }, "ignoring request");
 
                 RefreshProfile();
             }

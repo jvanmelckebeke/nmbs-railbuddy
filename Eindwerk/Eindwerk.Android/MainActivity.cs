@@ -9,7 +9,7 @@ using Android.OS;
 
 namespace Eindwerk.Android
 {
-    [Activity(Label = "Eindwerk", Theme = "@style/MainTheme", MainLauncher = true,
+    [Activity(Label = "RailBuddy", Theme = "@style/MainTheme", MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

@@ -28,23 +28,19 @@ namespace Eindwerk.Views.Tabs
 
         protected override async Task SetupData()
         {
-            IProgressDialog loader = UserDialogs.Instance.Loading("getting data");
-
             SeatRegistration ownRegistration = await UserService.GetOwnSeatRegistrationAsync();
 
             if (ownRegistration == null)
             {
-                _viewModel = new SeatTapPageViewModel() { };
-                loader.Hide();
+                _viewModel = new SeatTapPageViewModel();
                 return;
             }
+
             var service = new RailService();
 
             _viewModel.CurrentSeat = ownRegistration;
             _viewModel.CurrentVehicle = await service.GetVehicle(ownRegistration.VehicleName);
             _viewModel.CurrentComposition = await UserService.GetTrainCompositionAsync(ownRegistration.VehicleName);
-
-            loader.Hide();
         }
 
         protected override void SetupVisual()
@@ -100,10 +96,16 @@ namespace Eindwerk.Views.Tabs
 
                 var seat = JsonConvert.DeserializeObject<SeatRegistration>(scanResult.Text);
 
-                await UserService.RegisterSeat(seat);
+
+                async Task RegisterCall()
+                {
+                    await UserService.RegisterSeat(seat);
+                }
+
+                await HandleApi(RegisterCall, "registering wagon");
 
                 UserDialogs.Instance.Toast("scanned seat");
-                await SetupData();
+                await SetupDataSafe();
             }
 
             qrScanner.OnScanResult += OnScan;
@@ -111,8 +113,8 @@ namespace Eindwerk.Views.Tabs
 
         private async void RemoveSeat(object sender, EventArgs e)
         {
-            await UserService.RemoveSeat();
-            await SetupData();
+            await HandleApi(async () => await UserService.RemoveSeat());
+            await SetupDataSafe();
             SetupVisual();
         }
     }

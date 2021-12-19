@@ -20,9 +20,9 @@ namespace Eindwerk.Views.Authentication
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RegistrationPage : NetworkDependentPage
     {
-        private const int STATION_LIMIT_TO_SHOW = 8;
+        private const int StationLimitToShow = 8;
 
-        private RailService _railService;
+        private readonly RailService _railService;
 
 
         private List<Station> _stationsToShow;
@@ -37,6 +37,8 @@ namespace Eindwerk.Views.Authentication
             ShowStationsAsync();
             SetupListeners();
         }
+        
+        
 
         private void SetupListeners()
         {
@@ -53,7 +55,7 @@ namespace Eindwerk.Views.Authentication
 
         private async void OnCreateAccountClicked(object sender, EventArgs e)
         {
-             await HandleApi(CreateProfile, "creating profile");
+            await HandleApi(CreateProfile, "creating profile");
         }
 
         private async void OnSearchStationInput(object sender, TextChangedEventArgs e)
@@ -94,7 +96,7 @@ namespace Eindwerk.Views.Authentication
             var allGood = PerformValidation();
 
             if (!allGood) return;
-            
+
 
             UserProfileCreation creationProfile = new UserProfileCreation
             {
@@ -108,9 +110,8 @@ namespace Eindwerk.Views.Authentication
             // correction: never have I ever written even more disgusting code, im sorry
             AuthenticationRepository tempAuthenticationRepository = new AuthenticationRepository();
             UserProfile profile = await tempAuthenticationRepository.CreateProfile(creationProfile);
-            
-            
-            
+
+
             if (profile.IsFilled())
             {
                 await UserDialogs.Instance.AlertAsync("profile has been created", "Profile created", "Let's go");
@@ -133,7 +134,7 @@ namespace Eindwerk.Views.Authentication
 
             if (_selectedStation != null)
             {
-                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW - 1));
+                _stationsToShow = new List<Station>(stations.Take(StationLimitToShow - 1));
 
                 if (_stationsToShow.Contains(_selectedStation))
                 {
@@ -144,7 +145,7 @@ namespace Eindwerk.Views.Authentication
             }
             else
             {
-                _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+                _stationsToShow = new List<Station>(stations.Take(StationLimitToShow));
             }
 
             UpdateStationsToShow();
@@ -154,7 +155,7 @@ namespace Eindwerk.Views.Authentication
         {
             Station[] stations = await _railService.GetStations();
 
-            _stationsToShow = new List<Station>(stations.Take(STATION_LIMIT_TO_SHOW));
+            _stationsToShow = new List<Station>(stations.Take(StationLimitToShow));
 
             UpdateStationsToShow();
         }
@@ -170,7 +171,7 @@ namespace Eindwerk.Views.Authentication
         private bool PerformValidation()
         {
             // validate email
-            EmailAddressAttribute emailAddressAttribute = new EmailAddressAttribute();
+            var emailAddressAttribute = new EmailAddressAttribute();
             if (EntEmail.Text.IsNullOrEmpty() || !emailAddressAttribute.IsValid(EntEmail.Text))
             {
                 LblEmail.TextColor = Color.IndianRed;
@@ -189,17 +190,15 @@ namespace Eindwerk.Views.Authentication
             }
 
             // validate passwords
-            if (EntPasswordCheck.Text != EntPassword.Text)
-            {
-                LblPassword.TextColor = Color.IndianRed;
-                LblPasswordCheck.TextColor = Color.IndianRed;
+            if (EntPasswordCheck.Text == EntPassword.Text) return true;
 
-                LblPasswordError.IsVisible = true;
 
-                return false;
-            }
+            LblPassword.TextColor = Color.IndianRed;
+            LblPasswordCheck.TextColor = Color.IndianRed;
 
-            return true;
+            LblPasswordError.IsVisible = true;
+
+            return false;
         }
     }
 }

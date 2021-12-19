@@ -17,19 +17,21 @@ namespace Eindwerk.Views.RouteViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PrepareRoutePage : NetworkDependentPage
     {
-        private const           int   MaxListStations  = 6;
-        private static readonly Color PrimaryBgColor   = Color.FromHex("#0169b2");
+        private const int MaxListStations = 6;
+        private static readonly Color PrimaryBgColor = Color.FromHex("#0169b2");
         private static readonly Color SecondaryBgColor = Color.Gray;
 
         private List<Station> _stationsFrom;
         private List<Station> _stationsTo;
 
         private readonly RailService _railService;
-        private readonly Tokens      _tokens;
+        private readonly Tokens _tokens;
 
-        private Station       _stationFrom;
-        private Station       _stationTo;
+        private BaseRouteRequest _baseRouteRequest;
+        private Station _stationFrom;
+        private Station _stationTo;
         private TimeSelection _timeSelection = TimeSelection.Departure;
+
 
         public PrepareRoutePage(Tokens tokens, BaseRouteRequest routeRequest = null)
         {
@@ -37,33 +39,41 @@ namespace Eindwerk.Views.RouteViews
 
             _tokens = tokens;
             _railService = new RailService();
+            _baseRouteRequest = routeRequest;
 
             SetupVisual();
             SetupListeners();
-            SetupStations();
+        }
 
-            if (routeRequest != null)
+        protected override async Task SetupData()
+        {
+            await SetupStations();
+            Debug.WriteLine("HEREEEE 1");
+
+            if (_baseRouteRequest != null)
             {
-                EntFromStation.Text = routeRequest.FromStation.FormattedName;
-                EntToStation.Text = routeRequest.ToStation.FormattedName;
+                EntFromStation.Text = _baseRouteRequest.FromStation.FormattedName;
+                EntToStation.Text = _baseRouteRequest.ToStation.FormattedName;
 
-                _stationFrom = routeRequest.FromStation;
-                _stationTo = routeRequest.ToStation;
+                _stationFrom = _baseRouteRequest.FromStation;
+                _stationTo = _baseRouteRequest.ToStation;
 
-                SearchBaseConnection(routeRequest);
+                await SearchBaseConnection(_baseRouteRequest);
+                _baseRouteRequest = null; // cuz otherwise problems
             }
+        }
+
+        private async Task SetupStations()
+        {
+            _stationsFrom = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
+            _stationsTo = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
+            Debug.WriteLine("HEREEEE 2");
         }
 
         private void SetupVisual()
         {
             PckDate.Date = DateTime.Now;
             PckTime.Time = DateTime.Now.TimeOfDay;
-        }
-
-        private async void SetupStations()
-        {
-            _stationsFrom = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
-            _stationsTo = new List<Station>((await _railService.GetStations()).Take(MaxListStations));
         }
 
         private void SetupListeners()
@@ -87,46 +97,42 @@ namespace Eindwerk.Views.RouteViews
         private async void OnBtnSearchRouteClicked(object sender, EventArgs e)
         {
             //validate inputs
-            var validInputs = ValidateInputs();
+            bool validInputs = ValidateInputs();
 
             if (validInputs)
             {
-                await SearchConnections();
+                await HandleApi(SearchConnections, "searching routes");
             }
         }
 
         private async Task SearchConnections()
         {
-            var loader = UserDialogs.Instance.Loading("Searching routes");
-
             SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(_stationFrom, _stationTo,
                 _timeSelection,
                 PckDate.Date, PckTime.Time);
             List<Route> connections = await _railService.GetRoutes(routesRequest);
-            
-            loader.Hide();
+
             await Navigation.PushAsync(new ConnectionsResultPage(_tokens, routesRequest, connections));
         }
 
         private async Task SearchBaseConnection(BaseRouteRequest request)
         {
-            var loader = UserDialogs.Instance.Loading("Searching routes");
-            
             SearchRoutesRequest routesRequest = RailService.CreateSearchRoutesRequest(request.FromStation,
                 request.ToStation,
                 TimeSelection.Departure, PckDate.Date, PckTime.Time);
 
             Debug.WriteLine($"route request: {routesRequest}");
             List<Route> connections = await _railService.GetRoutes(routesRequest);
-            
-            loader.Hide();
-            
+
+
             await Navigation.PushAsync(new ConnectionsResultPage(_tokens, routesRequest, connections));
         }
 
         private bool ValidateInputs()
         {
             bool valid = true;
+
+
             if (_stationFrom == null)
             {
                 LblFromStationError.IsVisible = true;

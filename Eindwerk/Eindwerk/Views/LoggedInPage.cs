@@ -8,21 +8,18 @@ namespace Eindwerk.Views
 {
     public class LoggedInPage : NetworkDependentPage
     {
-        protected Tokens                Tokens;
+        protected Tokens Tokens;
         protected AuthenticationService AuthenticationService;
-        protected UserService           UserService;
-        protected UserProfile           Profile;
+        protected UserService UserService;
+        protected UserProfile Profile;
 
         protected LoggedInPage(Tokens tokens)
         {
             Tokens = tokens;
-
-            // SetupProfile();
         }
 
         protected override void OnAppearing()
         {
-            base.OnAppearing();
             if (Profile == null)
             {
                 RefreshProfile();
@@ -31,17 +28,25 @@ namespace Eindwerk.Views
             {
                 QuietRefreshProfile();
             }
+
+            base.OnAppearing();
         }
 
         private async void QuietRefreshProfile()
         {
-            await SetupProfile();
+            await SetupProfileSafe();
+        }
+
+        protected async Task SetupProfileSafe()
+        {
+            await HandleApi(SetupProfile, "loading profile");
         }
 
         private async Task SetupProfile()
         {
             AuthenticationService = new AuthenticationService(Tokens);
             UserService = AuthenticationService.CreateWithTokens<UserService>();
+            CheckNetwork();
             Profile = await UserService.GetOwnUserProfileAsync();
 
             Debug.WriteLine($"profile: {Profile}");
@@ -65,21 +70,16 @@ namespace Eindwerk.Views
             }
             else
             {
-                await SetupData();
+                await SetupDataSafe();
                 SetupVisual();
             }
         }
 
         protected async void RefreshProfile()
         {
-            var loader = UserDialogs.Instance.Loading("Loading...");
-            loader.Show();
-            await SetupProfile();
-            loader.Hide();
+            await SetupProfileSafe();
         }
 
         protected virtual void SetupVisual() { }
-
-        protected virtual async Task SetupData() { }
     }
 }

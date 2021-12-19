@@ -28,9 +28,6 @@ namespace Eindwerk.Views.RouteViews
 
         protected override async Task SetupData()
         {
-
-            
-
             _wagons = await UserService.GetTrainCompositionAsync(_vehicle.VehicleNumber);
             ColWagons.ItemsSource = _wagons;
         }

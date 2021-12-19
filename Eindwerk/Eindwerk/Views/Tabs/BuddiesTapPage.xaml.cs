@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.BuddyApi.Friends;
@@ -15,8 +15,6 @@ namespace Eindwerk.Views.Tabs
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BuddiesTapPage : LoggedInPage
     {
-        private List<UserProfile> Friends = new List<UserProfile>();
-
         public BuddiesTapPage(Tokens tokens) : base(tokens)
         {
             InitializeComponent();
@@ -36,7 +34,7 @@ namespace Eindwerk.Views.Tabs
         {
             BtnAddBuddy.Clicked += OnAddBuddyClick;
 
-            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnGoToFriendRequestsTapped;
 
             FrFriendRequests.GestureRecognizers.Add(tapGestureRecognizer);
@@ -69,10 +67,10 @@ namespace Eindwerk.Views.Tabs
 
                 await Navigation.PushModalAsync(qrScanner);
 
-                qrScanner.OnScanResult += (scanResult) =>
+                qrScanner.OnScanResult += async (scanResult) =>
                 {
                     qrScanner.IsScanning = false;
-                    AddFriend(scanResult.Text);
+                    await HandleApi(async () => await AddFriend(scanResult.Text));
                     Device.BeginInvokeOnMainThread(() => Navigation.PopModalAsync());
                 };
             }
@@ -83,7 +81,7 @@ namespace Eindwerk.Views.Tabs
             }
         }
 
-        private async void AddFriend(string profileId)
+        private async Task AddFriend(string profileId)
         {
             UserProfile profile = await UserService.GetUserProfileAsync(profileId);
 
@@ -92,16 +90,19 @@ namespace Eindwerk.Views.Tabs
 
             async void ConfirmFriend(bool confirmed)
             {
-                if (confirmed)
+                await HandleApi(async () =>
                 {
-                    Debug.WriteLine($"adding friend with profileId {profileId}");
-                    BasicFriendRequestStatus response = await UserService.RequestFriendAsync(profileId);
-                    Debug.WriteLine(response);
-                    UserDialogs.Instance.Toast($"friend request sent to {profile.Username}");
-                }
+                    if (confirmed)
+                    {
+                        Debug.WriteLine($"adding friend with profileId {profileId}");
+                        BasicFriendRequestStatus response = await UserService.RequestFriendAsync(profileId);
+                        Debug.WriteLine(response);
+                        UserDialogs.Instance.Toast($"friend request sent to {profile.Username}");
+                    }
+                });
             }
 
-            ConfirmConfig config = new ConfirmConfig()
+            var config = new ConfirmConfig()
             {
                 Title = $"Add {profile.Username}?",
                 Message = $"Are you sure you want to add {profile.Username} ({profile.Email})?",
@@ -115,23 +116,26 @@ namespace Eindwerk.Views.Tabs
 
         private void OnDeleteHandler(object sender, EventArgs e)
         {
-            Button btn = (Button) sender;
+            var btn = (Button) sender;
 
-            Friend friendCtx = (Friend) btn.BindingContext;
+            var friendCtx = (Friend) btn.BindingContext;
 
             async void ConfirmRemoveFriend(bool confirm)
             {
-                if (confirm)
+                await HandleApi(async () =>
                 {
-                    Debug.WriteLine($"removing friend {friendCtx.Username} ({friendCtx.Email})");
-                    await UserService.DeleteFriendAsync(friendCtx.UserId.ToString());
-                    UserDialogs.Instance.Toast($"removed friend {friendCtx.Username}");
-                    RefreshProfile();
-                }
-                else
-                {
-                    Debug.WriteLine($"not removing friend {friendCtx.Username} ({friendCtx.Email})");
-                }
+                    if (confirm)
+                    {
+                        Debug.WriteLine($"removing friend {friendCtx.Username} ({friendCtx.Email})");
+                        await UserService.DeleteFriendAsync(friendCtx.UserId.ToString());
+                        UserDialogs.Instance.Toast($"removed friend {friendCtx.Username}");
+                        RefreshProfile();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"not removing friend {friendCtx.Username} ({friendCtx.Email})");
+                    }
+                });
             }
 
             ConfirmConfig config = new ConfirmConfig()
