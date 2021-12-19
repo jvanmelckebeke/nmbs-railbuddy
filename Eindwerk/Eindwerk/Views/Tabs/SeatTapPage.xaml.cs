@@ -77,7 +77,7 @@ namespace Eindwerk.Views.Tabs
                 TryHarder = true
             };
 
-            var overlay = new ZXingDefaultOverlay()
+            var overlay = new ZXingDefaultOverlay
             {
                 TopText = "Wagon QR code scan",
                 BottomText = "Please Wait...."

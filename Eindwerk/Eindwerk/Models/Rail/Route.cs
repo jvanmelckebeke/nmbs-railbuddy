@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Eindwerk.Assets;
 using Eindwerk.Models.Rail.Connections;
-using Eindwerk.Models.Rail.Stations;
 using Eindwerk.Tools;
 using Newtonsoft.Json;
 using Xamarin.Forms;
@@ -12,6 +10,9 @@ namespace Eindwerk.Models.Rail
 {
     public class Route
     {
+        [JsonProperty("alerts")] private PackedAlerts _alerts;
+
+        [JsonProperty("vias")] private PackedVia _via;
         [JsonProperty("departure")] public DepartureConnection DepartureConnection { get; set; }
 
         [JsonProperty("arrival")] public ArrivalConnection ArrivalConnection { get; set; }
@@ -20,14 +21,10 @@ namespace Eindwerk.Models.Rail
         [JsonConverter(typeof(RailConverter))]
         public TimeSpan Duration { get; set; }
 
-        [JsonProperty("vias")] private PackedVia _via;
-
-        [JsonProperty("alerts")] private PackedAlerts _alerts;
-
         public List<ViaConnection> ViaConnections => _via?.Vias;
-        public List<Alert>         Alerts         => _alerts?.Alerts;
+        public List<Alert> Alerts => _alerts?.Alerts;
 
-        public bool HasVias   => ViaConnections != null;
+        public bool HasVias => ViaConnections != null;
         public bool HasNoVias => ViaConnections == null;
 
         public DateTime DepartureTime => DepartureConnection.Time;
@@ -38,13 +35,14 @@ namespace Eindwerk.Models.Rail
 
         public TimeSpan ArrivalDelay => ArrivalConnection.Delay;
 
-        public string Name => $"{DepartureConnection.Station.FormattedName} - {ArrivalConnection.Station.FormattedName}";
+        public string Name =>
+            $"{DepartureConnection.Station.FormattedName} - {ArrivalConnection.Station.FormattedName}";
 
         /// <summary>
-        /// property that displays the duration of travel as `x hours y minutes`
-        /// including removing hours if the travel lasts less than 1 hour,
-        /// removing minutes if the travel lasts exactly x hours,
-        /// and dealing with the s in 1 hour / 2 hours / 1 minute / 2 minutes 
+        ///     property that displays the duration of travel as `x hours y minutes`
+        ///     including removing hours if the travel lasts less than 1 hour,
+        ///     removing minutes if the travel lasts exactly x hours,
+        ///     and dealing with the s in 1 hour / 2 hours / 1 minute / 2 minutes
         /// </summary>
         public string DurationText
         {
@@ -54,10 +52,7 @@ namespace Eindwerk.Models.Rail
                 if (Duration.Hours > 0)
                 {
                     ret += $"{Duration.Hours} hour";
-                    if (Duration.Hours > 1)
-                    {
-                        ret += "s";
-                    }
+                    if (Duration.Hours > 1) ret += "s";
 
                     ret += " ";
                 }
@@ -65,10 +60,7 @@ namespace Eindwerk.Models.Rail
                 if (Duration.Minutes > 0)
                 {
                     ret += $"{Duration.Minutes} minute";
-                    if (Duration.Minutes > 0)
-                    {
-                        ret += "s";
-                    }
+                    if (Duration.Minutes > 0) ret += "s";
                 }
 
                 return ret;
@@ -80,20 +72,32 @@ namespace Eindwerk.Models.Rail
             : $"{ViaConnections.Count} change{(ViaConnections.Count > 1 ? "s" : "")}";
 
         /// <summary>
-        /// generates a color of the route based on the routehash
+        ///     generates a color of the route based on the routehash
         /// </summary>
         public string RouteColor => "#" + RouteHash.Substring(0, 6);
 
         /// <summary>
-        /// generates a hash of the route based on:
-        /// <list type="bullet">
-        /// <item><description>the departing vehicle type</description></item>
-        /// <item><description>the arriving vehicle type</description></item>
-        /// <item><description>the duration of the travel</description></item>
-        /// <item><description>the number of changes</description></item>
-        /// <item><description>the departure minute</description></item>
-        /// <item><description>the arriving minute</description></item>
-        /// </list>
+        ///     generates a hash of the route based on:
+        ///     <list type="bullet">
+        ///         <item>
+        ///             <description>the departing vehicle type</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>the arriving vehicle type</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>the duration of the travel</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>the number of changes</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>the departure minute</description>
+        ///         </item>
+        ///         <item>
+        ///             <description>the arriving minute</description>
+        ///         </item>
+        ///     </list>
         /// </summary>
         public string RouteHash =>
             Crypto.ComputeMd5(

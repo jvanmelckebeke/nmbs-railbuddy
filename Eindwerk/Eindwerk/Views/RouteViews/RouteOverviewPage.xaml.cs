@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Connections;
-using Newtonsoft.Json;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

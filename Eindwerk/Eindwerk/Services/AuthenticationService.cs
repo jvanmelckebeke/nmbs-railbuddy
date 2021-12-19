@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Eindwerk.Exceptions;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Forms;
 using Eindwerk.Repository;
@@ -38,7 +37,7 @@ namespace Eindwerk.Services
             Tokens tokens = await _authenticationRepository.LoginRequest(credentials);
 
             Debug.WriteLine(tokens);
-            
+
             if (tokens == null) throw new WrongCredentialsException();
 
             SetTokens(tokens);
@@ -56,7 +55,7 @@ namespace Eindwerk.Services
          */
         public async Task<Tokens> TryRefreshTokensAsync()
         {
-            var refreshToken = GetRefreshToken();
+            string refreshToken = GetRefreshToken();
 
             if (refreshToken == null) return null;
 
@@ -70,12 +69,11 @@ namespace Eindwerk.Services
 
         /**
          * <summary>creates a new Service using the access token this authentication service knows</summary>
-         *
          * <typeparam name="TService">the service class to create</typeparam>
          */
         public TService CreateWithTokens<TService>() where TService : SecuredService
         {
-            Debug.WriteLine($"tokens: {_tokens}" );
+            Debug.WriteLine($"tokens: {_tokens}");
             return (TService) Activator.CreateInstance(typeof(TService), _tokens.AccessToken);
         }
 

@@ -49,14 +49,14 @@ namespace Eindwerk.Views.Tabs
         {
             try
             {
-                var options = new MobileBarcodeScanningOptions()
+                var options = new MobileBarcodeScanningOptions
                 {
                     AutoRotate = false,
                     UseNativeScanning = true,
                     TryHarder = true
                 };
 
-                var overlay = new ZXingDefaultOverlay()
+                var overlay = new ZXingDefaultOverlay
                 {
                     TopText = "Buddy QR code scan",
                     BottomText = "Please Wait...."
@@ -67,7 +67,7 @@ namespace Eindwerk.Views.Tabs
 
                 await Navigation.PushModalAsync(qrScanner);
 
-                qrScanner.OnScanResult += async (scanResult) =>
+                qrScanner.OnScanResult += async scanResult =>
                 {
                     qrScanner.IsScanning = false;
                     await HandleApi(async () => await AddFriend(scanResult.Text));
@@ -102,7 +102,7 @@ namespace Eindwerk.Views.Tabs
                 });
             }
 
-            var config = new ConfirmConfig()
+            var config = new ConfirmConfig
             {
                 Title = $"Add {profile.Username}?",
                 Message = $"Are you sure you want to add {profile.Username} ({profile.Email})?",
@@ -138,7 +138,7 @@ namespace Eindwerk.Views.Tabs
                 });
             }
 
-            ConfirmConfig config = new ConfirmConfig()
+            var config = new ConfirmConfig
             {
                 Title = $"Remove {friendCtx.Username}?",
                 Message = $"Are you sure you want to remove {friendCtx.Username}?",

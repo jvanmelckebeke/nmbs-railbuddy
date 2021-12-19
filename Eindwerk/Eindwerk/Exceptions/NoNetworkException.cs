@@ -4,8 +4,6 @@ namespace Eindwerk.Exceptions
 {
     public class NoNetworkException : Exception
     {
-        public NoNetworkException() : base("Sorry, no network connection")
-        {
-        }
+        public NoNetworkException() : base("Sorry, no network connection") { }
     }
 }

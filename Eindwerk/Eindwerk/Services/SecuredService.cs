@@ -2,13 +2,13 @@
 {
     public abstract class SecuredService
     {
-        public string AccessToken { get; set; }
-
         public SecuredService(string accessToken)
         {
             AccessToken = accessToken;
             SetupAfterTokenSet();
         }
+
+        public string AccessToken { get; set; }
         protected abstract void SetupAfterTokenSet();
     }
 }

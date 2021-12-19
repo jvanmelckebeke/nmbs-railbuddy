@@ -3,13 +3,12 @@
 <views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
-                    xmlns:buddyApi="clr-namespace:Eindwerk.Models.BuddyApi;assembly=Eindwerk"
                     xmlns:assets="clr-namespace:Eindwerk.Assets;assembly=Eindwerk"
                     xmlns:friends="clr-namespace:Eindwerk.Models.BuddyApi.Friends;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.Buddies.FriendRequestOverviewPage" NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
         <StackLayout Margin="8">
-            <Label x:Name="LblBuddyRequest" Text="Buddy Requests" FontSize="Large" />
+            <Label Text="Buddy Requests" FontSize="Large" />
             <ListView x:Name="LstBuddyRequest" RowHeight="60">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="friends:FriendRequest">

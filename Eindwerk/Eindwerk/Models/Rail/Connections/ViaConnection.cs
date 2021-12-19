@@ -7,23 +7,22 @@ namespace Eindwerk.Models.Rail.Connections
 {
     public class ViaConnection
     {
+        [JsonProperty("stationinfo")] public Station Station;
+
+        [JsonProperty("timeBetween")] [JsonConverter(typeof(RailConverter))]
+        public TimeSpan TimeBetween;
+
         /// <summary>
-        /// this is the connection you arrive with at the via station
+        ///     this is the connection you arrive with at the via station
         /// </summary>
         [JsonProperty("arrival")]
         public BaseConnection Arrival { get; set; }
 
         /// <summary>
-        /// this is the connection you leave with at the via station
+        ///     this is the connection you leave with at the via station
         /// </summary>
         [JsonProperty("departure")]
         public BaseConnection Departure { get; set; }
-
-        [JsonProperty("timeBetween")] 
-        [JsonConverter(typeof(RailConverter))]
-        public TimeSpan TimeBetween;
-
-        [JsonProperty("stationinfo")] public Station Station;
 
         public string StationName => Station.FormattedName;
 

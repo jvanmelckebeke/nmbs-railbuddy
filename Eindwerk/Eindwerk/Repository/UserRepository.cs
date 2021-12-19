@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.BuddyApi.Friends;
-using Xamarin.Forms;
 
 namespace Eindwerk.Repository
 {
     public class UserRepository : RailBuddyApiRepository
     {
-        const bool DEBUG_USER = false;
+        private const bool DEBUG_USER = false;
 
         public UserRepository(string accessToken) : base(accessToken) { }
 
@@ -31,7 +30,7 @@ namespace Eindwerk.Repository
 
         public async Task<BasicFriendRequestStatus> DoFriendAction(string profileId, FriendAction action)
         {
-            BasicFriendRequestStatus ret = await DoPutRequest<BasicFriendRequestStatus>(
+            var ret = await DoPutRequest<BasicFriendRequestStatus>(
                 $"{BASEURI}/user/{profileId}/friend", new FriendRequestAction(action), DEBUG_USER);
 
             return ret;
@@ -54,7 +53,7 @@ namespace Eindwerk.Repository
 
         public async Task RemoveSeat()
         {
-            await DoDeleteRequest($"{BASEURI}/line", true);
+            await DoDeleteRequest($"{BASEURI}/line");
         }
     }
 }

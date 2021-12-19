@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
-using Eindwerk.Models;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Requests;
 using Eindwerk.Models.Rail.Stations;
@@ -13,9 +12,8 @@ namespace Eindwerk.Services
 {
     public class RailService
     {
-        private RailApiRepository _railApiRepository;
-
         private Station[] _cachedStations;
+        private readonly RailApiRepository _railApiRepository;
 
         public RailService()
         {
@@ -35,10 +33,7 @@ namespace Eindwerk.Services
 
         public async Task<Station[]> FilterStations(string partOfName)
         {
-            if (_cachedStations == null)
-            {
-                _cachedStations = await GetStations();
-            }
+            if (_cachedStations == null) _cachedStations = await GetStations();
 
 
             return Array.FindAll(_cachedStations,
@@ -49,7 +44,7 @@ namespace Eindwerk.Services
                                                                     TimeSelection timeSelection, DateTime date,
                                                                     TimeSpan time)
         {
-            return new SearchRoutesRequest()
+            return new SearchRoutesRequest
             {
                 FromStation = from,
                 ToStation = to,
@@ -75,7 +70,7 @@ namespace Eindwerk.Services
 
         public async Task<Vehicle> GetVehicle(string vehicleName)
         {
-            return await _railApiRepository.GetVehicleAsync(new VehicleRequest() {VehicleName = vehicleName});
+            return await _railApiRepository.GetVehicleAsync(new VehicleRequest {VehicleName = vehicleName});
         }
     }
 }

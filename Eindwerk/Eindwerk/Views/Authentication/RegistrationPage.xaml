@@ -1,14 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <views:NetworkDependentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:components="clr-namespace:Eindwerk.Components;assembly=Eindwerk"
-             xmlns:models="clr-namespace:Eindwerk.Models;assembly=Eindwerk"
-             xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
-             xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
-             x:Class="Eindwerk.Views.Authentication.RegistrationPage" Title="Registration">
+                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                            xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
+                            xmlns:stations="clr-namespace:Eindwerk.Models.Rail.Stations;assembly=Eindwerk"
+                            x:Class="Eindwerk.Views.Authentication.RegistrationPage" Title="Registration">
     <ContentPage.Content>
-        <ScrollView x:Name="SVMain">
+        <ScrollView x:Name="SvMain">
             <ScrollView.Content>
                 <StackLayout Margin="20">
 

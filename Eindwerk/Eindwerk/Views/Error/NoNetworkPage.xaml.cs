@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using Acr.UserDialogs;
-using Eindwerk.Tools;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Eindwerk.Views
+namespace Eindwerk.Views.Error
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NoNetworkPage : ContentPage
@@ -14,7 +13,7 @@ namespace Eindwerk.Views
         {
             InitializeComponent();
 
-            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnPageTapped;
 
             GrPage.GestureRecognizers.Add(tapGestureRecognizer);
@@ -24,7 +23,7 @@ namespace Eindwerk.Views
         {
             // check network connection
 
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 try
                 {

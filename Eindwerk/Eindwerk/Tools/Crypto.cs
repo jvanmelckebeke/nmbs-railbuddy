@@ -10,21 +10,17 @@ namespace Eindwerk.Tools
          */
         private static string GenerateHash(string plainString, HashAlgorithm hash)
         {
-            var plainBytes = Encoding.ASCII.GetBytes(plainString);
-            var hashBytes = hash.ComputeHash(plainBytes);
+            byte[] plainBytes = Encoding.ASCII.GetBytes(plainString);
+            byte[] hashBytes = hash.ComputeHash(plainBytes);
 
             var builder = new StringBuilder();
-            foreach (var b in hashBytes)
-            {
-                builder.Append(b.ToString("x2"));
-            }
+            foreach (byte b in hashBytes) builder.Append(b.ToString("x2"));
 
             return builder.ToString();
         }
 
         /**
          * <summary>computes MD5 hash of a string</summary>
-         *
          * <remark>used for gravatar</remark>
          */
         public static string ComputeMd5(string rawString)

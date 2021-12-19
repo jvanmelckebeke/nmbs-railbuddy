@@ -4,22 +4,18 @@ namespace Eindwerk.Repository
 {
     public class RailBuddyApiRepository : RestRepository
     {
-       
-        
-        /**
-         * <value>the JWT Access Token to use in requests</value>
-         */
-        public string AccessToken { get; set; }
-
-
         public RailBuddyApiRepository(string accessToken) : base("https://railbuddy.azurewebsites.net/api")
         {
             AccessToken = accessToken;
         }
 
-        public RailBuddyApiRepository() : base("https://railbuddy.azurewebsites.net/api")
-        {
-        }
+        public RailBuddyApiRepository() : base("https://railbuddy.azurewebsites.net/api") { }
+
+
+        /**
+         * <value>the JWT Access Token to use in requests</value>
+         */
+        public string AccessToken { get; set; }
 
         protected override HttpClient GetClient()
         {

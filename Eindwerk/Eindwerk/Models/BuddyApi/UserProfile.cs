@@ -30,14 +30,14 @@ namespace Eindwerk.Models.BuddyApi
         public List<FriendRequest> FriendRequestsSent { get; set; } = new List<FriendRequest>();
 
         /// <summary>
-        /// generated Gravatar url
+        ///     generated Gravatar url
         /// </summary>
         public string AvatarUrl
         {
             get
             {
-                var emailLowercase = Email.ToLower().Trim();
-                var emailHash = Crypto.ComputeMd5(emailLowercase);
+                string emailLowercase = Email.ToLower().Trim();
+                string emailHash = Crypto.ComputeMd5(emailLowercase);
 
                 return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200&qzone=2";
             }
@@ -47,7 +47,7 @@ namespace Eindwerk.Models.BuddyApi
         {
             get
             {
-                var avatarUrl = IsFilled()
+                string avatarUrl = IsFilled()
                     ? AvatarUrl
                     : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&s=200&qzone=2";
 
@@ -91,7 +91,7 @@ namespace Eindwerk.Models.BuddyApi
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((UserProfile) obj);
+            return obj.GetType() == GetType() && Equals((UserProfile) obj);
         }
 
         public override int GetHashCode()

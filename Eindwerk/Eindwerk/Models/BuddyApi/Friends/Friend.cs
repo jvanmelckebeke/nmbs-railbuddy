@@ -7,15 +7,13 @@ namespace Eindwerk.Models.BuddyApi.Friends
 {
     public class Friend : IDtoModel
     {
-        public Friend()
-        {
-        }
+        public Friend() { }
 
         public Friend(Friend other)
         {
-            this.UserId = other.UserId;
-            this.Email = other.Email;
-            this.Username = other.Username;
+            UserId = other.UserId;
+            Email = other.Email;
+            Username = other.Username;
         }
 
         [JsonProperty("userId")] public Guid UserId { get; set; }
@@ -25,14 +23,14 @@ namespace Eindwerk.Models.BuddyApi.Friends
         [JsonProperty("username")] public string Username { get; set; }
 
         /// <summary>
-        /// generated Gravatar url
+        ///     generated Gravatar url
         /// </summary>
         public string AvatarUrl
         {
             get
             {
-                var emailLowercase = Email.ToLower().Trim();
-                var emailHash = Crypto.ComputeMd5(emailLowercase);
+                string emailLowercase = Email.ToLower().Trim();
+                string emailHash = Crypto.ComputeMd5(emailLowercase);
 
                 return $"https://www.gravatar.com/avatar/{emailHash}?d=wavatar&s=200&qzone=2";
             }
@@ -40,14 +38,14 @@ namespace Eindwerk.Models.BuddyApi.Friends
 
         public ImageSource Avatar => ImageSource.FromUri(new Uri(AvatarUrl));
 
-        public override string ToString()
-        {
-            return $"Friend[{nameof(UserId)}: {UserId}, {nameof(Email)}: {Email}, {nameof(Username)}: {Username}]";
-        }
-
         public bool IsFilled()
         {
             return Email != null;
+        }
+
+        public override string ToString()
+        {
+            return $"Friend[{nameof(UserId)}: {UserId}, {nameof(Email)}: {Email}, {nameof(Username)}: {Username}]";
         }
 
         #region equality
@@ -61,7 +59,7 @@ namespace Eindwerk.Models.BuddyApi.Friends
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((Friend) obj);
+            return obj.GetType() == GetType() && Equals((Friend) obj);
         }
 
         public override int GetHashCode()

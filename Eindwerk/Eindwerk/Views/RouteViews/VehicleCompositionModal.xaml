@@ -27,9 +27,9 @@
                         <DataTemplate x:DataType="rail:Wagon">
                             <Grid Margin="0,8">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="170" />
+                                    <ColumnDefinition Width="75" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="80" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="60" />
@@ -44,7 +44,7 @@
                                             VerticalOptions="CenterAndExpand">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="friends:Friend">
-                                            <StackLayout Spacing="0">
+                                            <StackLayout Spacing="0" VerticalOptions="Center">
                                                 <Frame CornerRadius="50" HorizontalOptions="Center" Padding="0"
                                                        Margin="0"
                                                        IsClippedToBounds="True">

@@ -17,7 +17,7 @@ namespace Eindwerk.Models.Rail
         public string FormattedName => $"{VehicleType} {VehicleNumber}";
 
         public string VehicleHash => Crypto.ComputeMd5(FormattedName);
-        
+
         public string VehicleColor => "#" + VehicleHash.Substring(0, 6);
 
         public override string ToString()

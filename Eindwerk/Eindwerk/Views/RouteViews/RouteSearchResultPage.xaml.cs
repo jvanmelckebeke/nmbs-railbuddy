@@ -7,9 +7,6 @@ using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Requests;
 using Eindwerk.Repository;
-using Eindwerk.Services;
-using Newtonsoft.Json;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -18,7 +15,7 @@ namespace Eindwerk.Views.RouteViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ConnectionsResultPage : LoggedInPage
     {
-        private readonly List<Route>         _connections;
+        private readonly List<Route> _connections;
         private readonly SearchRoutesRequest _originalRoutesRequest;
 
         public ConnectionsResultPage(Tokens tokens, SearchRoutesRequest originalRoutesRequest, List<Route> connections)
@@ -30,7 +27,7 @@ namespace Eindwerk.Views.RouteViews
 
             BindingContext = _originalRoutesRequest;
 
-            TapGestureRecognizer tapRecognizer = new TapGestureRecognizer();
+            var tapRecognizer = new TapGestureRecognizer();
             tapRecognizer.Tapped += ToggleFavorite;
             ImFav.GestureRecognizers.Add(tapRecognizer);
         }
@@ -45,7 +42,7 @@ namespace Eindwerk.Views.RouteViews
 
         private async void OnRouteSelected(object sender, ItemTappedEventArgs e)
         {
-            Route r = (Route) e.Item;
+            var r = (Route) e.Item;
 
             if (r != null)
             {

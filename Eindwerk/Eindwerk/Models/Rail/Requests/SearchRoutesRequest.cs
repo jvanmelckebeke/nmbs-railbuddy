@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Eindwerk.Models.Rail.Stations;
-using Eindwerk.Tools;
 using Newtonsoft.Json;
 
 namespace Eindwerk.Models.Rail.Requests

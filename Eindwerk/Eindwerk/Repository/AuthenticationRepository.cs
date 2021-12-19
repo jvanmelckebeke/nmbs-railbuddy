@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Eindwerk.Exceptions;
 using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Forms;
@@ -8,13 +7,9 @@ namespace Eindwerk.Repository
 {
     public class AuthenticationRepository : RailBuddyApiRepository
     {
-        public AuthenticationRepository(string accessToken) : base(accessToken)
-        {
-        }
+        public AuthenticationRepository(string accessToken) : base(accessToken) { }
 
-        public AuthenticationRepository()
-        {
-        }
+        public AuthenticationRepository() { }
 
 
         public async Task<Tokens> LoginRequest(Credentials credentials)

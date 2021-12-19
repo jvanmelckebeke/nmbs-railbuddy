@@ -5,13 +5,13 @@ namespace Eindwerk.Models.BuddyApi.Friends
 {
     public class FriendRequestAction
     {
-        [JsonProperty(PropertyName = "action")]
-        public FriendAction Action { get; set; }
-
         public FriendRequestAction(FriendAction action)
         {
             Action = action;
         }
+
+        [JsonProperty(PropertyName = "action")]
+        public FriendAction Action { get; set; }
 
         #region equality
 
@@ -24,7 +24,7 @@ namespace Eindwerk.Models.BuddyApi.Friends
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((FriendRequestAction) obj);
+            return obj.GetType() == GetType() && Equals((FriendRequestAction) obj);
         }
 
         public override int GetHashCode()

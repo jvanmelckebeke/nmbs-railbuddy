@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Eindwerk.Tools;
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.Xaml;
 
 namespace Eindwerk.Views.Error
@@ -17,7 +11,7 @@ namespace Eindwerk.Views.Error
         {
             InitializeComponent();
 
-            TapGestureRecognizer pageTapGesture = new TapGestureRecognizer();
+            var pageTapGesture = new TapGestureRecognizer();
             pageTapGesture.Tapped += OnPageTapped;
 
             GrPage.GestureRecognizers.Add(pageTapGesture);

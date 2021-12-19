@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Eindwerk.Models.BuddyApi;
-using Eindwerk.Models.BuddyApi.Friends;
 using Eindwerk.Models.Rail;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Eindwerk.Views.RouteViews
@@ -15,7 +10,7 @@ namespace Eindwerk.Views.RouteViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VehicleCompositionModal : LoggedInPage
     {
-        private Vehicle _vehicle;
+        private readonly Vehicle _vehicle;
 
         private List<Wagon> _wagons;
 

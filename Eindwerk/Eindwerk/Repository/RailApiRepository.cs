@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,12 +27,9 @@ namespace Eindwerk.Repository
         {
             string url = PrepareUrl(path, parameters);
 
-            TPackedResponse packedResponse = await DoGetRequest<TPackedResponse>(url, DebugRail);
+            var packedResponse = await DoGetRequest<TPackedResponse>(url, DebugRail);
 
-            if (packedResponse != null && packedResponse.IsFilled())
-            {
-                return packedResponse.Content;
-            }
+            if (packedResponse != null && packedResponse.IsFilled()) return packedResponse.Content;
 
             return default;
         }
@@ -42,10 +38,7 @@ namespace Eindwerk.Repository
         {
             if (!path.StartsWith("/")) path = $"/{path}";
 
-            if (request != null)
-            {
-                Debug.WriteLine($"get parameters: {request.ToGetParameters()}");
-            }
+            if (request != null) Debug.WriteLine($"get parameters: {request.ToGetParameters()}");
 
             return request == null
                 ? $"{BASEURI}{path}?format=json"
@@ -64,7 +57,6 @@ namespace Eindwerk.Repository
 
         public async Task<Vehicle> GetVehicleAsync(VehicleRequest request)
         {
-
             return await GetRailData<VehicleResponse, Vehicle>("/vehicle", request);
         }
     }

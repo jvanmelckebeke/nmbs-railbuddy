@@ -3,7 +3,6 @@
 <views:LoggedInPage xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                     xmlns:views="clr-namespace:Eindwerk.Views;assembly=Eindwerk"
-                    xmlns:tabs="clr-namespace:Eindwerk.Views.Tabs;assembly=Eindwerk"
                     xmlns:rail="clr-namespace:Eindwerk.Models.Rail;assembly=Eindwerk"
                     xmlns:friends="clr-namespace:Eindwerk.Models.BuddyApi.Friends;assembly=Eindwerk"
                     x:Class="Eindwerk.Views.Tabs.SeatTapPage" Title="Seat"

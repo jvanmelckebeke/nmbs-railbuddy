@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
 using Eindwerk.Exceptions;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Services;
 using Xamarin.Essentials;
@@ -33,38 +32,6 @@ namespace Eindwerk.Views.Authentication
             base.OnAppearing();
             HandleApi(CheckRefreshToken);
         }
-
-        #region event handlers
-
-        private async void OnBtnLoginClicked(object sender, EventArgs e)
-        {
-            Credentials credentials = new Credentials
-            {
-                Email = EntEmail.Text,
-                Password = EntPassword.Text
-            };
-
-            if (credentials.ValidateInputs())
-            {
-                async Task DoLoginCall()
-                {
-                    await DoLogin(credentials);
-                }
-
-                await HandleApi(DoLoginCall, "logging in");
-            }
-            else
-            {
-                UserDialogs.Instance.Toast("Email is invalid, check that your mail is written as 'example@domain.com'");
-            }
-        }
-
-        private void OnBtnRegistrationClicked(object sender, EventArgs e)
-        {
-            GoToRegistrationPage();
-        }
-
-        #endregion
 
         private async Task DoLogin(Credentials credentials)
         {
@@ -104,6 +71,38 @@ namespace Eindwerk.Views.Authentication
 
             Debug.WriteLine("refresh token expired");
         }
+
+        #region event handlers
+
+        private async void OnBtnLoginClicked(object sender, EventArgs e)
+        {
+            var credentials = new Credentials
+            {
+                Email = EntEmail.Text,
+                Password = EntPassword.Text
+            };
+
+            if (credentials.ValidateInputs())
+            {
+                async Task DoLoginCall()
+                {
+                    await DoLogin(credentials);
+                }
+
+                await HandleApi(DoLoginCall, "logging in");
+            }
+            else
+            {
+                UserDialogs.Instance.Toast("Email is invalid, check that your mail is written as 'example@domain.com'");
+            }
+        }
+
+        private void OnBtnRegistrationClicked(object sender, EventArgs e)
+        {
+            GoToRegistrationPage();
+        }
+
+        #endregion
 
 
         #region navigation

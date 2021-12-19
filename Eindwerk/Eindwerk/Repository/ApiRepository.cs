@@ -5,7 +5,7 @@ namespace Eindwerk.Repository
     public class ApiRepository
     {
         /// <summary>
-        /// the base uri to call for the api
+        ///     the base uri to call for the api
         /// </summary>
         protected string BASEURI;
 

@@ -8,7 +8,7 @@ namespace Eindwerk.Models.Rail.Connections
         [JsonProperty("arrived")]
         [JsonConverter(typeof(RailConverter))]
         public bool Arrived { get; set; }
-        
+
         public override string ToString()
         {
             return $"ArrivalConnection[{nameof(Arrived)}: {Arrived}, parent: {base.ToString()}]";

@@ -42,7 +42,7 @@
                                             <ColumnDefinition />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <ImageButton Grid.Column="0" 
+                                        <ImageButton Grid.Column="0"
                                                      Source="{x:Static assets:WhiteIcon.Delete}"
                                                      Clicked="OnDeleteFavorite"
                                                      Aspect="AspectFit" BackgroundColor="Red" />

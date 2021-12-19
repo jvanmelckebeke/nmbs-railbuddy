@@ -19,13 +19,14 @@ namespace Eindwerk.Repository
 
             IElement firstComposition = document.QuerySelector("table#composition");
 
-            var wagons = firstComposition.QuerySelectorAll("tr")
-                                   .Select(tableRow =>
-                                       new Wagon()
-                                       {
-                                           ModelName = tableRow.QuerySelector(".cell3").TextContent,
-                                           ModelUrl = tableRow.QuerySelector("img").Attributes["src"].Value
-                                       }).ToList();
+            List<Wagon> wagons = firstComposition.QuerySelectorAll("tr")
+                                                 .Select(tableRow =>
+                                                     new Wagon
+                                                     {
+                                                         ModelName = tableRow.QuerySelector(".cell3").TextContent,
+                                                         ModelUrl = tableRow.QuerySelector("img").Attributes["src"]
+                                                                            .Value
+                                                     }).ToList();
 
             for (var index = 0; index < wagons.Count; index++)
             {

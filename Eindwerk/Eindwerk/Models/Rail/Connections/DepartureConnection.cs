@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Eindwerk.Tools;
+﻿using Eindwerk.Tools;
 using Newtonsoft.Json;
 
 namespace Eindwerk.Models.Rail.Connections
@@ -26,7 +25,7 @@ namespace Eindwerk.Models.Rail.Connections
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((DepartureConnection) obj);
         }
 
@@ -47,6 +46,4 @@ namespace Eindwerk.Models.Rail.Connections
 
         #endregion
     }
-
-   
 }

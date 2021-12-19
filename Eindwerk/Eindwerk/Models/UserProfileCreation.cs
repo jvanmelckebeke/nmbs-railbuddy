@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
@@ -7,7 +6,6 @@ namespace Eindwerk.Models
 {
     public class UserProfileCreation : IDtoModel
     {
-
         [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
 
@@ -21,12 +19,9 @@ namespace Eindwerk.Models
 
         public bool IsFilled()
         {
-            EmailAddressAttribute emailAddressAttribute = new EmailAddressAttribute();
+            var emailAddressAttribute = new EmailAddressAttribute();
 
-            if (Email.IsNullOrEmpty() || !emailAddressAttribute.IsValid(Email))
-            {
-                return false;
-            }
+            if (Email.IsNullOrEmpty() || !emailAddressAttribute.IsValid(Email)) return false;
 
             return !(Username.IsNullOrEmpty() || Password.IsNullOrEmpty());
         }

@@ -8,6 +8,10 @@ namespace Eindwerk.Models.Rail.Connections
 {
     public class BaseConnection
     {
+        [JsonProperty("direction")] private PackedDirection _packedDirection;
+
+        [JsonProperty("stops")] private PackedStop _packedStops;
+
         [JsonProperty(PropertyName = "delay")]
         [JsonConverter(typeof(RailConverter))]
         public TimeSpan Delay { get; set; }
@@ -24,14 +28,10 @@ namespace Eindwerk.Models.Rail.Connections
         [JsonConverter(typeof(RailConverter))]
         public bool Canceled { get; set; }
 
-        [JsonProperty("stops")] private PackedStop _packedStops;
-
         public List<StationStop> Stops => _packedStops?.Stops;
 
-        public bool   HasStops  => _packedStops != null;
+        public bool HasStops => _packedStops != null;
         public string StopsText => HasStops ? $"{Stops.Count} stop{(Stops.Count > 1 ? "s" : "")}" : "no stops";
-
-        [JsonProperty("direction")] private PackedDirection _packedDirection;
 
         public string Direction => _packedDirection?.DirectionName.Split('/')[0];
 
@@ -63,7 +63,7 @@ namespace Eindwerk.Models.Rail.Connections
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((BaseConnection) obj);
         }
 

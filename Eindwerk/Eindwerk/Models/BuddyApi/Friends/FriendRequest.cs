@@ -33,7 +33,7 @@ namespace Eindwerk.Models.BuddyApi.Friends
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((FriendRequest) obj);
+            return obj.GetType() == GetType() && Equals((FriendRequest) obj);
         }
 
         public override int GetHashCode()

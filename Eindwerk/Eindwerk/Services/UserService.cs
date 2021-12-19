@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.BuddyApi.Friends;
 using Eindwerk.Models.Rail;
@@ -12,10 +11,10 @@ namespace Eindwerk.Services
 {
     public class UserService : SecuredService
     {
-        private UserRepository _userRepository;
-
-        private string      _ownProfileId;
         private UserProfile _ownProfile;
+
+        private string _ownProfileId;
+        private UserRepository _userRepository;
 
 
         public UserService(string accessToken) : base(accessToken) { }
@@ -47,10 +46,7 @@ namespace Eindwerk.Services
 
         public async Task<List<UserProfile>> GetFriendsAsync(string profileId = null)
         {
-            if (profileId == null)
-            {
-                profileId = _ownProfileId;
-            }
+            if (profileId == null) profileId = _ownProfileId;
 
             List<UserProfile> friends = await _userRepository.GetFriendsAsync(profileId);
 
@@ -92,10 +88,7 @@ namespace Eindwerk.Services
             if (ownSeat != null && vehicleNumber == ownSeat.VehicleName &&
                 wagons != null && wagons.Count > ownSeat.WagonIndex)
             {
-                if (_ownProfile == null)
-                {
-                    await SetOwnUserProfileAsync();
-                }
+                if (_ownProfile == null) await SetOwnUserProfileAsync();
 
                 Debug.WriteLine($"own user profile: {_ownProfile}");
 
@@ -109,13 +102,9 @@ namespace Eindwerk.Services
             }
 
             foreach (FriendSeatRegistration friendSeatRegistration in friendsSeats)
-            {
                 if (wagons.Count > friendSeatRegistration.SeatRegistration.WagonIndex)
-                {
                     wagons[friendSeatRegistration.SeatRegistration.WagonIndex].FriendsInWagon
                                                                               .Add(friendSeatRegistration.Friend);
-                }
-            }
 
             return wagons;
         }

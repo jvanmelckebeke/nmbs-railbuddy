@@ -6,16 +6,14 @@ namespace Eindwerk.Models.Rail
 {
     public class Alert
     {
-        [JsonProperty("header")] public string Header { get; set; }
-        [JsonProperty("description")] public string Description { get; set; }
+        [JsonProperty("endTime")] [JsonConverter(typeof(RailConverter))]
+        public DateTime EndTime;
 
-        [JsonProperty("startTime")] 
-        [JsonConverter(typeof(RailConverter))]
+        [JsonProperty("startTime")] [JsonConverter(typeof(RailConverter))]
         public DateTime StartTime;
 
-        [JsonProperty("endTime")] 
-        [JsonConverter(typeof(RailConverter))]
-        public DateTime EndTime;
+        [JsonProperty("header")] public string Header { get; set; }
+        [JsonProperty("description")] public string Description { get; set; }
 
         public override string ToString()
         {

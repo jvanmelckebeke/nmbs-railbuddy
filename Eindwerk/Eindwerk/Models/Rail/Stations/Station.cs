@@ -13,7 +13,18 @@ namespace Eindwerk.Models.Rail.Stations
         public string StandardName { get; set; }
 
 
-        public String FormattedName => Name.Split('/')[0];
+        public string FormattedName => Name.Split('/')[0];
+
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType() != GetType()) return 1;
+
+            var other = (Station) obj;
+
+
+            return string.Compare(FormattedName, other.FormattedName, StringComparison.OrdinalIgnoreCase);
+        }
 
         public bool IsFilled()
         {
@@ -25,20 +36,6 @@ namespace Eindwerk.Models.Rail.Stations
             return $"Station[{nameof(Id)}: {Id}, " +
                    $"{nameof(Name)}: {Name}, " +
                    $"{nameof(StandardName)}: {StandardName}, {nameof(FormattedName)}: {FormattedName}]";
-        }
-
-
-        public int CompareTo(object obj)
-        {
-            if (obj.GetType() != GetType())
-            {
-                return 1;
-            }
-
-            Station other = (Station) obj;
-
-
-            return string.Compare(FormattedName, other.FormattedName, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

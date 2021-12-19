@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Acr.UserDialogs;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail.Requests;
 using Eindwerk.Repository;
-using Eindwerk.Tools;
 using Eindwerk.Views.RouteViews;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -87,7 +85,7 @@ namespace Eindwerk.Views.Tabs
         }
     }
 
-    class HomeTabPageViewModel
+    internal class HomeTabPageViewModel
     {
         public List<BaseRouteRequest> Favorites { get; set; }
     }

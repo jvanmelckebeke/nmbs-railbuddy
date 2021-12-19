@@ -41,12 +41,9 @@ namespace Eindwerk.Repository
             };
 
             Debug.WriteLine($"adding to favorites {cpy}");
-            if (IsFavorite(request.RouteHash))
-            {
-                return;
-            }
+            if (IsFavorite(request.RouteHash)) return;
 
-            var favs = GetFavorites();
+            List<BaseRouteRequest> favs = GetFavorites();
 
             favs.Add(request);
 
@@ -66,13 +63,9 @@ namespace Eindwerk.Repository
         public static void ToggleFavorite(BaseRouteRequest request)
         {
             if (IsFavorite(request.RouteHash))
-            {
                 RemoveFromFavorites(request.RouteHash);
-            }
             else
-            {
                 AddToFavorites(request);
-            }
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     public enum TimeSelection
     {
-        Departure, Arrival
+        Departure,
+        Arrival
     }
 }

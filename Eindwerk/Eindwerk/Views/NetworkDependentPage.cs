@@ -25,10 +25,7 @@ namespace Eindwerk.Views
 
         protected void CheckNetwork()
         {
-            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-            {
-                GoToNoNetworkPage();
-            }
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet) GoToNoNetworkPage();
         }
 
         private void ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
@@ -39,10 +36,7 @@ namespace Eindwerk.Views
         protected async Task HandleApi(Func<Task> apiCall, string loadingText = null)
         {
             IProgressDialog loadingDialog = null;
-            if (loadingText != null)
-            {
-                loadingDialog = UserDialogs.Instance.Loading(loadingText);
-            }
+            if (loadingText != null) loadingDialog = UserDialogs.Instance.Loading(loadingText);
 
             try
             {

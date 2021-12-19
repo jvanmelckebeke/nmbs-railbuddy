@@ -1,16 +1,10 @@
 ﻿using Xamarin.Forms;
-using static Eindwerk.Tools.AssetHelper;
+using static Eindwerk.Assets.AssetHelper;
 
 namespace Eindwerk.Assets
 {
     public static class WhiteIcon
     {
-        public static ImageSource GetWhiteIcon(string icon)
-        {
-            return GetIcon($"White.{icon}");
-        }
-
-
         public static ImageSource Check => GetWhiteIcon("check.png");
 
         public static ImageSource ChevronRight => GetWhiteIcon("chevron-right.png");
@@ -21,5 +15,10 @@ namespace Eindwerk.Assets
 
         public static ImageSource Delete => GetWhiteIcon("delete.png");
         public static ImageSource Navigation => GetWhiteIcon("navigation.png");
+
+        public static ImageSource GetWhiteIcon(string icon)
+        {
+            return GetIcon($"White.{icon}");
+        }
     }
 }

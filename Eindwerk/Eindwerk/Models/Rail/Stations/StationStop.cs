@@ -12,24 +12,24 @@ namespace Eindwerk.Models.Rail.Stations
         [JsonProperty(PropertyName = "arrived")]
         [JsonConverter(typeof(RailConverter))]
         public bool Arrived { get; set; }
-        
+
         [JsonProperty(PropertyName = "left")]
         [JsonConverter(typeof(RailConverter))]
         public bool Departed { get; set; }
-        
-        
+
+
         [JsonProperty(PropertyName = "arrivalCanceled")]
         [JsonConverter(typeof(RailConverter))]
         public bool ArrivalCanceled { get; set; }
-        
+
         [JsonProperty(PropertyName = "departureCanceled")]
         [JsonConverter(typeof(RailConverter))]
         public bool DepartureCanceled { get; set; }
-        
+
         [JsonProperty(PropertyName = "arrivalDelay")]
         [JsonConverter(typeof(RailConverter))]
         public TimeSpan ArrivalDelay { get; set; }
-        
+
         [JsonProperty(PropertyName = "departureDelay")]
         [JsonConverter(typeof(RailConverter))]
         public TimeSpan DepartureDelay { get; set; }

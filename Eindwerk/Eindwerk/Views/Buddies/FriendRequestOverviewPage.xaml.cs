@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
@@ -19,7 +20,7 @@ namespace Eindwerk.Views.Buddies
         protected override void SetupVisual()
         {
             base.SetupVisual();
-            var friendRequests = Profile.FriendRequestsReceived;
+            List<FriendRequest> friendRequests = Profile.FriendRequestsReceived;
 
             LstBuddyRequest.ItemsSource = friendRequests;
         }
@@ -32,8 +33,8 @@ namespace Eindwerk.Views.Buddies
 
         private void HandleAccept(object sender, EventArgs e)
         {
-            ImageButton imageButton = (ImageButton) sender;
-            FriendRequest request = (FriendRequest) imageButton.BindingContext;
+            var imageButton = (ImageButton) sender;
+            var request = (FriendRequest) imageButton.BindingContext;
 
             Debug.WriteLine($"accepting friend request {request}");
 
@@ -48,7 +49,7 @@ namespace Eindwerk.Views.Buddies
                 RefreshProfile();
             }
 
-            var config = new ConfirmConfig()
+            var config = new ConfirmConfig
             {
                 Title = $"Add {request.Username}?",
                 Message =
@@ -63,8 +64,8 @@ namespace Eindwerk.Views.Buddies
 
         private void HandleDeny(object sender, EventArgs e)
         {
-            ImageButton imageButton = (ImageButton) sender;
-            FriendRequest request = (FriendRequest) imageButton.BindingContext;
+            var imageButton = (ImageButton) sender;
+            var request = (FriendRequest) imageButton.BindingContext;
 
             Debug.WriteLine($"ignoring friend request {request}");
 
@@ -74,22 +75,18 @@ namespace Eindwerk.Views.Buddies
 
                 await HandleApi(async () =>
                 {
-                    var req = await UserService.DeleteFriendAsync(request.UserId.ToString());
+                    BasicFriendRequestStatus req = await UserService.DeleteFriendAsync(request.UserId.ToString());
 
                     if (req == null)
-                    {
                         UserDialogs.Instance.Alert("an error has occured");
-                    }
                     else
-                    {
                         UserDialogs.Instance.Toast($"ignored {request.Username}");
-                    }
                 }, "ignoring request");
 
                 RefreshProfile();
             }
 
-            var config = new ConfirmConfig()
+            var config = new ConfirmConfig
             {
                 Title = $"Ignore {request.Username}?",
                 Message =

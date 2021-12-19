@@ -8,10 +8,10 @@ namespace Eindwerk.Views
 {
     public class LoggedInPage : NetworkDependentPage
     {
-        protected Tokens Tokens;
         protected AuthenticationService AuthenticationService;
-        protected UserService UserService;
         protected UserProfile Profile;
+        protected Tokens Tokens;
+        protected UserService UserService;
 
         protected LoggedInPage(Tokens tokens)
         {
@@ -21,13 +21,9 @@ namespace Eindwerk.Views
         protected override void OnAppearing()
         {
             if (Profile == null)
-            {
                 RefreshProfile();
-            }
             else
-            {
                 QuietRefreshProfile();
-            }
 
             base.OnAppearing();
         }

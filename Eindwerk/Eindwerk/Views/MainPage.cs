@@ -1,7 +1,5 @@
 ﻿using Eindwerk.Assets;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
-using Eindwerk.Tools;
 using Eindwerk.Views.Tabs;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -12,7 +10,7 @@ using TabbedPage = Xamarin.Forms.TabbedPage;
 namespace Eindwerk.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : TabbedPage
+    public class MainPage : TabbedPage
     {
         public MainPage(Tokens tokens)
         {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Acr.UserDialogs;
-using Eindwerk.Models;
 using Eindwerk.Models.BuddyApi;
-using Eindwerk.Tools;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,7 +25,7 @@ namespace Eindwerk.Views.Tabs
 
         private void SetupListeners()
         {
-            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnLogoutClicked;
 
             FrLogout.GestureRecognizers.Add(tapGestureRecognizer);
@@ -35,7 +33,7 @@ namespace Eindwerk.Views.Tabs
 
         private void OnLogoutClicked(object sender, EventArgs e)
         {
-            ConfirmConfig confirmConfig = new ConfirmConfig()
+            var confirmConfig = new ConfirmConfig
             {
                 Message = "Do you really want to logout",
                 CancelText = "No",

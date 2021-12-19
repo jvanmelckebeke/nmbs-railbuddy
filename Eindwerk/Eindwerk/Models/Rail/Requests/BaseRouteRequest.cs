@@ -9,7 +9,7 @@ namespace Eindwerk.Models.Rail.Requests
         public Station FromStation { get; set; }
 
         public Station ToStation { get; set; }
-        
+
         public string RouteHash => Crypto.ComputeMd5($"{FromStation.FormattedName}{ToStation.FormattedName}");
 
         public string Color => "#" + RouteHash.Substring(0, 6);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Acr.UserDialogs;
 using Eindwerk.Models.BuddyApi;
 using Eindwerk.Models.Rail;
 using Eindwerk.Models.Rail.Requests;
@@ -21,14 +20,14 @@ namespace Eindwerk.Views.RouteViews
         private static readonly Color PrimaryBgColor = Color.FromHex("#0169b2");
         private static readonly Color SecondaryBgColor = Color.Gray;
 
-        private List<Station> _stationsFrom;
-        private List<Station> _stationsTo;
-
         private readonly RailService _railService;
         private readonly Tokens _tokens;
 
         private BaseRouteRequest _baseRouteRequest;
         private Station _stationFrom;
+
+        private List<Station> _stationsFrom;
+        private List<Station> _stationsTo;
         private Station _stationTo;
         private TimeSelection _timeSelection = TimeSelection.Departure;
 
@@ -99,10 +98,7 @@ namespace Eindwerk.Views.RouteViews
             //validate inputs
             bool validInputs = ValidateInputs();
 
-            if (validInputs)
-            {
-                await HandleApi(SearchConnections, "searching routes");
-            }
+            if (validInputs) await HandleApi(SearchConnections, "searching routes");
         }
 
         private async Task SearchConnections()
@@ -130,7 +126,7 @@ namespace Eindwerk.Views.RouteViews
 
         private bool ValidateInputs()
         {
-            bool valid = true;
+            var valid = true;
 
 
             if (_stationFrom == null)
@@ -240,7 +236,7 @@ namespace Eindwerk.Views.RouteViews
 
             // apply same trick as in registration page
             FrClearSpaceTo.IsVisible = true;
-            SVPage.ScrollToAsync(EntToStation, ScrollToPosition.Start, true);
+            SvPage.ScrollToAsync(EntToStation, ScrollToPosition.Start, true);
         }
 
         #endregion
