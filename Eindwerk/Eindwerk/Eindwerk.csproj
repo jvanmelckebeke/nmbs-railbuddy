@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -10,15 +10,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Acr.UserDialogs" Version="7.2.0.534"/>
-        <PackageReference Include="AngleSharp" Version="1.0.0-alpha-844"/>
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2"/>
-        <PackageReference Include="System.ComponentModel.Annotations" Version="6.0.0-preview.4.21253.7"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.14.0"/>
-        <PackageReference Include="Xamarin.Essentials" Version="1.7.0"/>
-        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012"/>
-        <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1"/>
-        <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1"/>
+        <PackageReference Include="Acr.UserDialogs" Version="8.0.0-alpha-0006" />
+        <PackageReference Include="AngleSharp" Version="1.0.0-alpha-844" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta1" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="6.0.0-preview.4.21253.7" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
+        <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
+        <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />
+        <PackageReference Include="ZXing.Net.Mobile" Version="3.1.0-beta2" />
+        <PackageReference Include="ZXing.Net.Mobile.Forms" Version="3.1.0-beta2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,56 +41,56 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Assets\Sources\Background\fail.png"/>
-        <EmbeddedResource Include="Assets\Sources\Background\no-connection.gif"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\account.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\buddies.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\chevron-left.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\chevron-right.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\plus.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\seat.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\train.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\check.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\chevron-right.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\close.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\logout.png"/>
-        <None Remove="Assets\Icons\chevron-left.png"/>
-        <None Remove="Assets\Icons\no-internet.jpg"/>
-        <None Remove="Assets\Icons\no-connection.gif"/>
-        <None Remove="Assets\Icons\plus.png"/>
-        <None Remove="Assets\Icons\fail.png"/>
-        <None Remove="Assets\Icons\seat.png"/>
-        <None Remove="Assets\Icons\train.png"/>
-        <None Remove="Assets\Icons\account.png"/>
-        <None Remove="Assets\Icons\buddies.png"/>
-        <None Remove="Assets\Icons\logout.png"/>
-        <None Remove="Assets\Icons\chevron-right.png"/>
-        <None Remove="Assets\Icons\chevron-right-white.png"/>
-        <None Remove="Assets\Icons\check.png"/>
-        <None Remove="Assets\Icons\close.png"/>
-        <None Remove="Assets\Sources\Icons\Black\star.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\star.png"/>
-        <None Remove="Assets\Sources\Icons\Black\star-outline.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\star-outline.png"/>
-        <None Remove="Assets\Sources\Icons\Black\dots-vertical.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\dots-vertical.png"/>
-        <None Remove="Assets\Sources\Icons\Black\transit-connection.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\transit-connection.png"/>
-        <None Remove="Assets\Sources\Icons\Black\close.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\close.png"/>
-        <None Remove="Assets\Sources\Icons\Black\delete.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\Black\delete.png"/>
-        <None Remove="Assets\Sources\Icons\White\delete.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\delete.png"/>
-        <None Remove="Assets\Sources\Icons\White\navigation.png"/>
-        <EmbeddedResource Include="Assets\Sources\Icons\White\navigation.png"/>
+        <EmbeddedResource Include="Assets\Sources\Background\fail.png" />
+        <EmbeddedResource Include="Assets\Sources\Background\no-connection.gif" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\account.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\buddies.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\chevron-left.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\chevron-right.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\plus.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\seat.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\train.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\check.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\chevron-right.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\close.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\logout.png" />
+        <None Remove="Assets\Icons\chevron-left.png" />
+        <None Remove="Assets\Icons\no-internet.jpg" />
+        <None Remove="Assets\Icons\no-connection.gif" />
+        <None Remove="Assets\Icons\plus.png" />
+        <None Remove="Assets\Icons\fail.png" />
+        <None Remove="Assets\Icons\seat.png" />
+        <None Remove="Assets\Icons\train.png" />
+        <None Remove="Assets\Icons\account.png" />
+        <None Remove="Assets\Icons\buddies.png" />
+        <None Remove="Assets\Icons\logout.png" />
+        <None Remove="Assets\Icons\chevron-right.png" />
+        <None Remove="Assets\Icons\chevron-right-white.png" />
+        <None Remove="Assets\Icons\check.png" />
+        <None Remove="Assets\Icons\close.png" />
+        <None Remove="Assets\Sources\Icons\Black\star.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\star.png" />
+        <None Remove="Assets\Sources\Icons\Black\star-outline.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\star-outline.png" />
+        <None Remove="Assets\Sources\Icons\Black\dots-vertical.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\dots-vertical.png" />
+        <None Remove="Assets\Sources\Icons\Black\transit-connection.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\transit-connection.png" />
+        <None Remove="Assets\Sources\Icons\Black\close.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\close.png" />
+        <None Remove="Assets\Sources\Icons\Black\delete.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\Black\delete.png" />
+        <None Remove="Assets\Sources\Icons\White\delete.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\delete.png" />
+        <None Remove="Assets\Sources\Icons\White\navigation.png" />
+        <EmbeddedResource Include="Assets\Sources\Icons\White\navigation.png" />
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Mono.Android"/>
+        <Reference Include="Mono.Android" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\Sources"/>
+        <Folder Include="Assets\Sources" />
     </ItemGroup>
 </Project>
